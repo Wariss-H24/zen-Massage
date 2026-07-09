@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Zen Admin | Practitioner Suite</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:wght@400;700&amp;family=Hanken+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "status-cancelled": "#D18D8D",
+                    "on-primary-fixed": "#0d1f12",
+                    "inverse-primary": "#b6ccb8",
+                    "tertiary": "#4e5154",
+                    "tertiary-container": "#66696c",
+                    "surface": "#faf9f7",
+                    "on-secondary-fixed": "#241a0e",
+                    "on-tertiary-fixed": "#191c1f",
+                    "on-tertiary": "#ffffff",
+                    "surface-dim": "#dadad8",
+                    "surface-bright": "#faf9f7",
+                    "primary": "#425646",
+                    "surface-tint": "#4f6353",
+                    "surface-container": "#efeeec",
+                    "on-tertiary-container": "#e8e9ed",
+                    "on-tertiary-fixed-variant": "#44474a",
+                    "status-confirmed": "#7A9E7E",
+                    "on-background": "#1a1c1b",
+                    "sand-light": "#F2EBE3",
+                    "charcoal-muted": "#2C2E30",
+                    "on-primary-fixed-variant": "#384b3c",
+                    "secondary-container": "#f4dfcb",
+                    "on-secondary": "#ffffff",
+                    "tertiary-fixed-dim": "#c5c6ca",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed-dim": "#b6ccb8",
+                    "background": "#faf9f7",
+                    "primary-container": "#5a6e5d",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed": "#e1e2e6",
+                    "status-completed": "#A0A0A0",
+                    "on-secondary-fixed-variant": "#524436",
+                    "inverse-surface": "#2f3130",
+                    "secondary-fixed": "#f4dfcb",
+                    "primary-fixed": "#d2e8d3",
+                    "on-error-container": "#93000a",
+                    "on-primary-container": "#d9f0da",
+                    "surface-container-high": "#e9e8e6",
+                    "error": "#ba1a1a",
+                    "surface-container-low": "#f4f3f1",
+                    "secondary-fixed-dim": "#d7c3b0",
+                    "surface-container-highest": "#e3e2e0",
+                    "outline-variant": "#c3c8c1",
+                    "inverse-on-surface": "#f1f1ef",
+                    "sage-deep": "#4A594D",
+                    "secondary": "#6b5c4c",
+                    "status-pending": "#E6D5A7",
+                    "outline": "#737872",
+                    "error-container": "#ffdad6",
+                    "surface-variant": "#e3e2e0",
+                    "on-surface-variant": "#434843",
+                    "on-surface": "#1a1c1b",
+                    "on-secondary-container": "#716252",
+                    "on-primary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-max": "1280px",
+                    "stack-sm": "8px",
+                    "gutter": "24px",
+                    "section-gap": "80px",
+                    "margin-desktop": "64px",
+                    "base": "4px",
+                    "stack-lg": "32px",
+                    "stack-md": "16px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "headline-sm": ["Libre Caslon Text"],
+                    "body-lg": ["Hanken Grotesk"],
+                    "label-md": ["Hanken Grotesk"],
+                    "headline-md": ["Libre Caslon Text"],
+                    "caption": ["Hanken Grotesk"],
+                    "body-md": ["Hanken Grotesk"],
+                    "display-lg": ["Libre Caslon Text"]
+            },
+            "fontSize": {
+                    "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #faf9f7;
+            font-family: 'Hanken Grotesk', sans-serif;
+            color: #1a1c1b;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-surface">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 flex flex-col h-full py-stack-lg border-r border-outline-variant bg-surface-container-low transition-colors duration-200">
+<div class="px-gutter mb-stack-lg">
+<h1 class="font-headline-sm text-headline-sm text-sage-deep">Zen Admin</h1>
+<p class="font-label-md text-label-md text-on-surface-variant opacity-70">Practitioner Suite</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center px-gutter py-3 text-primary font-semibold border-r-4 border-primary bg-primary-fixed transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center px-gutter py-3 text-on-surface-variant hover:bg-surface-variant transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3">calendar_today</span>
+<span class="font-label-md text-label-md">Appointments</span>
+</a>
+<a class="flex items-center px-gutter py-3 text-on-surface-variant hover:bg-surface-variant transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3">inventory_2</span>
+<span class="font-label-md text-label-md">Products</span>
+</a>
+<a class="flex items-center px-gutter py-3 text-on-surface-variant hover:bg-surface-variant transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3">history_edu</span>
+<span class="font-label-md text-label-md">Order History</span>
+</a>
+<a class="flex items-center px-gutter py-3 text-on-surface-variant hover:bg-surface-variant transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3">analytics</span>
+<span class="font-label-md text-label-md">Analytics</span>
+</a>
+<a class="flex items-center px-gutter py-3 text-on-surface-variant hover:bg-surface-variant transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+<div class="px-gutter mt-auto pt-stack-lg space-y-1">
+<a class="flex items-center py-2 text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3">help</span>
+<span class="font-label-md text-label-md">Support</span>
+</a>
+<a class="flex items-center py-2 text-on-surface-variant hover:text-error transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3">logout</span>
+<span class="font-label-md text-label-md">Sign Out</span>
+</a>
+</div>
+</aside>
+<!-- TopAppBar -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-50 bg-surface/90 backdrop-blur-md flex justify-between items-center h-16 px-gutter ml-64 shadow-sm">
+<div class="flex items-center gap-4">
+<span class="font-headline-sm text-headline-sm text-primary">Zen Massage &amp; Wellness</span>
+</div>
+<div class="flex items-center gap-stack-md">
+<div class="relative hidden lg:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container rounded-full border-none focus:ring-1 focus:ring-primary text-sm w-64 transition-all" placeholder="Search operations..." type="text"/>
+</div>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-64 pt-16 min-h-screen">
+<div class="p-gutter max-w-container-max mx-auto space-y-stack-lg">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between py-stack-md border-b border-outline-variant">
+<div>
+<h2 class="font-headline-md text-headline-md text-sage-deep">Practitioner Dashboard</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Welcome back, Dr. Elena. Here is your practice overview for today.</p>
+</div>
+<button class="mt-stack-md md:mt-0 px-6 py-2.5 border border-primary text-primary font-label-md text-label-md rounded-full hover:bg-primary hover:text-on-primary transition-all duration-300">
+                    Book Session
+                </button>
+</div>
+<div class="bento-grid">
+<!-- 1. Appointment Management (8 columns) -->
+<section class="col-span-12 lg:col-span-8 space-y-stack-md">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-headline-sm text-charcoal-muted">Pending Appointments</h3>
+<span class="bg-status-pending px-3 py-1 rounded-full text-[10px] font-bold text-on-secondary-fixed uppercase tracking-wider">4 Requests</span>
+</div>
+<div class="grid gap-stack-md">
+<!-- Appointment Card -->
+<div class="glass-card p-stack-md rounded-xl flex items-center justify-between transition-transform hover:scale-[1.01]">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Professional studio portrait of a woman with a serene expression, soft natural lighting, elegant minimalist aesthetic, high-end skincare or wellness branding style, warm neutral tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWgUZOWr0_cWCOACyevP_bh5altnS6aQp85LW4fQKPrXAcadi2WFCijkZ4cCAZby-uNOObNJc1a1GPhehnFYQ4MW5EfqsVkLpCVFCTntWQRbmbYerhbbb4eFrCtDyqvqZgwYXcWDEoZQ1j0twABvpG9hgkZ6mB0ATLMxV-1eWTM-NF2Hz94xiSJQdXdWXKGIFIvmXN0KPZYWcL0dT04_5XSXWMpoIw1sBLcTJd7nb31GwOmp-DwzR968taOE3lzmRccPpWot8egTn2"/>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-primary">Julianne V.</h4>
+<p class="font-caption text-caption text-on-surface-variant">Deep Tissue Therapy • 90 min</p>
+<p class="font-caption text-caption text-on-surface-variant">Today, 4:30 PM</p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="p-2 text-status-confirmed hover:bg-status-confirmed/10 rounded-full transition-colors" title="Accept">
+<span class="material-symbols-outlined">check_circle</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-variant rounded-full transition-colors" title="Reschedule">
+<span class="material-symbols-outlined">calendar_clock</span>
+</button>
+<button class="p-2 text-error hover:bg-error/10 rounded-full transition-colors" title="Reject">
+<span class="material-symbols-outlined">cancel</span>
+</button>
+</div>
+</div>
+<!-- Appointment Card 2 -->
+<div class="glass-card p-stack-md rounded-xl flex items-center justify-between transition-transform hover:scale-[1.01]">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Portrait of a relaxed man in a professional wellness setting, minimalist charcoal and sage color palette, soft ambient lighting, sophisticated corporate photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDk3jZ-xc0H-SF7OEko8Om3HWvyMZ8ixx84TULmDBjebZW7D-DjGlyuocSpD02A4rJcp6hOrJQGRgf7AwwF9fCT49mmH6lK8j6XURH2QUvIiUT-cWryIXHckz8mHpJmuG_mySJxuzmCQauNzllBnhjRn5dclWC_4vwzRmr0KGucHEcIU5tIX7SX_AUgcq4u0KYAXNy2L2FztJ2zKzEnpdcT4OOS4QZg3-HO_VcEZ23jFgpmUfmKedwzqPFfGMoXXxjFYWthzuiyE3wj"/>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-primary">Marcus Thorne</h4>
+<p class="font-caption text-caption text-on-surface-variant">Zen Signature Massage • 60 min</p>
+<p class="font-caption text-caption text-on-surface-variant">Tomorrow, 10:00 AM</p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="p-2 text-status-confirmed hover:bg-status-confirmed/10 rounded-full transition-colors">
+<span class="material-symbols-outlined">check_circle</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-variant rounded-full transition-colors">
+<span class="material-symbols-outlined">calendar_clock</span>
+</button>
+<button class="p-2 text-error hover:bg-error/10 rounded-full transition-colors">
+<span class="material-symbols-outlined">cancel</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- 3. Availability Configurator (4 columns) -->
+<section class="col-span-12 lg:col-span-4 bg-sand-light/30 p-stack-lg rounded-xl border border-outline-variant/30">
+<h3 class="font-headline-sm text-headline-sm text-charcoal-muted mb-stack-md">Weekly Schedule</h3>
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md w-12">Mon</span>
+<div class="flex-1 mx-4 flex gap-2">
+<input class="w-full bg-surface border-none rounded-lg text-xs py-1 px-2 focus:ring-primary" type="text" value="09:00"/>
+<span class="text-on-surface-variant">-</span>
+<input class="w-full bg-surface border-none rounded-lg text-xs py-1 px-2 focus:ring-primary" type="text" value="18:00"/>
+</div>
+<div class="w-10 flex justify-end">
+<input checked="" class="rounded text-primary focus:ring-primary" type="checkbox"/>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md w-12">Tue</span>
+<div class="flex-1 mx-4 flex gap-2">
+<input class="w-full bg-surface border-none rounded-lg text-xs py-1 px-2 focus:ring-primary" type="text" value="09:00"/>
+<span class="text-on-surface-variant">-</span>
+<input class="w-full bg-surface border-none rounded-lg text-xs py-1 px-2 focus:ring-primary" type="text" value="18:00"/>
+</div>
+<div class="w-10 flex justify-end">
+<input checked="" class="rounded text-primary focus:ring-primary" type="checkbox"/>
+</div>
+</div>
+<div class="flex items-center justify-between opacity-50">
+<span class="font-label-md text-label-md w-12">Wed</span>
+<div class="flex-1 mx-4 text-center font-caption text-caption text-error italic">Closed</div>
+<div class="w-10 flex justify-end">
+<input class="rounded text-primary focus:ring-primary" type="checkbox"/>
+</div>
+</div>
+<div class="pt-stack-md">
+<h4 class="font-label-md text-label-md mb-2">Default Break</h4>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">coffee</span>
+<input class="w-full bg-surface border-none rounded-lg text-xs py-1.5 px-3 focus:ring-primary" type="text" value="13:00 - 14:00"/>
+</div>
+</div>
+<button class="w-full mt-stack-md py-2 bg-primary text-on-primary rounded-lg font-label-md text-label-md hover:opacity-90 transition-opacity">
+                            Update Hours
+                        </button>
+</div>
+</section>
+<!-- 2. Product Catalog Management (12 columns) -->
+<section class="col-span-12 space-y-stack-md">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-headline-sm text-charcoal-muted">Product Inventory</h3>
+<button class="flex items-center gap-2 bg-surface-container-highest px-4 py-2 rounded-full font-label-md text-label-md hover:bg-secondary-container transition-colors">
+<span class="material-symbols-outlined text-[20px]">add</span>
+                            Add New Product
+                        </button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<!-- Product Item -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden border border-outline-variant/30 flex flex-col group">
+<div class="h-48 relative overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Premium organic massage oil in a dark glass bottle, aesthetic minimalist spa presentation, soft shadows on a sand-colored surface, botanical elements in background, high-end wellness product photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaPeEHe9JfNgQEZ4zDC1dUKd-yHJ0syJS-os0KXVrNcYnfo-0ZjgCVE_RUBLJYjJHEJh4mwnoURE26aIa4o2PyC1fY_-aM2MqbBSq0biaFizVhkwSrH-ENIgVNCvMKfOE0T5RK8uNMNVmQhcGdfK8VxOZ-rxKDe2SaLyo435hLIszJgRWofUPsh7yG8XcgI3ZcsM7UUCjT2p0U6Xj9dIJ6cskHFWv37jipVQjKs0C1ClQyA3q54gZjYTEGDI_MpWclFRZLvx-gUD0D"/>
+<span class="absolute top-3 right-3 bg-status-confirmed/90 backdrop-blur-sm text-on-primary text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-tighter">In Stock</span>
+</div>
+<div class="p-stack-md space-y-2">
+<h4 class="font-label-md text-label-md text-primary">Serenity Blend Oil</h4>
+<div class="flex justify-between items-center">
+<p class="font-headline-sm text-[18px] text-sage-deep">$48.00</p>
+<span class="font-caption text-caption text-on-surface-variant">24 Units</span>
+</div>
+<div class="flex gap-2 pt-2">
+<button class="flex-1 py-1.5 border border-outline-variant rounded-lg font-caption hover:bg-surface-variant transition-colors">Edit</button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined">visibility</span></button>
+</div>
+</div>
+</div>
+<!-- Product Item 2 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden border border-outline-variant/30 flex flex-col group">
+<div class="h-48 relative overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Himalayan salt stones arranged on a textured linen cloth, warm candle light, serene holistic healing atmosphere, minimalist photography with neutral earth tones, zen aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBS0YQ0nmY-IPQGgHo3VTDIKC1iY7Y1R5gcoKuI6-F401Pb7jl1uxDDptocrZvRmZhf9JdxiTWmmWyFn0A0wCXmUMCW4oWTk20ay0vEqTAaSZI0aN9k3uvKg9GvVlLxRNnOm8iLEh5dZFykZfQObSEgNuJ5FObeYPpfGEs2Vunc6VOUa5kSWuA3T5olJ4bcMImm6On6Fbo8XrtpSQ_lDqhGZMTiumbzLjsOrX435a6awSMtV8hrYvLo8Yi2AkhklM-sHf7oMuxYpgIT"/>
+<span class="absolute top-3 right-3 bg-error/90 backdrop-blur-sm text-on-primary text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-tighter">Low Stock</span>
+</div>
+<div class="p-stack-md space-y-2">
+<h4 class="font-label-md text-label-md text-primary">Himalayan Salt Kit</h4>
+<div class="flex justify-between items-center">
+<p class="font-headline-sm text-[18px] text-sage-deep">$32.50</p>
+<span class="font-caption text-caption text-on-surface-variant">3 Units</span>
+</div>
+<div class="flex gap-2 pt-2">
+<button class="flex-1 py-1.5 border border-outline-variant rounded-lg font-caption hover:bg-surface-variant transition-colors">Edit</button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined">visibility</span></button>
+</div>
+</div>
+</div>
+<!-- Product Item 3 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden border border-outline-variant/30 flex flex-col group">
+<div class="h-48 relative overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Premium soy wax candles in minimalist ceramic jars, soft glowing light, editorial wellness photography, neutral sand and white color scheme, tranquil mood." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-ye3xa524TPHZnlvs1s-ul5nO5c3aavleFxcdJyuOZr1aE1F39fsjVPk1lLzJk0oph4JPiackWK9GOKdazmchmEAaz2ZWYQSxpf4i39rksg5q1Uxcfu76pcZe2OxNXiLpEWEb0XJ6ZJnJO5py98xtSNtKAfEvT2bKRZiI5GyzRsOqbzHQqlZpuh75MHe47GgouLkkGOE8S8ptIthmwFsufv--jMKdO9mEE8PPc23ApQCVQMWsu713znu8w0D9h2nk4BC0w6gWRxNT"/>
+<span class="absolute top-3 right-3 bg-status-confirmed/90 backdrop-blur-sm text-on-primary text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-tighter">In Stock</span>
+</div>
+<div class="p-stack-md space-y-2">
+<h4 class="font-label-md text-label-md text-primary">Zen Aroma Candle</h4>
+<div class="flex justify-between items-center">
+<p class="font-headline-sm text-[18px] text-sage-deep">$18.00</p>
+<span class="font-caption text-caption text-on-surface-variant">112 Units</span>
+</div>
+<div class="flex gap-2 pt-2">
+<button class="flex-1 py-1.5 border border-outline-variant rounded-lg font-caption hover:bg-surface-variant transition-colors">Edit</button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined">visibility</span></button>
+</div>
+</div>
+</div>
+<!-- Product Item 4 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden border border-outline-variant/30 flex flex-col group">
+<div class="h-48 relative overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="High-quality textured linen towels neatly folded, spa resort aesthetic, bright airy minimalist photography, clean high-key lighting, soft neutral cream and beige tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsvJb8FFFaCvbGWaVWcFbSmtV971LKHk7u45OFuCBS3DcFnLvK8oMYvtvJf2IHr1P0l9nSTnJGS4cMdlEhY7qpI7Zdbk5_m526JCwoUPrJobpVVx2lBlB7us4vrkoSVVhB5En3Bzl_F-c4ygJc_KFo8pW7mePtJp0vmhCP_cdVPMApaO_gCWeCt0bYXMuttg2bJnpICpTEWZ6W-f9BFMZ5P-bC6ofQNmlFqcmkhuHH-ObgdXEdaO1ERgrHeqeKzHtf5p0Z1D3JsgD6"/>
+<span class="absolute top-3 right-3 bg-status-confirmed/90 backdrop-blur-sm text-on-primary text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-tighter">In Stock</span>
+</div>
+<div class="p-stack-md space-y-2">
+<h4 class="font-label-md text-label-md text-primary">Textured Linen Set</h4>
+<div class="flex justify-between items-center">
+<p class="font-headline-sm text-[18px] text-sage-deep">$65.00</p>
+<span class="font-caption text-caption text-on-surface-variant">18 Units</span>
+</div>
+<div class="flex gap-2 pt-2">
+<button class="flex-1 py-1.5 border border-outline-variant rounded-lg font-caption hover:bg-surface-variant transition-colors">Edit</button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined">visibility</span></button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 4. Recent Reviews (6 columns) -->
+<section class="col-span-12 lg:col-span-6 space-y-stack-md">
+<h3 class="font-headline-sm text-headline-sm text-charcoal-muted">Recent Reviews</h3>
+<div class="space-y-4">
+<div class="bg-white/50 p-stack-md rounded-xl border-l-4 border-status-confirmed shadow-sm">
+<div class="flex justify-between items-start mb-2">
+<div class="flex gap-1 text-[#D4AF37]">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="font-caption text-caption text-on-surface-variant">2h ago</span>
+</div>
+<p class="font-body-md text-body-md italic text-primary mb-2">"The Serenity Blend Oil is a game changer. The scent is incredibly calming and not too heavy. Perfect for my nightly ritual."</p>
+<div class="flex items-center gap-2">
+<div class="bg-status-confirmed/20 px-2 py-0.5 rounded-full text-[10px] font-bold text-status-confirmed uppercase">Achat Vérifié</div>
+<span class="font-label-md text-label-md opacity-60">— Sarah M.</span>
+</div>
+<div class="mt-3 pl-4 border-l border-outline-variant pt-2">
+<button class="text-xs text-primary font-semibold flex items-center gap-1 hover:underline">
+<span class="material-symbols-outlined text-sm">reply</span>
+                                    Reply to Customer
+                                </button>
+</div>
+</div>
+<div class="bg-white/50 p-stack-md rounded-xl border-l-4 border-status-confirmed shadow-sm">
+<div class="flex justify-between items-start mb-2">
+<div class="flex gap-1 text-[#D4AF37]">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 0;">star</span>
+</div>
+<span class="font-caption text-caption text-on-surface-variant">Yesterday</span>
+</div>
+<p class="font-body-md text-body-md italic text-primary mb-2">"Excellent massage session today. Elena has a very intuitive touch. The room was a bit cooler than usual though."</p>
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md opacity-60">— David L.</span>
+</div>
+<div class="mt-3 pl-4 border-l border-outline-variant pt-2">
+<div class="text-xs text-on-surface-variant bg-surface-variant/50 p-2 rounded-lg">
+<p class="font-semibold mb-1">Your Reply:</p>
+                                    "Thank you for the feedback, David! I'll make sure to adjust the room temperature for your next visit."
+                                </div>
+</div>
+</div>
+</div>
+</section>
+<!-- 5. Order History (6 columns) -->
+<section class="col-span-12 lg:col-span-6 space-y-stack-md">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-headline-sm text-charcoal-muted">Recent Sales</h3>
+<a class="text-primary font-label-md text-label-md hover:underline" href="#">View All</a>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left font-body-md text-body-md">
+<thead>
+<tr class="border-b border-outline-variant">
+<th class="pb-3 font-label-md text-label-md text-on-surface-variant">Order ID</th>
+<th class="pb-3 font-label-md text-label-md text-on-surface-variant">Customer</th>
+<th class="pb-3 font-label-md text-label-md text-on-surface-variant">Total</th>
+<th class="pb-3 font-label-md text-label-md text-on-surface-variant">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30">
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-4 text-xs font-mono">#ZN-9821</td>
+<td class="py-4 font-semibold">Robert Chen</td>
+<td class="py-4">$112.50</td>
+<td class="py-4"><span class="bg-status-confirmed/10 text-status-confirmed text-[10px] px-2 py-0.5 rounded-full font-bold">Shipped</span></td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-4 text-xs font-mono">#ZN-9744</td>
+<td class="py-4 font-semibold">Elena Rossi</td>
+<td class="py-4">$48.00</td>
+<td class="py-4"><span class="bg-status-pending/20 text-on-secondary-container text-[10px] px-2 py-0.5 rounded-full font-bold">Processing</span></td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-4 text-xs font-mono">#ZN-9740</td>
+<td class="py-4 font-semibold">Thomas Wright</td>
+<td class="py-4">$215.00</td>
+<td class="py-4"><span class="bg-status-completed/10 text-status-completed text-[10px] px-2 py-0.5 rounded-full font-bold">Delivered</span></td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-4 text-xs font-mono">#ZN-9732</td>
+<td class="py-4 font-semibold">Sophia Lane</td>
+<td class="py-4">$32.50</td>
+<td class="py-4"><span class="bg-status-cancelled/10 text-status-cancelled text-[10px] px-2 py-0.5 rounded-full font-bold">Returned</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+</div>
+<!-- Footer Decoration -->
+<footer class="py-stack-lg border-t border-outline-variant mt-section-gap opacity-30 text-center">
+<p class="font-label-md text-label-md">© 2024 Zen Massage &amp; Wellness Admin Suite • Tranquility in Every Pixel</p>
+</footer>
+</main>
+<!-- Simple Hover Interactivity -->
+<script>
+        document.querySelectorAll('button, a').forEach(el => {
+            el.addEventListener('mousedown', () => {
+                el.classList.add('scale-95');
+            });
+            el.addEventListener('mouseup', () => {
+                el.classList.remove('scale-95');
+            });
+            el.addEventListener('mouseleave', () => {
+                el.classList.remove('scale-95');
+            });
+        });
+
+        // Search Bar Focus Effect
+        const searchInput = document.querySelector('input[type="text"]');
+        if(searchInput) {
+            searchInput.addEventListener('focus', () => {
+                searchInput.classList.add('w-80', 'bg-white', 'shadow-md');
+            });
+            searchInput.addEventListener('blur', () => {
+                searchInput.classList.remove('w-80', 'bg-white', 'shadow-md');
+            });
+        }
+    </script>
+</body></html>

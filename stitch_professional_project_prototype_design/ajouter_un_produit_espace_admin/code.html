@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Zen Wellness - Manage Product</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&amp;family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+    }
+    .glass-nav {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none !important;
+      border-color: #4A594D !important; /* sage-deep */
+      box-shadow: 0 1px 0 0 #4A594D !important;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #F2EBE3;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #4A594D;
+      border-radius: 10px;
+    }
+  </style>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "secondary-container": "#f4dfcb",
+            "sage-deep": "#4A594D",
+            "on-secondary": "#ffffff",
+            "charcoal-muted": "#2C2E30",
+            "error-container": "#ffdad6",
+            "surface-bright": "#faf9f7",
+            "primary-container": "#5a6e5d",
+            "on-error-container": "#93000a",
+            "tertiary-container": "#66696c",
+            "surface-container-lowest": "#ffffff",
+            "status-cancelled": "#D18D8D",
+            "tertiary-fixed": "#e1e2e6",
+            "tertiary": "#4e5154",
+            "surface-container-high": "#e9e8e6",
+            "secondary-fixed-dim": "#d7c3b0",
+            "on-primary-fixed": "#0d1f12",
+            "surface": "#faf9f7",
+            "on-secondary-fixed": "#241a0e",
+            "inverse-surface": "#2f3130",
+            "status-confirmed": "#7A9E7E",
+            "status-completed": "#A0A0A0",
+            "on-secondary-container": "#716252",
+            "error": "#ba1a1a",
+            "on-primary-fixed-variant": "#384b3c",
+            "outline": "#737872",
+            "status-pending": "#E6D5A7",
+            "inverse-primary": "#b6ccb8",
+            "primary-fixed-dim": "#b6ccb8",
+            "sand-light": "#F2EBE3",
+            "on-primary-container": "#d9f0da",
+            "outline-variant": "#c3c8c1",
+            "on-surface": "#1a1c1b",
+            "surface-dim": "#dadad8",
+            "on-background": "#1a1c1b",
+            "tertiary-fixed-dim": "#c5c6ca",
+            "primary": "#425646",
+            "on-tertiary-container": "#e8e9ed",
+            "surface-tint": "#4f6353",
+            "secondary": "#6b5c4c",
+            "primary-fixed": "#d2e8d3",
+            "on-tertiary": "#ffffff",
+            "inverse-on-surface": "#f1f1ef",
+            "on-primary": "#ffffff",
+            "on-error": "#ffffff",
+            "on-surface-variant": "#434843",
+            "surface-container": "#efeeec",
+            "background": "#faf9f7",
+            "surface-variant": "#e3e2e0",
+            "on-secondary-fixed-variant": "#524436",
+            "surface-container-highest": "#e3e2e0",
+            "surface-container-low": "#f4f3f1",
+            "secondary-fixed": "#f4dfcb",
+            "on-tertiary-fixed-variant": "#44474a",
+            "on-tertiary-fixed": "#191c1f"
+          },
+          "fontFamily": {
+            "label-md": ["Hanken Grotesk"],
+            "display-lg": ["Libre Caslon Text"],
+            "body-lg": ["Hanken Grotesk"],
+            "headline-md": ["Libre Caslon Text"],
+            "caption": ["Hanken Grotesk"],
+            "body-md": ["Hanken Grotesk"],
+            "headline-sm": ["Libre Caslon Text"]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 flex flex-col py-8 px-4 bg-surface-container-low dark:bg-charcoal-muted shadow-sm dark:shadow-none z-50">
+<div class="mb-12 px-2">
+<h1 class="font-display-lg text-display-lg text-sage-deep dark:text-primary-fixed">Zen Massage</h1>
+<p class="font-label-md text-label-md text-on-surface-variant opacity-70">Management Portal</p>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-surface-variant opacity-70 hover:bg-sand-light dark:hover:bg-tertiary-container transition-colors duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-surface-variant opacity-70 hover:bg-sand-light dark:hover:bg-tertiary-container transition-colors duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+<span class="font-label-md text-label-md">Bookings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-surface-variant opacity-70 hover:bg-sand-light dark:hover:bg-tertiary-container transition-colors duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-label-md text-label-md">Clients</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-sage-deep dark:text-primary-fixed font-bold border-l-4 border-sage-deep bg-sand-light/30" href="#">
+<span class="material-symbols-outlined" data-icon="spa">spa</span>
+<span class="font-label-md text-label-md">Services</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-surface-variant opacity-70 hover:bg-sand-light dark:hover:bg-tertiary-container transition-colors duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+<button class="mt-auto mx-2 py-4 px-6 border border-sage-deep text-sage-deep font-label-md rounded-lg hover:bg-sage-deep hover:text-white transition-all duration-300">
+      Book New Session
+    </button>
+</aside>
+<!-- Main Content Shell -->
+<main class="ml-64 flex-1 flex flex-col">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center h-16 px-8 bg-surface/90 dark:bg-charcoal-muted/90 backdrop-blur-md border-b border-outline-variant/30 sticky top-0 z-40">
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-surface-variant rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h2 class="font-headline-md text-headline-md text-sage-deep">Add New Product</h2>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="help">help</span>
+</div>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a female wellness practitioner in a clean, minimalist medical studio setting, soft neutral lighting, tranquil and trustworthy atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRuQAbMEenIdiU0LxXlbHVsOaytVCnYn-VDBMdNNa0inEktowgbsQ1-ETKwSUc_zBC9ycwDOlA70_5qDNV9mvWjf5kIkmOY2ho5z6bYDeX2nctOkTERduPPzWY6-N0cCP2XKHF26B1oOwPBkhAKKkAIupBKxPFOseGxuuQJIYLbnYQyHE82h2vf4jiprjT9muUecjw4dzHIoPIb8X6YdxD_D3wAAvdnDqy9I71O0W-aQ7zn45zzTaYE2O-h-IlZ9Z7p8UQPN4be7pA"/>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="p-12 max-w-[1400px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-16">
+<!-- Form Section -->
+<div class="lg:col-span-7 space-y-12">
+<!-- General Information -->
+<section class="space-y-6">
+<div class="flex items-center gap-3">
+<span class="h-8 w-8 rounded-full bg-sand-light flex items-center justify-center text-sage-deep font-bold">1</span>
+<h3 class="font-headline-sm text-headline-sm text-charcoal-muted">General Information</h3>
+</div>
+<div class="space-y-8 pl-11">
+<div class="relative">
+<label class="block font-label-md text-label-md text-on-surface-variant mb-2">Product Name</label>
+<input class="w-full bg-transparent border-0 border-b border-outline-variant py-3 px-0 focus:border-sage-deep transition-colors text-body-lg font-body-lg placeholder:opacity-30" id="prod-name" placeholder="e.g. Organic Lavender Essential Oil" type="text"/>
+</div>
+<div class="relative">
+<label class="block font-label-md text-label-md text-on-surface-variant mb-2">Description</label>
+<textarea class="w-full bg-transparent border-0 border-b border-outline-variant py-3 px-0 focus:border-sage-deep transition-colors text-body-md font-body-md resize-none placeholder:opacity-30 custom-scrollbar" id="prod-desc" placeholder="Describe the therapeutic benefits and ingredients..." rows="4"></textarea>
+</div>
+</div>
+</section>
+<!-- Pricing & Inventory -->
+<section class="space-y-6">
+<div class="flex items-center gap-3">
+<span class="h-8 w-8 rounded-full bg-sand-light flex items-center justify-center text-sage-deep font-bold">2</span>
+<h3 class="font-headline-sm text-headline-sm text-charcoal-muted">Pricing &amp; Inventory</h3>
+</div>
+<div class="grid grid-cols-2 gap-8 pl-11">
+<div class="relative">
+<label class="block font-label-md text-label-md text-on-surface-variant mb-2">Price (FCFA)</label>
+<div class="flex items-center border-b border-outline-variant">
+<input class="w-full bg-transparent border-0 py-3 px-0 focus:ring-0 text-body-lg font-body-lg placeholder:opacity-30" id="prod-price" placeholder="0" type="number"/>
+<span class="font-label-md text-on-surface-variant opacity-60">FCFA</span>
+</div>
+</div>
+<div class="relative">
+<label class="block font-label-md text-label-md text-on-surface-variant mb-2">Stock Quantity</label>
+<input class="w-full bg-transparent border-0 border-b border-outline-variant py-3 px-0 focus:border-sage-deep transition-colors text-body-lg font-body-lg placeholder:opacity-30" id="prod-stock" placeholder="0" type="number"/>
+</div>
+<div class="relative col-span-2">
+<label class="block font-label-md text-label-md text-on-surface-variant mb-2">Category Selection</label>
+<select class="w-full bg-transparent border-0 border-b border-outline-variant py-3 px-0 focus:border-sage-deep transition-colors text-body-md font-body-md appearance-none">
+<option value="">Select a category</option>
+<option value="oils">Essential Oils</option>
+<option value="creams">Therapeutic Creams</option>
+<option value="herbal">Herbal Teas</option>
+<option value="tools">Wellness Tools</option>
+</select>
+<span class="material-symbols-outlined absolute right-0 bottom-3 pointer-events-none opacity-40" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+</section>
+<!-- Media -->
+<section class="space-y-6">
+<div class="flex items-center gap-3">
+<span class="h-8 w-8 rounded-full bg-sand-light flex items-center justify-center text-sage-deep font-bold">3</span>
+<h3 class="font-headline-sm text-headline-sm text-charcoal-muted">Product Media</h3>
+</div>
+<div class="pl-11">
+<div class="border-2 border-dashed border-outline-variant rounded-xl p-12 text-center group hover:border-sage-deep transition-colors cursor-pointer bg-surface-container-low/50">
+<input accept="image/*" class="hidden" id="file-upload" type="file"/>
+<label class="cursor-pointer" for="file-upload">
+<span class="material-symbols-outlined text-4xl text-outline-variant group-hover:text-sage-deep transition-colors mb-4 block" data-icon="cloud_upload">cloud_upload</span>
+<p class="font-label-md text-label-md text-on-surface-variant mb-1">Drag and drop images here</p>
+<p class="font-caption text-caption text-on-surface-variant opacity-60">PNG, JPG up to 10MB</p>
+</label>
+</div>
+<div class="mt-6 flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
+<div class="h-24 w-24 rounded-lg bg-surface-variant relative overflow-hidden flex-shrink-0 group">
+<img class="w-full h-full object-cover" data-alt="A minimalist product photography shot of a high-quality glass bottle with lavender sprigs, clean studio lighting, soft shadows, airy wellness aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbzjCRJLX8FZeVz2KWT-xrkKMB17g3pB2U8SD5VsS2xiMNRoQZL4zV78HsYHgjkYcM83w7oKmXo6i4rctjsPk8FgZuReHBuTg-3AR8moYWe8j9tUE_dhyVnR6zRvdEGI4qNiLq06ilsSLDCcBAE080A0vqnN_uwu1O8wDJfWkCkQ1RooBycAsixExENmguMTaqwefocYiM3LqXd8lw0HnvEl-o-YsmSpFbu-cJDqOGQKybux4WmhPvWg3Y1eGMo4hMiiGMA8G-fgd5"/>
+<button class="absolute top-1 right-1 h-6 w-6 bg-white/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-sm text-error" data-icon="close">close</span>
+</button>
+</div>
+<div class="h-24 w-24 rounded-lg border border-outline-variant flex items-center justify-center flex-shrink-0 opacity-40">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</div>
+</div>
+</div>
+</section>
+<div class="pt-8 border-t border-outline-variant/30 flex gap-4">
+<button class="px-8 py-3 bg-sage-deep text-white rounded-lg font-label-md hover:brightness-110 active:scale-95 transition-all shadow-md">
+            Save Product
+          </button>
+<button class="px-8 py-3 bg-transparent border border-outline text-on-surface-variant rounded-lg font-label-md hover:bg-surface-variant transition-all">
+            Discard Changes
+          </button>
+</div>
+</div>
+<!-- Preview Section -->
+<aside class="lg:col-span-5 sticky top-24 h-fit">
+<div class="bg-white rounded-xl p-8 shadow-sm border border-sand-light">
+<div class="flex justify-between items-end mb-8">
+<div>
+<h4 class="font-label-md text-label-md text-sage-deep mb-1">LIVE PREVIEW</h4>
+<p class="font-caption text-caption text-on-surface-variant opacity-60">How customers see your product</p>
+</div>
+<span class="bg-status-confirmed/10 text-status-confirmed px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase">In Stock</span>
+</div>
+<!-- Product Card Preview -->
+<div class="max-w-sm mx-auto group">
+<div class="relative aspect-[4/5] rounded-xl overflow-hidden mb-6 bg-surface-container">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Minimalist luxury product packaging for high-end organic massage oil, featuring elegant typography on a frosted glass bottle, set against a soft linen background in warm afternoon sunlight." id="preview-image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFHIs1ak4AzIeabY5CkyJcifU8KuqW1FkS97qVzfxXT0g6xmJhkOqKIvaZtOPy9ePFZWfd52lUYALhHYZ6RNVl-EhCbLGsvddh78lQPlB1EOzNFxd1gyXOf0DqVneLQxOfjWYz_oJq6Z47S1HOTw55cqedhKXS_1dCOM8ms7w6qHiJnkptNwQLFc5luC0t407nLcOQ2labKTIzWxVy9Y4H_dYPdcBhYQMyVCTvKImT651VnhW1EYhk2Tx-lQ7C4ExDFwuGiPkabdOu"/>
+<div class="absolute inset-0 bg-charcoal-muted/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+</div>
+<div class="space-y-4 text-center">
+<p class="font-caption text-caption text-secondary uppercase tracking-[0.2em]" id="preview-category">Essential Oils</p>
+<h3 class="font-display-lg text-2xl text-charcoal-muted leading-tight" id="preview-name">Organic Lavender Oil</h3>
+<p class="font-body-md text-on-surface-variant italic line-clamp-2" id="preview-desc">Experience profound calm with our artisanal lavender extract, ethically sourced from Gabonese highlands.</p>
+<div class="pt-4 border-t border-sand-light flex items-center justify-between">
+<span class="font-display-lg text-xl text-sage-deep" id="preview-price">12,500 FCFA</span>
+<button class="h-10 w-10 rounded-full border border-sage-deep text-sage-deep flex items-center justify-center hover:bg-sage-deep hover:text-white transition-colors duration-500">
+<span class="material-symbols-outlined text-lg" data-icon="shopping_bag">shopping_bag</span>
+</button>
+</div>
+</div>
+</div>
+<div class="mt-12 p-6 bg-sand-light/50 rounded-xl space-y-4">
+<h5 class="font-label-md text-label-md text-charcoal-muted">Product Visibility</h5>
+<div class="flex items-center justify-between">
+<span class="text-body-md opacity-70">Visible in online store</span>
+<div class="w-12 h-6 bg-sage-deep rounded-full relative cursor-pointer shadow-inner">
+<div class="absolute right-1 top-1 h-4 w-4 bg-white rounded-full"></div>
+</div>
+</div>
+<div class="flex items-center justify-between opacity-50">
+<span class="text-body-md">Schedule launch</span>
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<script>
+    // Simple micro-interaction for form sync to preview
+    const nameInput = document.getElementById('prod-name');
+    const descInput = document.getElementById('prod-desc');
+    const priceInput = document.getElementById('prod-price');
+    
+    const previewName = document.getElementById('preview-name');
+    const previewDesc = document.getElementById('preview-desc');
+    const previewPrice = document.getElementById('preview-price');
+
+    nameInput.addEventListener('input', (e) => {
+      previewName.textContent = e.target.value || 'Product Name';
+    });
+
+    descInput.addEventListener('input', (e) => {
+      previewDesc.textContent = e.target.value || 'Describe the therapeutic benefits and ingredients...';
+    });
+
+    priceInput.addEventListener('input', (e) => {
+      const val = parseInt(e.target.value) || 0;
+      previewPrice.textContent = `${val.toLocaleString()} FCFA`;
+    });
+
+    // Category sync
+    document.querySelector('select').addEventListener('change', (e) => {
+      const category = e.target.options[e.target.selectedIndex].text;
+      document.getElementById('preview-category').textContent = e.target.value ? category : 'Category';
+    });
+  </script>
+</body></html>

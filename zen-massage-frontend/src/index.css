@@ -1,0 +1,145 @@
+@import "tailwindcss";
+
+/* ─── Google Fonts ─────────────────────────────────────────── */
+/* Hanken Grotesk + Libre Caslon Text chargées via index.html  */
+
+/* ─── Material Symbols ──────────────────────────────────────── */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  font-family: 'Material Symbols Outlined';
+  font-style: normal;
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+}
+
+/* ─── Tailwind v4 Theme Tokens ──────────────────────────────── */
+@theme {
+  /* ── Colors ── */
+  --color-background:                  #faf9f7;
+  --color-surface:                     #faf9f7;
+  --color-surface-bright:              #faf9f7;
+  --color-surface-dim:                 #dadad8;
+  --color-surface-variant:             #e3e2e0;
+  --color-surface-container-lowest:    #ffffff;
+  --color-surface-container-low:       #f4f3f1;
+  --color-surface-container:           #efeeec;
+  --color-surface-container-high:      #e9e8e6;
+  --color-surface-container-highest:   #e3e2e0;
+
+  --color-on-background:               #1a1c1b;
+  --color-on-surface:                  #1a1c1b;
+  --color-on-surface-variant:          #434843;
+  --color-inverse-surface:             #2f3130;
+  --color-inverse-on-surface:          #f1f1ef;
+
+  --color-primary:                     #425646;
+  --color-on-primary:                  #ffffff;
+  --color-primary-container:           #5a6e5d;
+  --color-on-primary-container:        #d9f0da;
+  --color-primary-fixed:               #d2e8d3;
+  --color-primary-fixed-dim:           #b6ccb8;
+  --color-on-primary-fixed:            #0d1f12;
+  --color-on-primary-fixed-variant:    #384b3c;
+  --color-inverse-primary:             #b6ccb8;
+  --color-surface-tint:                #4f6353;
+
+  --color-secondary:                   #6b5c4c;
+  --color-on-secondary:                #ffffff;
+  --color-secondary-container:         #f4dfcb;
+  --color-on-secondary-container:      #716252;
+  --color-secondary-fixed:             #f4dfcb;
+  --color-secondary-fixed-dim:         #d7c3b0;
+  --color-on-secondary-fixed:          #241a0e;
+  --color-on-secondary-fixed-variant:  #524436;
+
+  --color-tertiary:                    #4e5154;
+  --color-on-tertiary:                 #ffffff;
+  --color-tertiary-container:          #66696c;
+  --color-on-tertiary-container:       #e8e9ed;
+  --color-tertiary-fixed:              #e1e2e6;
+  --color-tertiary-fixed-dim:          #c5c6ca;
+  --color-on-tertiary-fixed:           #191c1f;
+  --color-on-tertiary-fixed-variant:   #44474a;
+
+  --color-error:                       #ba1a1a;
+  --color-on-error:                    #ffffff;
+  --color-error-container:             #ffdad6;
+  --color-on-error-container:          #93000a;
+
+  --color-outline:                     #737872;
+  --color-outline-variant:             #c3c8c1;
+
+  --color-sage-deep:                   #4A594D;
+  --color-sand-light:                  #F2EBE3;
+  --color-charcoal-muted:              #2C2E30;
+
+  --color-status-pending:              #E6D5A7;
+  --color-status-confirmed:            #7A9E7E;
+  --color-status-completed:            #A0A0A0;
+  --color-status-cancelled:            #D18D8D;
+
+  /* ── Fonts ── */
+  --font-sans:        'Hanken Grotesk', sans-serif;
+  --font-serif:       'Libre Caslon Text', serif;
+  --font-body-md:     'Hanken Grotesk', sans-serif;
+  --font-body-lg:     'Hanken Grotesk', sans-serif;
+  --font-label-md:    'Hanken Grotesk', sans-serif;
+  --font-caption:     'Hanken Grotesk', sans-serif;
+  --font-headline-sm: 'Libre Caslon Text', serif;
+  --font-headline-md: 'Libre Caslon Text', serif;
+  --font-display-lg:  'Libre Caslon Text', serif;
+  --font-display-lg-mobile: 'Libre Caslon Text', serif;
+
+  /* ── Font sizes ── */
+  --text-caption:           12px;
+  --text-body-md:           16px;
+  --text-body-lg:           18px;
+  --text-label-md:          14px;
+  --text-headline-sm:       24px;
+  --text-headline-md:       32px;
+  --text-display-lg:        48px;
+  --text-display-lg-mobile: 32px;
+
+  /* ── Spacing ── */
+  --spacing-base:             4px;
+  --spacing-stack-sm:         8px;
+  --spacing-stack-md:         16px;
+  --spacing-gutter:           24px;
+  --spacing-stack-lg:         32px;
+  --spacing-section-gap:      80px;
+  --spacing-margin-mobile:    16px;
+  --spacing-margin-desktop:   64px;
+  --spacing-container-max:    1280px;
+
+  /* ── Border radius ── */
+  --radius-DEFAULT: 0.25rem;
+  --radius-lg:      0.5rem;
+  --radius-xl:      0.75rem;
+  --radius-full:    9999px;
+
+  /* ── Max width ── */
+  --width-container-max: 1280px;
+}
+
+/* ─── Base ───────────────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-on-background);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: var(--color-primary-fixed);
+  color: var(--color-primary);
+}

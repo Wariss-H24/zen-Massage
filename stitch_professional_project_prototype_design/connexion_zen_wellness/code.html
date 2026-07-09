@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Connexion | Zen Massage &amp; Wellness</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600&amp;family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-effect {
+            backdrop-filter: blur(12px);
+            background-color: rgba(250, 249, 247, 0.9);
+        }
+        .fade-in {
+            animation: fadeIn 1.2s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        input:focus {
+            outline: none;
+            border-color: #4A594D !important;
+            box-shadow: 0 1px 0 0 #4A594D;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-highest": "#e3e2e0",
+                    "on-tertiary": "#ffffff",
+                    "outline-variant": "#c3c8c1",
+                    "inverse-on-surface": "#f1f1ef",
+                    "primary-container": "#5a6e5d",
+                    "on-secondary-fixed-variant": "#524436",
+                    "surface-tint": "#4f6353",
+                    "surface-container-low": "#f4f3f1",
+                    "secondary-container": "#f4dfcb",
+                    "on-primary-fixed": "#0d1f12",
+                    "inverse-primary": "#b6ccb8",
+                    "on-surface-variant": "#434843",
+                    "error": "#ba1a1a",
+                    "tertiary-fixed-dim": "#c5c6ca",
+                    "on-error-container": "#93000a",
+                    "tertiary": "#4e5154",
+                    "outline": "#737872",
+                    "secondary": "#6b5c4c",
+                    "on-secondary": "#ffffff",
+                    "sage-deep": "#4A594D",
+                    "charcoal-muted": "#2C2E30",
+                    "surface-variant": "#e3e2e0",
+                    "surface-container": "#efeeec",
+                    "secondary-fixed": "#f4dfcb",
+                    "on-primary-fixed-variant": "#384b3c",
+                    "primary": "#425646",
+                    "on-tertiary-container": "#e8e9ed",
+                    "sand-light": "#F2EBE3",
+                    "on-surface": "#1a1c1b",
+                    "on-tertiary-fixed": "#191c1f",
+                    "status-confirmed": "#7A9E7E",
+                    "on-tertiary-fixed-variant": "#44474a",
+                    "surface-container-high": "#e9e8e6",
+                    "status-cancelled": "#D18D8D",
+                    "on-background": "#1a1c1b",
+                    "on-primary": "#ffffff",
+                    "on-primary-container": "#d9f0da",
+                    "primary-fixed": "#d2e8d3",
+                    "on-secondary-container": "#716252",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-surface": "#2f3130",
+                    "on-error": "#ffffff",
+                    "surface": "#faf9f7",
+                    "surface-bright": "#faf9f7",
+                    "status-pending": "#E6D5A7",
+                    "on-secondary-fixed": "#241a0e",
+                    "tertiary-container": "#66696c",
+                    "tertiary-fixed": "#e1e2e6",
+                    "error-container": "#ffdad6",
+                    "background": "#faf9f7",
+                    "status-completed": "#A0A0A0",
+                    "secondary-fixed-dim": "#d7c3b0",
+                    "surface-dim": "#dadad8",
+                    "primary-fixed-dim": "#b6ccb8"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-desktop": "64px",
+                    "stack-lg": "32px",
+                    "margin-mobile": "16px",
+                    "stack-sm": "8px",
+                    "container-max": "1280px",
+                    "base": "4px",
+                    "section-gap": "80px",
+                    "gutter": "24px",
+                    "stack-md": "16px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Hanken Grotesk"],
+                    "display-lg": ["Libre Caslon Text"],
+                    "caption": ["Hanken Grotesk"],
+                    "headline-sm": ["Libre Caslon Text"],
+                    "label-md": ["Hanken Grotesk"],
+                    "headline-md": ["Libre Caslon Text"],
+                    "body-md": ["Hanken Grotesk"]
+            },
+            "fontSize": {
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                    "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                    "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-surface font-body-md text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed min-h-screen">
+<!-- Primary Navigation (Suppressed per "Transactional" rule, but logo remains for identity) -->
+<header class="fixed top-0 left-0 w-full z-50 p-stack-md flex justify-center md:justify-start md:px-margin-desktop">
+<a class="group flex items-center gap-2" href="/">
+<span class="font-display-lg text-headline-sm text-sage-deep group-hover:text-primary transition-colors duration-300">Zen Massage &amp; Wellness</span>
+</a>
+</header>
+<main class="flex min-h-screen">
+<!-- Visual Section (Calming Imagery) -->
+<section class="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-sand-light">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-[10000ms] hover:scale-110" data-alt="A serene close-up of smooth, dark basalt massage stones stacked neatly beside a small glass bottle of amber-colored essential oil on a textured linen cloth. The lighting is soft and natural, coming from the side to create gentle shadows. The color palette is composed of sage green, warm sands, and soft off-whites, creating a professional and tranquil atmosphere typical of a luxury spa sanctuary." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD-e5Faod_NzYdCgVc7_t3Vv6qHzfCc1AhY9hMmqtfF7eIqG2ShaFfCgR13zB3tXYG_vXKSRv2t3AjgG4S4kjEaAkSxQ9V17032BVraD_fAR-I5MM-FG_TeeYv_dw1iDUKJQN_k9AVMVdEkFQcKCvQPHhVMDNNyIxR4WbNU7PgH54I9cw2V8-tFtAfQY4pe2J8ySk3pfsKOPc-mWfb_xIJBwzs1z42MLs9b2oBNWYHCitOjwiTDcdYbGw')">
+</div>
+<div class="absolute inset-0 bg-sage-deep/10 backdrop-overlay"></div>
+<div class="relative z-10 m-auto text-center px-12 fade-in">
+<h1 class="font-display-lg text-display-lg text-white mb-stack-sm drop-shadow-sm">Retrouvez votre sanctuaire</h1>
+<p class="font-body-lg text-body-lg text-white/90 max-w-md mx-auto italic">Un espace dédié à la sérénité et à l'excellence clinique au cœur du Gabon.</p>
+</div>
+<!-- Atmospheric subtle movement -->
+<div class="absolute bottom-12 left-12 flex items-center gap-4 text-white/70">
+<span class="material-symbols-outlined text-[32px]">spa</span>
+<span class="font-label-md text-label-md tracking-widest uppercase">Équilibre &amp; Harmonie</span>
+</div>
+</section>
+<!-- Form Section -->
+<section class="w-full lg:w-1/2 flex items-center justify-center bg-surface px-margin-mobile md:px-margin-desktop py-section-gap">
+<div class="w-full max-w-md fade-in" style="animation-delay: 200ms;">
+<div class="text-center md:text-left mb-12">
+<h2 class="font-headline-md text-headline-md text-sage-deep mb-2">Bienvenue</h2>
+<p class="font-body-md text-on-surface-variant">Veuillez vous connecter pour accéder à votre espace bien-être.</p>
+</div>
+<form class="space-y-stack-lg" onsubmit="event.preventDefault();">
+<!-- Email Field -->
+<div class="group">
+<label class="block font-label-md text-label-md text-on-surface-variant mb-1 group-focus-within:text-primary transition-colors" for="email">
+                            Adresse e-mail
+                        </label>
+<input class="w-full bg-transparent border-0 border-b border-outline-variant py-3 px-0 font-body-md text-on-surface placeholder:text-outline focus:ring-0 transition-all" id="email" placeholder="votre@email.com" required="" type="email"/>
+</div>
+<!-- Password Field -->
+<div class="group relative">
+<label class="block font-label-md text-label-md text-on-surface-variant mb-1 group-focus-within:text-primary transition-colors" for="password">
+                            Mot de passe
+                        </label>
+<input class="w-full bg-transparent border-0 border-b border-outline-variant py-3 px-0 font-body-md text-on-surface placeholder:text-outline focus:ring-0 transition-all" id="password" placeholder="••••••••" required="" type="password"/>
+<button class="absolute right-0 bottom-3 text-outline hover:text-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+<!-- Options -->
+<div class="flex items-center justify-between">
+<label class="flex items-center gap-3 cursor-pointer group">
+<div class="relative flex items-center">
+<input class="peer h-5 w-5 rounded border-outline-variant text-primary focus:ring-primary focus:ring-offset-0 bg-transparent transition-all" type="checkbox"/>
+</div>
+<span class="font-body-md text-on-surface-variant group-hover:text-on-surface transition-colors">Se souvenir de moi</span>
+</label>
+<a class="font-label-md text-label-md text-primary hover:text-sage-deep transition-colors underline underline-offset-4 decoration-outline-variant" href="#">
+                            Mot de passe oublié ?
+                        </a>
+</div>
+<!-- CTA -->
+<div class="pt-4">
+<button class="w-full py-4 px-stack-lg bg-transparent border-2 border-sage-deep text-sage-deep font-label-md text-label-md uppercase tracking-widest rounded-full hover:bg-sage-deep hover:text-white transition-all duration-300 active:scale-95 flex justify-center items-center gap-2" type="submit">
+                            Se connecter
+                            <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</form>
+<!-- Footer of the form -->
+<div class="mt-12 pt-8 border-t border-surface-container-highest text-center">
+<p class="font-body-md text-on-surface-variant">
+                        Nouveau parmi nous ? 
+                        <a class="text-primary font-semibold hover:underline underline-offset-4 ml-1" href="#">
+                            Créer un compte
+                        </a>
+</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Simple Transactional Footer (Minimalist version of the system Footer) -->
+<footer class="fixed bottom-0 w-full py-6 px-margin-desktop hidden md:flex justify-between items-center bg-transparent pointer-events-none">
+<p class="font-caption text-caption text-on-surface-variant opacity-60">
+            © 2024 Zen Massage &amp; Wellness Gabon. Sanctuaire à travers le design.
+        </p>
+<div class="flex gap-stack-lg pointer-events-auto">
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary transition-colors" href="#">Contact</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary transition-colors" href="#">Confidentialité</a>
+</div>
+</footer>
+<script>
+        // Micro-interactions for input fields
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.classList.add('scale-[1.01]');
+            });
+            input.addEventListener('blur', () => {
+                input.parentElement.classList.remove('scale-[1.01]');
+            });
+        });
+
+        // Atmospheric parallax hint
+        document.addEventListener('mousemove', (e) => {
+            const visual = document.querySelector('[data-alt]');
+            if (visual) {
+                const moveX = (e.clientX - window.innerWidth / 2) * 0.005;
+                const moveY = (e.clientY - window.innerHeight / 2) * 0.005;
+                visual.style.transform = `scale(1.1) translate(${moveX}px, ${moveY}px)`;
+            }
+        });
+    </script>
+</body></html>

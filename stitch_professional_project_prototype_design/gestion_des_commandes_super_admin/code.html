@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Order Management | Zen Wellness</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&amp;family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#f4dfcb",
+                        "sage-deep": "#4A594D",
+                        "on-secondary": "#ffffff",
+                        "charcoal-muted": "#2C2E30",
+                        "error-container": "#ffdad6",
+                        "surface-bright": "#faf9f7",
+                        "primary-container": "#5a6e5d",
+                        "on-error-container": "#93000a",
+                        "tertiary-container": "#66696c",
+                        "surface-container-lowest": "#ffffff",
+                        "status-cancelled": "#D18D8D",
+                        "tertiary-fixed": "#e1e2e6",
+                        "tertiary": "#4e5154",
+                        "surface-container-high": "#e9e8e6",
+                        "secondary-fixed-dim": "#d7c3b0",
+                        "on-primary-fixed": "#0d1f12",
+                        "surface": "#faf9f7",
+                        "on-secondary-fixed": "#241a0e",
+                        "inverse-surface": "#2f3130",
+                        "status-confirmed": "#7A9E7E",
+                        "status-completed": "#A0A0A0",
+                        "on-secondary-container": "#716252",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#384b3c",
+                        "outline": "#737872",
+                        "status-pending": "#E6D5A7",
+                        "inverse-primary": "#b6ccb8",
+                        "primary-fixed-dim": "#b6ccb8",
+                        "sand-light": "#F2EBE3",
+                        "on-primary-container": "#d9f0da",
+                        "outline-variant": "#c3c8c1",
+                        "on-surface": "#1a1c1b",
+                        "surface-dim": "#dadad8",
+                        "on-background": "#1a1c1b",
+                        "tertiary-fixed-dim": "#c5c6ca",
+                        "primary": "#425646",
+                        "on-tertiary-container": "#e8e9ed",
+                        "surface-tint": "#4f6353",
+                        "secondary": "#6b5c4c",
+                        "primary-fixed": "#d2e8d3",
+                        "on-tertiary": "#ffffff",
+                        "inverse-on-surface": "#f1f1ef",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-surface-variant": "#434843",
+                        "surface-container": "#efeeec",
+                        "background": "#faf9f7",
+                        "surface-variant": "#e3e2e0",
+                        "on-secondary-fixed-variant": "#524436",
+                        "surface-container-highest": "#e3e2e0",
+                        "surface-container-low": "#f4f3f1",
+                        "secondary-fixed": "#f4dfcb",
+                        "on-tertiary-fixed-variant": "#44474a",
+                        "on-tertiary-fixed": "#191c1f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-md": "16px",
+                        "stack-lg": "32px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "64px",
+                        "container-max": "1280px",
+                        "base": "4px",
+                        "section-gap": "80px",
+                        "stack-sm": "8px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Hanken Grotesk"],
+                        "display-lg": ["Libre Caslon Text"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "headline-md": ["Libre Caslon Text"],
+                        "caption": ["Hanken Grotesk"],
+                        "body-md": ["Hanken Grotesk"],
+                        "headline-sm": ["Libre Caslon Text"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c3c8c1;
+            border-radius: 10px;
+        }
+        .order-row-hover:hover {
+            background-color: rgba(242, 235, 227, 0.5);
+        }
+        .glass-panel {
+            backdrop-filter: blur(12px);
+            background: rgba(250, 249, 247, 0.9);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen">
+<!-- Side Navigation Shell -->
+<aside class="fixed left-0 top-0 h-screen w-64 bg-surface-container-low dark:bg-charcoal-muted shadow-sm flex flex-col py-8 px-4 z-50">
+<div class="mb-12 px-2">
+<h1 class="font-display-lg text-display-lg text-sage-deep">Zen Massage</h1>
+<p class="font-label-md text-label-md opacity-70">Management Portal</p>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant opacity-70 hover:bg-sand-light transition-colors duration-300" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-sage-deep font-bold border-l-4 border-sage-deep bg-sand-light/50" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="font-label-md text-label-md">Bookings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant opacity-70 hover:bg-sand-light transition-colors duration-300" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-md text-label-md">Clients</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant opacity-70 hover:bg-sand-light transition-colors duration-300" href="#">
+<span class="material-symbols-outlined">spa</span>
+<span class="font-label-md text-label-md">Services</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant opacity-70 hover:bg-sand-light transition-colors duration-300" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+<div class="mt-auto px-2">
+<button class="w-full py-3 px-4 border border-sage-deep text-sage-deep rounded-xl font-label-md hover:bg-sage-deep hover:text-white transition-all duration-300">
+                Book New Session
+            </button>
+</div>
+</aside>
+<!-- Top AppBar Shell -->
+<header class="fixed top-0 right-0 h-16 w-[calc(100%-16rem)] bg-surface/90 backdrop-blur-md border-b border-outline-variant/30 flex justify-between items-center px-8 z-40">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full bg-surface-container border-none rounded-lg py-2 pl-10 pr-4 text-body-md focus:ring-1 focus:ring-sage-deep" placeholder="Search orders, customers..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-on-surface-variant hover:text-sage-deep transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-sage-deep transition-colors">
+<span class="material-symbols-outlined">help</span>
+</button>
+<div class="flex items-center gap-3 border-l border-outline-variant pl-6">
+<div class="text-right">
+<p class="font-label-md text-label-md leading-none">Admin User</p>
+<p class="text-[10px] text-outline uppercase tracking-wider">Super Administrator</p>
+</div>
+<div class="w-10 h-10 rounded-full bg-sand-light overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a business administrator in a minimalist wellness office environment, soft daylight coming from a side window, neutral color palette with sage green accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXcI78s6p7mLXGVPKVLadQdQxaXD1NOYuO4s-4gpaEN6aoDuBS1rpS8ztLtBoaL7NKZNVX-btviIHJkvPbrkrtjLeHGr69H3YxGICGPQ8b9EM5e5BR5fxnB1Ki5pw330bbgHTnfoEMqQ2Bjl1eZ8LyMCV17MqEHJ3Eun0LibkYa5DCT8WLh0f8q-3rdB_bdm7sKGzt9PaD5EX4kF7irkZ2JylJyV-xrlz-S6bKqGuO4yEUrE0UUKFbrWPlhK7t2gFFhPI8Ry3dspSq"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="ml-64 mt-16 p-8 min-h-[calc(100vh-4rem)]">
+<!-- Header & Stats -->
+<section class="mb-stack-lg">
+<div class="flex justify-between items-end mb-8">
+<div>
+<h2 class="font-headline-md text-headline-md text-sage-deep mb-2">Order Management</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Oversee all wellness product sales and subscription history.</p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-5 py-2.5 bg-sage-deep text-white rounded-xl font-label-md shadow-sm hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-[20px]">download</span>
+                        Export Report
+                    </button>
+</div>
+</div>
+<!-- Dashboard Stats Grid -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter mb-section-gap">
+<div class="bg-white p-6 rounded-xl shadow-sm border border-outline-variant/20">
+<p class="text-outline font-label-md text-[12px] uppercase mb-1">Total Revenue</p>
+<h3 class="font-headline-sm text-headline-sm text-sage-deep">$24,500.00</h3>
+<p class="text-status-confirmed text-caption mt-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> +12.5% vs last month
+                    </p>
+</div>
+<div class="bg-white p-6 rounded-xl shadow-sm border border-outline-variant/20">
+<p class="text-outline font-label-md text-[12px] uppercase mb-1">Active Orders</p>
+<h3 class="font-headline-sm text-headline-sm text-sage-deep">142</h3>
+<p class="text-status-pending text-caption mt-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 12 need shipping
+                    </p>
+</div>
+<div class="bg-white p-6 rounded-xl shadow-sm border border-outline-variant/20">
+<p class="text-outline font-label-md text-[12px] uppercase mb-1">Completed</p>
+<h3 class="font-headline-sm text-headline-sm text-sage-deep">892</h3>
+<p class="text-outline text-caption mt-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span> Lifetime growth
+                    </p>
+</div>
+<div class="bg-white p-6 rounded-xl shadow-sm border border-outline-variant/20">
+<p class="text-outline font-label-md text-[12px] uppercase mb-1">Cancellation Rate</p>
+<h3 class="font-headline-sm text-headline-sm text-sage-deep">1.2%</h3>
+<p class="text-status-cancelled text-caption mt-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">trending_down</span> -0.4% improvement
+                    </p>
+</div>
+</div>
+</section>
+<!-- Filters & Table Section -->
+<section class="bg-white rounded-2xl shadow-sm border border-outline-variant/20 overflow-hidden">
+<!-- Table Controls -->
+<div class="p-6 border-b border-outline-variant/20 flex flex-wrap gap-4 items-center justify-between bg-surface-container-low/30">
+<div class="flex gap-4 items-center overflow-x-auto">
+<div class="flex items-center gap-2 px-3 py-1.5 bg-white border border-outline-variant/50 rounded-lg">
+<span class="material-symbols-outlined text-[18px] text-outline">filter_list</span>
+<select class="bg-transparent border-none text-label-md font-label-md focus:ring-0 cursor-pointer">
+<option>All Statuses</option>
+<option>Pending</option>
+<option>Shipped</option>
+<option>Delivered</option>
+<option>Cancelled</option>
+</select>
+</div>
+<div class="flex items-center gap-2 px-3 py-1.5 bg-white border border-outline-variant/50 rounded-lg">
+<span class="material-symbols-outlined text-[18px] text-outline">calendar_today</span>
+<span class="text-label-md font-label-md text-on-surface">Last 30 Days</span>
+</div>
+<button class="text-label-md font-label-md text-sage-deep hover:underline px-2">Clear All</button>
+</div>
+<div class="text-caption text-outline">Showing 1-10 of 142 orders</div>
+</div>
+<!-- Main Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-lowest border-b border-outline-variant/20">
+<th class="px-6 py-4 font-label-md text-label-md text-outline uppercase tracking-wider">Order ID</th>
+<th class="px-6 py-4 font-label-md text-label-md text-outline uppercase tracking-wider">Customer</th>
+<th class="px-6 py-4 font-label-md text-label-md text-outline uppercase tracking-wider">Date</th>
+<th class="px-6 py-4 font-label-md text-label-md text-outline uppercase tracking-wider">Product(s)</th>
+<th class="px-6 py-4 font-label-md text-label-md text-outline uppercase tracking-wider text-right">Amount</th>
+<th class="px-6 py-4 font-label-md text-label-md text-outline uppercase tracking-wider">Status</th>
+<th class="px-6 py-4 font-label-md text-label-md text-outline uppercase tracking-wider"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<!-- Row 1 -->
+<tr class="order-row-hover transition-colors cursor-pointer group" onclick="toggleDetails()">
+<td class="px-6 py-5 font-label-md text-sage-deep">#ZN-9401</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-sand-light flex items-center justify-center text-[10px] font-bold text-sage-deep">EM</div>
+<span class="text-body-md font-medium">Elena Miller</span>
+</div>
+</td>
+<td class="px-6 py-5 text-on-surface-variant text-body-md">Oct 12, 2023</td>
+<td class="px-6 py-5">
+<div class="flex items-center -space-x-2">
+<div class="w-8 h-8 rounded-lg border-2 border-white overflow-hidden shadow-sm" title="Organic Essential Oil">
+<img class="w-full h-full object-cover" data-alt="A small glass bottle of essential oil on a piece of rough driftwood, soft natural lighting, minimalist zen aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6eDW50tZDDQ3Bu0uInbEM4RAAc0kQ3HfBxAIVznTP2EjtymSovYZCAgPTZm4tJRV13CAJ_KoaXH8FntLAeU3wWuOR0JSHotNrZ1qW_UlChi2cNznGR_j3i4GaFsTSs791zLY54BKv-IRaysdudH7DwWcw5SYTZ1fzns6WGHM733ysTVHfU-XOcqRbRHJ7Vq5ti6m0nRBYmu80d0NLP4BANEM0QXVND106numQuJ7RILbs6LYBny3zHEMnQyRWU624ky1529Zn_1b_"/>
+</div>
+<div class="w-8 h-8 rounded-lg border-2 border-white overflow-hidden shadow-sm" title="Silk Sleeping Mask">
+<img class="w-full h-full object-cover" data-alt="A soft silk sleeping mask in a muted sage green color, lying on a pristine white linen sheet, soft aesthetic lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxrVR53Ebx-7QwKhcNWlnUBFVpcEOuTUU6q2dacsgoXsVXXw0Qh_Fm7Li-eM9BOyoMjpo6aHVa415RQD3VBBKOy3abc1uvLX4uto4hSD2PivvJBKJhe-JWA_atUbD-PygA-QZuWhEIzbugIUqkEvpHbUTLDDhYUiDYnpAAYCipvrx6qXXZF07AnsvbcZ1f0x_p_B4H27gdxPPqT_twZh7ZMWiL4ZHdrHcPSkrWnfo_Iif_hRObDzbdtcCBpVz6XOUEcz6YYnrKJYeb"/>
+</div>
+<div class="w-8 h-8 rounded-lg border-2 border-white bg-surface-container-high flex items-center justify-center text-[10px] font-bold">+1</div>
+</div>
+</td>
+<td class="px-6 py-5 text-right font-medium text-body-md">$145.00</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 rounded-full bg-status-pending/20 text-[#856404] text-[11px] font-bold uppercase tracking-tight">Pending</span>
+</td>
+<td class="px-6 py-5 text-right">
+<span class="material-symbols-outlined text-outline group-hover:text-sage-deep transition-colors">chevron_right</span>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="order-row-hover transition-colors cursor-pointer group">
+<td class="px-6 py-5 font-label-md text-sage-deep">#ZN-9388</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-[10px] font-bold text-on-secondary-container">JH</div>
+<span class="text-body-md font-medium">Julian Hart</span>
+</div>
+</td>
+<td class="px-6 py-5 text-on-surface-variant text-body-md">Oct 11, 2023</td>
+<td class="px-6 py-5">
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-lg border-2 border-white overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Handcrafted ceramic massage stones in a small wooden bowl, high-end spa aesthetic, neutral tones, professional studio lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0CUPx3Fcy1VPeVpDfQn6g2RPav3XQoq7DXzsCoI1qh_LQQmwyCMguB5aKAV-VW2m186JWsZkujp1OZEl7P2Cunh8-qBqSaHfk4rmgJRWx9fzgoFu9l-3VH5rkbbu-8yCKwMFHcauvWm1cWPAoEQd2PbNTafFgIsu9nnWqmFI-Sf0AlRe9TaifbTbBwA1W7aLE6c-oKEGWJlg8Bk226br09cSLckqvmGD_5Usdt-S6Fh6ldgKBbDMGLpxPfXr_ZYPg2aeev-GYvdLD"/>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 text-right font-medium text-body-md">$85.00</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 rounded-full bg-status-confirmed/20 text-[#3e5340] text-[11px] font-bold uppercase tracking-tight">Shipped</span>
+</td>
+<td class="px-6 py-5 text-right">
+<span class="material-symbols-outlined text-outline group-hover:text-sage-deep transition-colors">chevron_right</span>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="order-row-hover transition-colors cursor-pointer group">
+<td class="px-6 py-5 font-label-md text-sage-deep">#ZN-9382</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-[10px] font-bold text-outline">SR</div>
+<span class="text-body-md font-medium">Sarah Reed</span>
+</div>
+</td>
+<td class="px-6 py-5 text-on-surface-variant text-body-md">Oct 10, 2023</td>
+<td class="px-6 py-5">
+<div class="flex items-center -space-x-2">
+<div class="w-8 h-8 rounded-lg border-2 border-white overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Luxury scented candle in a frosted glass container, minimalist label, warm flickering flame, serene evening atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7XkWBW-yd1PmA7VSxQ1iYwWT6fvkxxdB7mUCqotOafNUGw9Sgf9labhHx-C5GOBntVJok3ftsBzycZOziy2lY3hU4sbSdS9eGIo025rN5CrGdWTWNh4bewsrqZtcEVb23ukl20MQASMrKZPKBYQLrgd9-FXjBGD1CXSaTgGBp3i8L_ASi0Qy1SSFKVaXzITXVQkof3u47A4Z-2oorC6FOBOAmDpdfh2Hq_TwAO0KgstHJJcAuUPlUYhEhpsNsnzZEv46qyn2f8eUw"/>
+</div>
+<div class="w-8 h-8 rounded-lg border-2 border-white overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="A thick, plush white cotton towel rolled neatly, high-end resort spa quality, bright clean lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAl2MG5fX5UPRBK7M4LruDuKLeVDvDKlgJJUEr-We_0wvqCA_a8hHcLI-lN8YzYen8nKntrfwkLUkJSdy-KkMSRVQeS8n2mCZsbP3z_5PyJz9xzsR9eAAd2-b19Z-15W_g7hAoHoPwvcJvSejvNhpHhSOpGdfRBX_ujeGtbfHtdAYsy9t0BOYkWTwwQZGW81ZPN4P8UrLzo-pKykwnscLJWx6D0ZV_50YaQzS-cT-EJcMsiplWfb8ZCvnI5YzTXRX6AyrmKGR3eZbn"/>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 text-right font-medium text-body-md">$210.00</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 rounded-full bg-status-completed/20 text-on-surface-variant text-[11px] font-bold uppercase tracking-tight">Delivered</span>
+</td>
+<td class="px-6 py-5 text-right">
+<span class="material-symbols-outlined text-outline group-hover:text-sage-deep transition-colors">chevron_right</span>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="order-row-hover transition-colors cursor-pointer group">
+<td class="px-6 py-5 font-label-md text-sage-deep">#ZN-9375</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-error-container flex items-center justify-center text-[10px] font-bold text-on-error-container">TB</div>
+<span class="text-body-md font-medium">Thomas Birch</span>
+</div>
+</td>
+<td class="px-6 py-5 text-on-surface-variant text-body-md">Oct 09, 2023</td>
+<td class="px-6 py-5">
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-lg border-2 border-white overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Deep tissue massage balm in a minimalist metal tin, organic ingredients visible nearby like lavender sprigs, professional product photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHqbG3bjdpdU5UEt8LMmHYY6a-3mzQtopGbA5lDTZTtyG6DiNMWT1sicyF5bbbsNvXfQKbgsoVx4Sf6U3k3V54-cnWStyk7ZXe54mbu3YyiBiAnuXTPqnlJnktTzvMVLzNSs5cLkkC3Q-T2HhBEXBVixkkJxdb2YJ8ZQnTgE2mpJn-JAJvTfQxpLwwdgXRIhwFsAxpW_zTY7grcTrEPw60v1JqGJz9KdppxW1XtUVLIZbJiuoe2BWbd8ivppwi_ooY2iJGxPSZh-Y0"/>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 text-right font-medium text-body-md">$45.00</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 rounded-full bg-status-cancelled/20 text-error text-[11px] font-bold uppercase tracking-tight">Cancelled</span>
+</td>
+<td class="px-6 py-5 text-right">
+<span class="material-symbols-outlined text-outline group-hover:text-sage-deep transition-colors">chevron_right</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="p-6 bg-surface-container-lowest border-t border-outline-variant/20 flex justify-between items-center">
+<button class="px-4 py-2 border border-outline-variant/50 rounded-lg text-label-md hover:bg-surface-container transition-colors disabled:opacity-40">Previous</button>
+<div class="flex gap-2">
+<button class="w-8 h-8 rounded-lg bg-sage-deep text-white text-label-md">1</button>
+<button class="w-8 h-8 rounded-lg hover:bg-surface-container text-label-md">2</button>
+<button class="w-8 h-8 rounded-lg hover:bg-surface-container text-label-md">3</button>
+<span class="w-8 h-8 flex items-center justify-center">...</span>
+<button class="w-8 h-8 rounded-lg hover:bg-surface-container text-label-md">14</button>
+</div>
+<button class="px-4 py-2 border border-outline-variant/50 rounded-lg text-label-md hover:bg-surface-container transition-colors">Next</button>
+</div>
+</section>
+</main>
+<!-- Side Panel Details (Hidden by Default) -->
+<div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl z-[60] transform translate-x-full transition-transform duration-500 ease-out border-l border-outline-variant/30 overflow-y-auto" id="side-panel">
+<div class="p-8">
+<div class="flex justify-between items-start mb-10">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-sage-deep">Order Details</h3>
+<p class="text-outline text-label-md">#ZN-9401 • Oct 12, 2023</p>
+</div>
+<button class="p-2 hover:bg-surface-container rounded-full transition-colors" onclick="toggleDetails()">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Customer Card -->
+<div class="mb-10 bg-sand-light/30 p-6 rounded-xl border border-sand-light">
+<h4 class="font-label-md text-outline uppercase tracking-wider text-[11px] mb-4">Customer Information</h4>
+<div class="flex gap-4 mb-6">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-lg font-bold text-on-secondary-container">EM</div>
+<div>
+<p class="font-medium text-body-lg">Elena Miller</p>
+<p class="text-outline text-caption">elena.miller@example.com</p>
+<p class="text-outline text-caption">+1 (555) 012-3456</p>
+</div>
+</div>
+<div>
+<p class="text-[11px] font-bold uppercase text-outline mb-1">Shipping Address</p>
+<p class="text-body-md text-on-surface-variant">
+                        4281 Oak Meadow Lane<br/>
+                        San Francisco, CA 94107<br/>
+                        United States
+                    </p>
+</div>
+</div>
+<!-- Order Items -->
+<div class="mb-10">
+<h4 class="font-label-md text-outline uppercase tracking-wider text-[11px] mb-4">Order Breakdown</h4>
+<div class="space-y-4">
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 rounded-lg bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Macro shot of essential oil bottle, sage green branding, blurred background of eucalyptus leaves." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsmmEZDch73soP-u9X-fPD6jRhtqIGUXnxNlTspcTqDC9b0sthrm1WBvTj9BQ312_V_QvpuRxZN9YxXRJVb8cur2B6IogVbIWyvzTOvtDFqDdTLLXHzVRzHzLmJ0gFmoDnyV44mv0oAjaScrWVB1E8CD0iy07zvdkHPy0gkleGQWkUsSS_0H6Jm5x3_dvJTEdkecY6XxY-9p5umKrGD-YEfy76n9ZJJzwbc5yP1-2W4CMOZKbLQgNEm9U4sGefWE0wqOzBbQZ4WWkv"/>
+</div>
+<div class="flex-1">
+<p class="text-body-md font-medium">Organic Essential Oil</p>
+<p class="text-caption text-outline">Qty: 2 • $45.00/ea</p>
+</div>
+<p class="font-medium">$90.00</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 rounded-lg bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Silk sleeping mask in soft neutral tones, high-end fabric texture detail." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFg7c1aSlDd2-BM9y_8qmXCb8Pcku6XdCtOCDAuIls_pLK92p37hCOd_zIomLzshlq4gHK5oUsN68BqX9pcBBYQLorrr2RjYIYgGdZmzuGveclOJfBH9UwHPofaDX_C-nxJrXAQkpVDuijlT-9Im-QH10bHq_h1KjWI9sS_st3zbZO8e-bBKHYFQ8-F78CSapeTBk-_FLmQsAqBIHgVpuMct2SLn6HR2laMcv5YJzedpkI1q2NCY_NH2pmRp4h3HoBFPJj_IXmxRKV"/>
+</div>
+<div class="flex-1">
+<p class="text-body-md font-medium">Silk Sleeping Mask</p>
+<p class="text-caption text-outline">Qty: 1</p>
+</div>
+<p class="font-medium">$55.00</p>
+</div>
+</div>
+</div>
+<!-- Price Breakdown -->
+<div class="border-t border-outline-variant/20 pt-6 space-y-3">
+<div class="flex justify-between text-body-md">
+<span class="text-on-surface-variant">Subtotal</span>
+<span>$145.00</span>
+</div>
+<div class="flex justify-between text-body-md">
+<span class="text-on-surface-variant">Shipping</span>
+<span class="text-status-confirmed">Free</span>
+</div>
+<div class="flex justify-between text-body-md">
+<span class="text-on-surface-variant">Tax (8%)</span>
+<span>$11.60</span>
+</div>
+<div class="flex justify-between font-bold text-body-lg text-sage-deep pt-3 border-t border-outline-variant/10">
+<span>Total Amount</span>
+<span>$156.60</span>
+</div>
+</div>
+<!-- Actions -->
+<div class="mt-12 flex gap-4">
+<button class="flex-1 py-3 px-4 bg-sage-deep text-white rounded-xl font-label-md hover:opacity-90 transition-opacity">
+                    Mark as Shipped
+                </button>
+<button class="p-3 border border-outline-variant rounded-xl text-outline hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined">print</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Backdrop for side panel -->
+<div class="fixed inset-0 bg-charcoal-muted/20 backdrop-blur-sm z-[55] hidden opacity-0 transition-opacity duration-500" id="panel-backdrop" onclick="toggleDetails()"></div>
+<script>
+        let isPanelOpen = false;
+        
+        function toggleDetails() {
+            const panel = document.getElementById('side-panel');
+            const backdrop = document.getElementById('panel-backdrop');
+            
+            if (!isPanelOpen) {
+                panel.classList.remove('translate-x-full');
+                backdrop.classList.remove('hidden');
+                setTimeout(() => backdrop.classList.add('opacity-100'), 10);
+            } else {
+                panel.classList.add('translate-x-full');
+                backdrop.classList.remove('opacity-100');
+                setTimeout(() => backdrop.classList.add('hidden'), 500);
+            }
+            isPanelOpen = !isPanelOpen;
+        }
+
+        // Search bar micro-interaction
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('ring-1', 'ring-sage-deep');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('ring-1', 'ring-sage-deep');
+        });
+    </script>
+</body></html>

@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Zen Admin | Historique des Commandes</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&amp;family=Hanken+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-dim": "#dadad8",
+                    "primary-fixed-dim": "#b6ccb8",
+                    "surface": "#faf9f7",
+                    "on-tertiary-container": "#e8e9ed",
+                    "surface-container": "#efeeec",
+                    "status-cancelled": "#D18D8D",
+                    "on-background": "#1a1c1b",
+                    "surface-bright": "#faf9f7",
+                    "secondary": "#6b5c4c",
+                    "on-tertiary-fixed-variant": "#44474a",
+                    "secondary-fixed-dim": "#d7c3b0",
+                    "on-primary-container": "#d9f0da",
+                    "status-completed": "#A0A0A0",
+                    "on-secondary-fixed": "#241a0e",
+                    "inverse-on-surface": "#f1f1ef",
+                    "on-secondary-fixed-variant": "#524436",
+                    "tertiary-fixed": "#e1e2e6",
+                    "on-primary-fixed-variant": "#384b3c",
+                    "on-tertiary": "#ffffff",
+                    "inverse-primary": "#b6ccb8",
+                    "on-primary-fixed": "#0d1f12",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-highest": "#e3e2e0",
+                    "on-error": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "primary-fixed": "#d2e8d3",
+                    "tertiary": "#4e5154",
+                    "outline-variant": "#c3c8c1",
+                    "charcoal-muted": "#2C2E30",
+                    "on-surface": "#1a1c1b",
+                    "secondary-fixed": "#f4dfcb",
+                    "on-error-container": "#93000a",
+                    "primary-container": "#5a6e5d",
+                    "inverse-surface": "#2f3130",
+                    "on-tertiary-fixed": "#191c1f",
+                    "surface-tint": "#4f6353",
+                    "surface-variant": "#e3e2e0",
+                    "status-confirmed": "#7A9E7E",
+                    "tertiary-fixed-dim": "#c5c6ca",
+                    "primary": "#425646",
+                    "error": "#ba1a1a",
+                    "outline": "#737872",
+                    "on-secondary-container": "#716252",
+                    "tertiary-container": "#66696c",
+                    "on-secondary": "#ffffff",
+                    "surface-container-low": "#f4f3f1",
+                    "status-pending": "#E6D5A7",
+                    "background": "#faf9f7",
+                    "on-surface-variant": "#434843",
+                    "error-container": "#ffdad6",
+                    "sand-light": "#F2EBE3",
+                    "surface-container-high": "#e9e8e6",
+                    "secondary-container": "#f4dfcb",
+                    "sage-deep": "#4A594D"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-md": "16px",
+                    "container-max": "1280px",
+                    "gutter": "24px",
+                    "stack-lg": "32px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "64px",
+                    "stack-sm": "8px",
+                    "base": "4px",
+                    "section-gap": "80px"
+            },
+            "fontFamily": {
+                    "headline-sm": ["Libre Caslon Text"],
+                    "display-lg": ["Libre Caslon Text"],
+                    "label-md": ["Hanken Grotesk"],
+                    "body-md": ["Hanken Grotesk"],
+                    "headline-md": ["Libre Caslon Text"],
+                    "caption": ["Hanken Grotesk"],
+                    "display-lg-mobile": ["Libre Caslon Text"],
+                    "body-lg": ["Hanken Grotesk"]
+            },
+            "fontSize": {
+                    "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #faf9f7;
+            font-family: 'Hanken Grotesk', sans-serif;
+            color: #1a1c1b;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #faf9f7;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c3c8c1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #737872;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+<!-- Side Navigation Shell -->
+<aside class="flex flex-col h-full py-stack-lg border-r border-outline-variant h-screen w-64 fixed left-0 top-0 bg-surface z-50">
+<div class="px-6 mb-10">
+<h1 class="font-headline-sm text-headline-sm text-sage-deep">Zen Admin</h1>
+<p class="font-label-md text-label-md text-on-surface-variant opacity-70">Practitioner Suite</p>
+</div>
+<nav class="flex-1 space-y-1">
+<!-- Dashboard -->
+<a class="flex items-center px-6 py-3 transition-colors duration-200 ease-in-out hover:bg-surface-container-high text-on-surface-variant group" href="#">
+<span class="material-symbols-outlined mr-3 text-on-surface-variant group-hover:text-primary" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<!-- Appointments -->
+<a class="flex items-center px-6 py-3 transition-colors duration-200 ease-in-out hover:bg-surface-container-high text-on-surface-variant group" href="#">
+<span class="material-symbols-outlined mr-3 text-on-surface-variant group-hover:text-primary" data-icon="calendar_today">calendar_today</span>
+<span class="font-label-md text-label-md">Appointments</span>
+</a>
+<!-- Products -->
+<a class="flex items-center px-6 py-3 transition-colors duration-200 ease-in-out hover:bg-surface-container-high text-on-surface-variant group" href="#">
+<span class="material-symbols-outlined mr-3 text-on-surface-variant group-hover:text-primary" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-md text-label-md">Products</span>
+</a>
+<!-- Order History (ACTIVE) -->
+<a class="flex items-center px-6 py-3 text-primary font-semibold border-r-4 border-primary bg-primary-fixed transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="history_edu">history_edu</span>
+<span class="font-label-md text-label-md">Order History</span>
+</a>
+<!-- Analytics -->
+<a class="flex items-center px-6 py-3 transition-colors duration-200 ease-in-out hover:bg-surface-container-high text-on-surface-variant group" href="#">
+<span class="material-symbols-outlined mr-3 text-on-surface-variant group-hover:text-primary" data-icon="analytics">analytics</span>
+<span class="font-label-md text-label-md">Analytics</span>
+</a>
+<!-- Settings -->
+<a class="flex items-center px-6 py-3 transition-colors duration-200 ease-in-out hover:bg-surface-container-high text-on-surface-variant group" href="#">
+<span class="material-symbols-outlined mr-3 text-on-surface-variant group-hover:text-primary" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+<div class="px-6 mt-auto pt-6 space-y-1">
+<a class="flex items-center py-2 text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined mr-3 text-sm" data-icon="help">help</span>
+<span class="font-label-md text-label-md">Support</span>
+</a>
+<a class="flex items-center py-2 text-on-surface-variant hover:text-error transition-colors" href="#">
+<span class="material-symbols-outlined mr-3 text-sm" data-icon="logout">logout</span>
+<span class="font-label-md text-label-md">Sign Out</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 min-h-screen bg-background">
+<!-- Top App Bar -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-40 bg-surface/90 backdrop-blur-md flex justify-between items-center h-16 px-gutter shadow-sm">
+<div class="flex items-center space-x-4">
+<h2 class="font-headline-sm text-headline-sm text-primary">Order History</h2>
+</div>
+<div class="flex items-center space-x-6">
+<div class="relative hidden lg:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50">search</span>
+<input class="bg-surface-container-low border-none rounded-full pl-10 pr-4 py-2 text-body-md focus:ring-1 focus:ring-primary w-64 transition-all" placeholder="Rechercher..." type="text"/>
+</div>
+<div class="flex items-center space-x-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer active:opacity-70" data-icon="notifications">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer active:opacity-70" data-icon="account_circle">account_circle</button>
+</div>
+</div>
+</header>
+<div class="pt-24 px-gutter pb-section-gap">
+<!-- Key Performance Indicators (Bento Style) -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+<div class="bg-white p-6 rounded-xl shadow-sm border border-outline-variant/30 flex flex-col justify-between hover:border-primary/30 transition-colors">
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Volume Total</p>
+<h3 class="font-display-lg text-display-lg text-primary">€42,850</h3>
+</div>
+<div class="flex items-center mt-4 text-status-confirmed">
+<span class="material-symbols-outlined text-sm mr-1" data-icon="trending_up">trending_up</span>
+<span class="text-caption font-label-md">+12.5% ce mois</span>
+</div>
+</div>
+<div class="bg-white p-6 rounded-xl shadow-sm border border-outline-variant/30 flex flex-col justify-between hover:border-primary/30 transition-colors">
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Panier Moyen</p>
+<h3 class="font-display-lg text-display-lg text-primary">€115</h3>
+</div>
+<div class="flex items-center mt-4 text-status-confirmed">
+<span class="material-symbols-outlined text-sm mr-1" data-icon="trending_up">trending_up</span>
+<span class="text-caption font-label-md">+4.2% vs 2023</span>
+</div>
+</div>
+<div class="bg-white p-6 rounded-xl shadow-sm border border-outline-variant/30 flex flex-col justify-between hover:border-primary/30 transition-colors">
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Taux Satisfaction</p>
+<h3 class="font-display-lg text-display-lg text-primary">98.4%</h3>
+</div>
+<div class="flex items-center mt-4 text-status-confirmed">
+<span class="material-symbols-outlined text-sm mr-1" data-icon="stars">stars</span>
+<span class="text-caption font-label-md">Excellent (4.9/5)</span>
+</div>
+</div>
+</div>
+<!-- Table Controls -->
+<div class="bg-white rounded-xl shadow-sm border border-outline-variant/30 overflow-hidden">
+<div class="p-6 border-b border-outline-variant/20 flex flex-wrap gap-4 items-center justify-between">
+<div class="flex flex-wrap gap-2 items-center">
+<span class="font-label-md text-label-md text-on-surface-variant mr-2">Filtrer par :</span>
+<button class="px-4 py-2 rounded-full font-label-md text-label-md bg-primary-fixed text-primary border border-primary transition-all">Tous</button>
+<button class="px-4 py-2 rounded-full font-label-md text-label-md bg-surface-container-low text-on-surface-variant hover:bg-primary-fixed/50 transition-all">Livré</button>
+<button class="px-4 py-2 rounded-full font-label-md text-label-md bg-surface-container-low text-on-surface-variant hover:bg-primary-fixed/50 transition-all">En cours</button>
+<button class="px-4 py-2 rounded-full font-label-md text-label-md bg-surface-container-low text-on-surface-variant hover:bg-primary-fixed/50 transition-all">Annulé</button>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg font-label-md text-label-md border border-outline-variant hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined text-base" data-icon="download">download</span>
+                            Export CSV
+                        </button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg font-label-md text-label-md border border-outline-variant hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined text-base" data-icon="picture_as_pdf">picture_as_pdf</span>
+                            PDF
+                        </button>
+</div>
+</div>
+<!-- Table Content -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low/50">
+<tr>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Commande</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Client</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Date</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Statut</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Montant</th>
+<th class="px-6 py-4"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-lowest transition-colors group">
+<td class="px-6 py-5">
+<span class="font-label-md text-label-md text-primary font-bold">#ZN-94821</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-sand-light flex items-center justify-center text-secondary font-bold text-xs">EJ</div>
+<div>
+<p class="font-body-md text-body-md font-medium">Elena Joli</p>
+<p class="text-caption text-on-surface-variant opacity-60">elena.j@email.com</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 font-body-md text-body-md">24 Oct, 2023</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-status-confirmed/10 text-status-confirmed text-xs font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-status-confirmed mr-2"></span>
+                                        Livré
+                                    </span>
+</td>
+<td class="px-6 py-5 font-headline-sm text-[18px] text-on-surface">€185.00</td>
+<td class="px-6 py-5 text-right">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors opacity-0 group-hover:opacity-100" data-icon="more_vert">more_vert</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-lowest transition-colors group">
+<td class="px-6 py-5">
+<span class="font-label-md text-label-md text-primary font-bold">#ZN-94820</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold text-xs">ML</div>
+<div>
+<p class="font-body-md text-body-md font-medium">Marc Leclerc</p>
+<p class="text-caption text-on-surface-variant opacity-60">m.leclerc@pro.fr</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 font-body-md text-body-md">23 Oct, 2023</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-status-pending/10 text-secondary text-xs font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-status-pending mr-2"></span>
+                                        En cours
+                                    </span>
+</td>
+<td class="px-6 py-5 font-headline-sm text-[18px] text-on-surface">€95.00</td>
+<td class="px-6 py-5 text-right">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors opacity-0 group-hover:opacity-100" data-icon="more_vert">more_vert</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-lowest transition-colors group">
+<td class="px-6 py-5">
+<span class="font-label-md text-label-md text-primary font-bold">#ZN-94819</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant font-bold text-xs">SD</div>
+<div>
+<p class="font-body-md text-body-md font-medium">Sophie Durand</p>
+<p class="text-caption text-on-surface-variant opacity-60">sophie.d@gmail.com</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 font-body-md text-body-md">22 Oct, 2023</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-status-cancelled/10 text-status-cancelled text-xs font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-status-cancelled mr-2"></span>
+                                        Annulé
+                                    </span>
+</td>
+<td class="px-6 py-5 font-headline-sm text-[18px] text-on-surface">€210.00</td>
+<td class="px-6 py-5 text-right">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors opacity-0 group-hover:opacity-100" data-icon="more_vert">more_vert</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-lowest transition-colors group">
+<td class="px-6 py-5">
+<span class="font-label-md text-label-md text-primary font-bold">#ZN-94818</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-sand-light flex items-center justify-center text-secondary font-bold text-xs">AB</div>
+<div>
+<p class="font-body-md text-body-md font-medium">Amélie Bertrand</p>
+<p class="text-caption text-on-surface-variant opacity-60">a.bertrand@mail.com</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 font-body-md text-body-md">21 Oct, 2023</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-status-confirmed/10 text-status-confirmed text-xs font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-status-confirmed mr-2"></span>
+                                        Livré
+                                    </span>
+</td>
+<td class="px-6 py-5 font-headline-sm text-[18px] text-on-surface">€125.00</td>
+<td class="px-6 py-5 text-right">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors opacity-0 group-hover:opacity-100" data-icon="more_vert">more_vert</button>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-surface-container-lowest transition-colors group">
+<td class="px-6 py-5">
+<span class="font-label-md text-label-md text-primary font-bold">#ZN-94817</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold text-xs">JV</div>
+<div>
+<p class="font-body-md text-body-md font-medium">Jean Valjean</p>
+<p class="text-caption text-on-surface-variant opacity-60">j.valjean@history.com</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 font-body-md text-body-md">20 Oct, 2023</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-status-confirmed/10 text-status-confirmed text-xs font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-status-confirmed mr-2"></span>
+                                        Livré
+                                    </span>
+</td>
+<td class="px-6 py-5 font-headline-sm text-[18px] text-on-surface">€340.00</td>
+<td class="px-6 py-5 text-right">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors opacity-0 group-hover:opacity-100" data-icon="more_vert">more_vert</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="p-6 border-t border-outline-variant/10 flex items-center justify-between">
+<p class="font-label-md text-label-md text-on-surface-variant">Affichage 1-5 sur 42 commandes</p>
+<div class="flex items-center space-x-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-outline-variant text-on-surface-variant hover:bg-surface-container-low transition-all cursor-not-allowed opacity-50">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg bg-primary text-white font-label-md">1</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-outline-variant text-on-surface-variant hover:bg-surface-container-low transition-all">2</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-outline-variant text-on-surface-variant hover:bg-surface-container-low transition-all">3</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-outline-variant text-on-surface-variant hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Contextual Footer Help -->
+<div class="mt-section-gap flex flex-col md:flex-row items-center justify-between p-8 bg-sage-deep/5 rounded-2xl border border-sage-deep/10">
+<div class="mb-6 md:mb-0 text-center md:text-left">
+<h4 class="font-headline-sm text-headline-sm text-sage-deep mb-2">Besoin d'un rapport détaillé ?</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Générez un récapitulatif complet de vos ventes pour votre comptabilité en un clic.</p>
+</div>
+<button class="px-8 py-3 rounded-full bg-sage-deep text-white font-label-md text-label-md hover:opacity-90 transition-all shadow-md active:scale-95">
+                    Générer Rapport Annuel
+                </button>
+</div>
+</div>
+</main>
+<!-- Micro-interaction Script -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach((row, index) => {
+                row.style.opacity = '0';
+                row.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    row.style.transition = 'all 0.4s ease-out';
+                    row.style.opacity = '1';
+                    row.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+
+            // Filter button states
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => {
+                        b.classList.remove('bg-primary-fixed', 'text-primary', 'border-primary');
+                        b.classList.add('bg-surface-container-low', 'text-on-surface-variant');
+                    });
+                    btn.classList.remove('bg-surface-container-low', 'text-on-surface-variant');
+                    btn.classList.add('bg-primary-fixed', 'text-primary', 'border-primary');
+                });
+            });
+        });
+    </script>
+</body></html>

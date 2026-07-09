@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mon Compte Zen | Zen Massage &amp; Wellness</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:wght@400;700&amp;family=Hanken+Grotesk:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body {
+            font-family: 'Hanken Grotesk', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .font-display { font-family: 'Libre Caslon Text', serif; }
+        
+        /* Smooth interactions */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #4A594D !important;
+            ring: 0 !important;
+        }
+
+        .profile-upload-hover:hover .upload-overlay {
+            opacity: 1;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-container": "#66696c",
+                      "on-secondary-fixed": "#241a0e",
+                      "secondary-fixed": "#f4dfcb",
+                      "surface-dim": "#dadad8",
+                      "surface-container-highest": "#e3e2e0",
+                      "on-tertiary": "#ffffff",
+                      "surface-variant": "#e3e2e0",
+                      "on-error-container": "#93000a",
+                      "inverse-primary": "#b6ccb8",
+                      "sand-light": "#F2EBE3",
+                      "on-tertiary-container": "#e8e9ed",
+                      "tertiary": "#4e5154",
+                      "secondary-fixed-dim": "#d7c3b0",
+                      "inverse-surface": "#2f3130",
+                      "inverse-on-surface": "#f1f1ef",
+                      "outline-variant": "#c3c8c1",
+                      "error": "#ba1a1a",
+                      "secondary": "#6b5c4c",
+                      "surface-container-lowest": "#ffffff",
+                      "primary-fixed": "#d2e8d3",
+                      "on-surface": "#1a1c1b",
+                      "background": "#faf9f7",
+                      "primary-container": "#5a6e5d",
+                      "status-completed": "#A0A0A0",
+                      "primary": "#425646",
+                      "charcoal-muted": "#2C2E30",
+                      "status-confirmed": "#7A9E7E",
+                      "on-primary-fixed": "#0d1f12",
+                      "surface-tint": "#4f6353",
+                      "on-secondary-container": "#716252",
+                      "on-primary-container": "#d9f0da",
+                      "on-background": "#1a1c1b",
+                      "on-primary-fixed-variant": "#384b3c",
+                      "on-error": "#ffffff",
+                      "status-cancelled": "#D18D8D",
+                      "status-pending": "#E6D5A7",
+                      "surface": "#faf9f7",
+                      "on-tertiary-fixed": "#191c1f",
+                      "sage-deep": "#4A594D",
+                      "surface-container-high": "#e9e8e6",
+                      "tertiary-fixed": "#e1e2e6",
+                      "on-primary": "#ffffff",
+                      "on-secondary-fixed-variant": "#524436",
+                      "surface-container-low": "#f4f3f1",
+                      "on-surface-variant": "#434843",
+                      "surface-container": "#efeeec",
+                      "secondary-container": "#f4dfcb",
+                      "primary-fixed-dim": "#b6ccb8",
+                      "error-container": "#ffdad6",
+                      "outline": "#737872",
+                      "on-tertiary-fixed-variant": "#44474a",
+                      "tertiary-fixed-dim": "#c5c6ca",
+                      "surface-bright": "#faf9f7",
+                      "on-secondary": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "stack-lg": "32px",
+                      "margin-desktop": "64px",
+                      "container-max": "1280px",
+                      "section-gap": "80px",
+                      "margin-mobile": "16px",
+                      "stack-sm": "8px",
+                      "gutter": "24px",
+                      "base": "4px",
+                      "stack-md": "16px"
+              },
+              "fontFamily": {
+                      "caption": ["Hanken Grotesk"],
+                      "body-lg": ["Hanken Grotesk"],
+                      "display-lg": ["Libre Caslon Text"],
+                      "headline-sm": ["Libre Caslon Text"],
+                      "headline-md": ["Libre Caslon Text"],
+                      "display-lg-mobile": ["Libre Caslon Text"],
+                      "body-md": ["Hanken Grotesk"],
+                      "label-md": ["Hanken Grotesk"]
+              },
+              "fontSize": {
+                      "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                      "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                      "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                      "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="bg-background text-on-surface">
+<!-- Sidebar Navigation -->
+<aside class="bg-surface-container-low h-full w-64 fixed left-0 top-0 flex flex-col p-stack-md z-40 hidden md:flex border-r border-outline-variant/30">
+<div class="mb-stack-lg">
+<h1 class="font-headline-sm text-sage-deep">Zen</h1>
+<p class="font-caption text-on-surface-variant opacity-70">Mon Compte Zen</p>
+</div>
+<nav class="flex-grow space-y-2">
+<!-- Navigation Items Mapping -->
+<a class="flex items-center gap-3 px-4 py-3 font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-highest transition-all duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+                Rendez-vous
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-highest transition-all duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">shopping_bag</span>
+                Commandes
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 font-label-md text-label-md text-primary font-bold border-r-4 border-primary bg-surface-container-high transition-all duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">person</span>
+                Profil
+            </a>
+</nav>
+<div class="mt-auto pt-stack-md border-t border-outline-variant/20">
+<div class="flex items-center gap-3 p-2">
+<div class="w-10 h-10 rounded-full bg-sand-light flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A serene portrait of a person with a calm expression, softly lit by morning sunlight in a minimalist wellness studio background. The style is clean, editorial, and features a palette of sage green and soft neutrals to match the Zen Massage brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8zc6a9oxm2laVrR2X9eTuu3vURx-rmztfzjq1x9phHwRYMVZwvUNdIfEhjCheVId55lwM_WDhheVRC2jPQHOgmbIym9BiUC2RBX74cIlNvgDEjKUAoxdIKl0EsyXo8oXdhyU44xQfV3_s511shM81vv-D3sDWAE_sOjRsrnIwEGcsugum5wFpqEoYkp__7cygqYrLJxNohAkxhqeBEsrIj0oJcuv99DZA349pXiiaqmLw_dlyd2idyA"/>
+</div>
+<div>
+<p class="font-label-md text-on-surface font-bold">Bienvenue</p>
+<p class="font-caption text-on-surface-variant">Le sanctuaire vous attend</p>
+</div>
+</div>
+<button class="w-full mt-4 bg-primary text-on-primary py-3 rounded-xl font-label-md hover:bg-sage-deep transition-colors duration-300">
+                Nouvelle Session
+            </button>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="md:ml-64 min-h-screen flex flex-col">
+<!-- Header / Mobile TopBar -->
+<header class="sticky top-0 z-30 bg-surface/90 backdrop-blur-md px-margin-mobile md:px-margin-desktop py-6 flex justify-between items-center">
+<div>
+<h2 class="font-headline-md text-sage-deep md:text-headline-md text-headline-sm">Profil Utilisateur</h2>
+<p class="font-body-md text-on-surface-variant">Gérez vos informations personnelles et vos préférences.</p>
+</div>
+<button class="md:hidden p-2 text-on-surface">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</header>
+<!-- Content Area -->
+<div class="flex-grow px-margin-mobile md:px-margin-desktop pb-section-gap pt-stack-lg max-w-4xl">
+<form class="space-y-stack-lg">
+<!-- Profile Photo Section -->
+<section class="flex flex-col md:flex-row gap-gutter items-center md:items-start">
+<div class="relative profile-upload-hover cursor-pointer group">
+<div class="w-32 h-32 rounded-full overflow-hidden border-2 border-primary-fixed ring-4 ring-background shadow-sm">
+<img class="w-full h-full object-cover" data-alt="A professional, minimalist headshot of a wellness client, captured with shallow depth of field against a soft, sand-colored textured wall. The lighting is diffused and natural, highlighting a calm, serene atmosphere. High-end lifestyle photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLqBWhp8GIsV79j2lPT_daTsvYNl_RPIxuxJnpX9WC-m-cfbBPLCgKww4MpTMN76ES3Jkd5heMr2WRFHvJO72qbB1iAOd5O3nxKTUzi704jGHAZr_-2OfVl_ttZuYkSYhLgwQMtspSGmMii_Uev5a7_qacEy6thVjVaRqZnBbDbOYF7C4Q7C09TfhUpGH764835N3LmzzDI3kUjBGaHp66qfXpVTRE44DZgaVfsCxjoBlhQMe_2SdzbQ"/>
+</div>
+<div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 upload-overlay transition-opacity duration-300">
+<span class="material-symbols-outlined text-white text-3xl">photo_camera</span>
+</div>
+<div class="absolute bottom-0 right-0 bg-primary text-on-primary p-2 rounded-full shadow-lg border-2 border-background">
+<span class="material-symbols-outlined text-sm">edit</span>
+</div>
+</div>
+<div class="text-center md:text-left flex flex-col justify-center">
+<h3 class="font-label-md text-on-surface-variant mb-1">Photo de profil</h3>
+<p class="font-caption text-on-surface-variant opacity-70 mb-3">Format JPG, GIF ou PNG. Taille maximale de 2Mo.</p>
+<div class="flex gap-stack-sm justify-center md:justify-start">
+<button class="px-4 py-2 bg-surface-container-high text-on-surface rounded-lg font-label-md text-sm hover:bg-surface-container-highest transition-colors" type="button">Modifier</button>
+<button class="px-4 py-2 border border-error text-error rounded-lg font-label-md text-sm hover:bg-error-container/20 transition-colors" type="button">Supprimer</button>
+</div>
+</div>
+</section>
+<!-- Personal Information Bento Grid -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-gutter pt-stack-lg border-t border-outline-variant/30">
+<div class="space-y-stack-sm">
+<label class="font-label-md text-on-surface-variant">Prénom</label>
+<input class="w-full bg-surface border-b border-outline-variant py-3 px-1 font-body-md transition-all duration-300 hover:bg-sand-light/30" type="text" value="Elena"/>
+</div>
+<div class="space-y-stack-sm">
+<label class="font-label-md text-on-surface-variant">Nom</label>
+<input class="w-full bg-surface border-b border-outline-variant py-3 px-1 font-body-md transition-all duration-300 hover:bg-sand-light/30" type="text" value="Dubois"/>
+</div>
+<div class="space-y-stack-sm">
+<label class="font-label-md text-on-surface-variant">Adresse E-mail</label>
+<input class="w-full bg-surface border-b border-outline-variant py-3 px-1 font-body-md transition-all duration-300 hover:bg-sand-light/30" type="email" value="elena.dubois@exemple.com"/>
+</div>
+<div class="space-y-stack-sm">
+<label class="font-label-md text-on-surface-variant">Numéro de téléphone</label>
+<input class="w-full bg-surface border-b border-outline-variant py-3 px-1 font-body-md transition-all duration-300 hover:bg-sand-light/30" type="tel" value="+241 07 00 00 00"/>
+</div>
+</section>
+<!-- Password Section -->
+<section class="pt-stack-lg border-t border-outline-variant/30">
+<h3 class="font-headline-sm text-sage-deep mb-stack-md">Sécurité du compte</h3>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<div class="space-y-stack-sm">
+<label class="font-label-md text-on-surface-variant">Mot de passe actuel</label>
+<input class="w-full bg-surface border-b border-outline-variant py-3 px-1 font-body-md" placeholder="••••••••" type="password"/>
+</div>
+<div class="space-y-stack-sm">
+<label class="font-label-md text-on-surface-variant">Nouveau mot de passe</label>
+<input class="w-full bg-surface border-b border-outline-variant py-3 px-1 font-body-md" type="password"/>
+</div>
+<div class="space-y-stack-sm">
+<label class="font-label-md text-on-surface-variant">Confirmer le mot de passe</label>
+<input class="w-full bg-surface border-b border-outline-variant py-3 px-1 font-body-md" type="password"/>
+</div>
+</div>
+</section>
+<!-- Actions -->
+<div class="flex flex-col md:flex-row justify-end gap-stack-md pt-stack-lg">
+<button class="px-8 py-3 rounded-full border border-sage-deep text-sage-deep font-label-md hover:bg-sand-light transition-all duration-300" type="button">
+                        Annuler les modifications
+                    </button>
+<button class="px-12 py-3 rounded-full bg-primary text-on-primary font-label-md shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all duration-300" type="submit">
+                        Enregistrer les modifications
+                    </button>
+</div>
+</form>
+</div>
+<!-- High-Contrast Charcoal Footer -->
+<footer class="bg-on-tertiary-container dark:bg-on-tertiary-fixed-variant w-full mt-auto">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-margin-desktop py-stack-lg max-w-container-max mx-auto">
+<div class="md:col-span-2">
+<h2 class="font-display-lg text-headline-sm text-surface mb-stack-sm">Zen Massage &amp; Wellness</h2>
+<p class="text-surface-variant opacity-80 font-caption max-w-sm">
+                        © 2024 Zen Massage &amp; Wellness Gabon. Sanctuaire à travers le design. 
+                        Un espace dédié à la sérénité et à l'excellence du soin holistique.
+                    </p>
+</div>
+<div class="flex flex-col gap-2">
+<h4 class="text-surface font-bold font-label-md mb-2">Navigation</h4>
+<a class="text-surface-variant opacity-80 font-caption hover:opacity-100 transition-opacity" href="#">Contact</a>
+<a class="text-surface-variant opacity-80 font-caption hover:opacity-100 transition-opacity" href="#">Mentions Légales</a>
+<a class="text-surface-variant opacity-80 font-caption hover:opacity-100 transition-opacity" href="#">Newsletter</a>
+</div>
+<div class="flex flex-col gap-2">
+<h4 class="text-surface font-bold font-label-md mb-2">Suivez-nous</h4>
+<a class="text-surface-variant opacity-80 font-caption hover:opacity-100 transition-opacity flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-sm">link</span> Facebook
+                    </a>
+<a class="text-surface-variant opacity-80 font-caption hover:opacity-100 transition-opacity flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-sm">photo_camera</span> Instagram
+                    </a>
+</div>
+</div>
+</footer>
+</main>
+<!-- Mobile Navigation Bar (Bottom) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface/90 backdrop-blur-md flex justify-around items-center py-3 px-margin-mobile z-50 border-t border-outline-variant/10">
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="text-[10px] font-label-md">Agenda</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">shopping_bag</span>
+<span class="text-[10px] font-label-md">Boutique</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="text-[10px] font-label-md font-bold">Profil</span>
+</a>
+</nav>
+<script>
+        // Simple micro-interaction for form submission
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.innerText = "Enregistrement...";
+            btn.disabled = true;
+            btn.classList.add('opacity-70');
+            
+            setTimeout(() => {
+                btn.innerText = "Modifications enregistrées !";
+                btn.classList.remove('bg-primary');
+                btn.classList.add('bg-status-confirmed');
+                
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-70', 'bg-status-confirmed');
+                    btn.classList.add('bg-primary');
+                }, 2000);
+            }, 1500);
+        });
+
+        // Background image parallax or subtle movement if desired
+        // Removed heavy JS to keep it minimalist and therapeutic
+    </script>
+</body></html>

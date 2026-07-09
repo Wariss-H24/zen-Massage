@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Récupération de mot de passe | Zen Massage &amp; Wellness</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:wght@400;700&amp;family=Hanken+Grotesk:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-fixed": "#d2e8d3",
+                    "on-tertiary-container": "#e8e9ed",
+                    "primary-container": "#5a6e5d",
+                    "background": "#faf9f7",
+                    "surface-dim": "#dadad8",
+                    "on-secondary-container": "#716252",
+                    "on-background": "#1a1c1b",
+                    "surface": "#faf9f7",
+                    "on-tertiary": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "status-completed": "#A0A0A0",
+                    "on-primary-fixed-variant": "#384b3c",
+                    "surface-container": "#efeeec",
+                    "surface-container-low": "#f4f3f1",
+                    "secondary-fixed": "#f4dfcb",
+                    "primary": "#425646",
+                    "charcoal-muted": "#2C2E30",
+                    "status-confirmed": "#7A9E7E",
+                    "tertiary": "#4e5154",
+                    "on-secondary": "#ffffff",
+                    "on-primary-container": "#d9f0da",
+                    "status-cancelled": "#D18D8D",
+                    "error-container": "#ffdad6",
+                    "status-pending": "#E6D5A7",
+                    "sand-light": "#F2EBE3",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-fixed-dim": "#c5c6ca",
+                    "on-tertiary-fixed": "#191c1f",
+                    "surface-bright": "#faf9f7",
+                    "surface-tint": "#4f6353",
+                    "sage-deep": "#4A594D",
+                    "on-primary-fixed": "#0d1f12",
+                    "on-surface": "#1a1c1b",
+                    "tertiary-fixed": "#e1e2e6",
+                    "tertiary-container": "#66696c",
+                    "outline": "#737872",
+                    "secondary": "#6b5c4c",
+                    "on-surface-variant": "#434843",
+                    "surface-container-high": "#e9e8e6",
+                    "secondary-container": "#f4dfcb",
+                    "surface-container-highest": "#e3e2e0",
+                    "secondary-fixed-dim": "#d7c3b0",
+                    "on-secondary-fixed": "#241a0e",
+                    "on-error-container": "#93000a",
+                    "error": "#ba1a1a",
+                    "inverse-surface": "#2f3130",
+                    "surface-variant": "#e3e2e0",
+                    "on-tertiary-fixed-variant": "#44474a",
+                    "outline-variant": "#c3c8c1",
+                    "inverse-on-surface": "#f1f1ef",
+                    "on-error": "#ffffff",
+                    "on-secondary-fixed-variant": "#524436",
+                    "primary-fixed-dim": "#b6ccb8",
+                    "inverse-primary": "#b6ccb8"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "section-gap": "80px",
+                    "margin-desktop": "64px",
+                    "stack-sm": "8px",
+                    "gutter": "24px",
+                    "container-max": "1280px",
+                    "margin-mobile": "16px",
+                    "stack-lg": "32px",
+                    "stack-md": "16px",
+                    "base": "4px"
+            },
+            "fontFamily": {
+                    "label-md": ["Hanken Grotesk"],
+                    "display-lg": ["Libre Caslon Text"],
+                    "caption": ["Hanken Grotesk"],
+                    "body-md": ["Hanken Grotesk"],
+                    "headline-sm": ["Libre Caslon Text"],
+                    "headline-md": ["Libre Caslon Text"],
+                    "display-lg-mobile": ["Libre Caslon Text"],
+                    "body-lg": ["Hanken Grotesk"]
+            },
+            "fontSize": {
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                    "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                    "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #faf9f7;
+            color: #1a1c1b;
+            font-family: 'Hanken Grotesk', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .fade-in {
+            animation: fadeIn 1s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-margin-mobile md:p-margin-desktop overflow-hidden relative">
+<!-- Atmospheric Background Animation -->
+
+<main class="relative z-10 w-full max-w-md fade-in">
+<div class="glass-card rounded-xl p-stack-lg shadow-sm">
+<!-- Brand Identity -->
+<div class="flex flex-col items-center mb-stack-lg">
+<div class="w-16 h-16 bg-primary-fixed rounded-full flex items-center justify-center mb-stack-md text-primary">
+<span class="material-symbols-outlined !text-4xl" data-icon="spa">spa</span>
+</div>
+<h1 class="font-headline-md text-headline-md text-sage-deep mb-base">Zen Wellness</h1>
+<p class="font-body-md text-body-md text-on-surface-variant text-center px-gutter">
+                    Sérénité retrouvée. Entrez votre email pour réinitialiser votre accès.
+                </p>
+</div>
+<!-- Recovery Form -->
+<form class="space-y-stack-md" id="recoveryForm">
+<div class="relative">
+<label class="block font-label-md text-label-md text-secondary mb-base ml-1" for="email">
+                        Adresse Email
+                    </label>
+<input class="w-full bg-surface-container-lowest border-0 border-b border-outline-variant focus:border-primary focus:ring-0 transition-all px-4 py-3 font-body-md text-body-md text-on-surface rounded-t-lg placeholder:text-on-surface-variant/40" id="email" name="email" placeholder="nom@exemple.com" required="" type="email"/>
+</div>
+<button class="w-full group relative overflow-hidden bg-primary text-on-primary py-4 rounded-xl font-label-md text-label-md transition-all hover:bg-sage-deep active:scale-[0.98] flex items-center justify-center gap-2" type="submit">
+<span>Envoyer le lien de réinitialisation</span>
+<span class="material-symbols-outlined !text-lg transition-transform group-hover:translate-x-1" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</form>
+<!-- Success Message (Hidden by default) -->
+<div class="hidden text-center py-stack-md" id="successMessage">
+<div class="w-12 h-12 bg-status-confirmed/20 text-status-confirmed rounded-full flex items-center justify-center mx-auto mb-stack-md">
+<span class="material-symbols-outlined" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<p class="font-headline-sm text-headline-sm text-sage-deep mb-base">Lien envoyé</p>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                    Consultez votre boîte de réception pour continuer.
+                </p>
+</div>
+<!-- Back to Login -->
+<div class="mt-stack-lg pt-stack-md border-t border-outline-variant/30 flex justify-center">
+<a class="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined !text-lg" data-icon="keyboard_backspace">keyboard_backspace</span>
+                    Retour à la connexion
+                </a>
+</div>
+</div>
+<!-- Supportive Visual Element -->
+<div class="mt-stack-lg flex justify-center opacity-60">
+<div class="flex items-center gap-stack-sm text-on-surface-variant font-caption text-caption">
+<span class="material-symbols-outlined !text-sm" data-icon="lock">lock</span>
+<span>Connexion sécurisée par cryptage 256-bit</span>
+</div>
+</div>
+</main>
+<!-- Footer Quote (Subtle) -->
+<footer class="fixed bottom-gutter left-0 w-full text-center pointer-events-none">
+<p class="font-headline-sm text-headline-sm text-on-surface-variant/20 italic opacity-50">
+            Le calme est le berceau de la clarté.
+        </p>
+</footer>
+<script>
+        document.getElementById('recoveryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button');
+            const originalContent = btn.innerHTML;
+            
+            // Subtle loading state
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin" data-icon="progress_activity">progress_activity</span>';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                this.classList.add('hidden');
+                document.getElementById('successMessage').classList.remove('hidden');
+                document.getElementById('successMessage').classList.add('fade-in');
+            }, 1500);
+        });
+
+        // Interactive focus effect
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.closest('.glass-card').style.boxShadow = '0 10px 40px -15px rgba(66, 86, 70, 0.15)';
+            });
+            input.addEventListener('blur', () => {
+                input.parentElement.closest('.glass-card').style.boxShadow = 'none';
+            });
+        });
+    </script>
+</body></html>
