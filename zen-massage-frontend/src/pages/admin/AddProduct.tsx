@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import AdminLayout from '../../components/layout/AdminLayout'
 
 const CATEGORIES = [
