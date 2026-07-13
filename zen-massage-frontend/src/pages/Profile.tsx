@@ -1,32 +1,18 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import Footer from '../components/layout/Footer'
-
-type Tab = 'appointments' | 'orders' | 'profile'
-
-const NAV = [
-  { id: 'appointments' as Tab, label: 'Rendez-vous', icon: 'calendar_today' },
-  { id: 'orders'       as Tab, label: 'Commandes',   icon: 'shopping_bag'  },
-  { id: 'profile'      as Tab, label: 'Profil',      icon: 'person'        },
-]
+import UserLayout from '../components/layout/UserLayout'
 
 const AVATAR =
   'https://lh3.googleusercontent.com/aida-public/AB6AXuDLqBWhp8GIsV79j2lPT_daTsvYNl_RPIxuxJnpX9WC-m-cfbBPLCgKww4MpTMN76ES3Jkd5heMr2WRFHvJO72qbB1iAOd5O3nxKTUzi704jGHAZr_-2OfVl_ttZuYkSYhLgwQMtspSGmMii_Uev5a7_qacEy6thVjVaRqZnBbDbOYF7C4Q7C09TfhUpGH764835N3LmzzDI3kUjBGaHp66qfXpVTRE44DZgaVfsCxjoBlhQMe_2SdzbQ'
 
 export default function Profile() {
-  const [tab, setTab] = useState<Tab>('profile')
   const [showPwd, setShowPwd] = useState(false)
   const [form, setForm] = useState({
-    firstName: 'Elena',
-    lastName: 'Dubois',
-    email: 'elena.dubois@exemple.com',
-    phone: '+241 07 00 00 00',
-    currentPwd: '',
-    newPwd: '',
-    confirmPwd: '',
+    firstName: 'Elena', lastName: 'Dubois',
+    email: 'elena.dubois@exemple.com', phone: '+241 07 00 00 00',
+    currentPwd: '', newPwd: '', confirmPwd: '',
   })
   const [saving, setSaving] = useState(false)
-  const [saved, setSaved] = useState(false)
+  const [saved, setSaved]   = useState(false)
 
   useEffect(() => {
     document.title = 'Mon Profil | Zen Massage & Wellness Gabon'
@@ -37,77 +23,14 @@ export default function Profile() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
-    setTimeout(() => {
-      setSaving(false)
-      setSaved(true)
-      setTimeout(() => setSaved(false), 2500)
-    }, 1500)
+    setTimeout(() => { setSaving(false); setSaved(true); setTimeout(() => setSaved(false), 2500) }, 1500)
   }
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <UserLayout title="Profil Utilisateur" subtitle="Gérez vos informations personnelles et vos préférences.">
 
-      {/* ── Sidebar ── */}
-      <aside className="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 z-50 bg-surface-container-low border-r border-outline-variant/30 p-stack-md">
-        <div className="mb-stack-lg px-2">
-          <h1 className="font-headline-sm text-headline-sm text-sage-deep mb-1">Mon Compte Zen</h1>
-          <p className="font-caption text-caption text-on-surface-variant opacity-70">Le sanctuaire vous attend</p>
-        </div>
+      <div className="px-6 md:px-margin-desktop pb-section-gap pt-stack-lg max-w-4xl">
 
-        <nav className="flex-1 space-y-2">
-          {NAV.map(n => (
-            <button
-              key={n.id}
-              onClick={() => setTab(n.id)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-left ${
-                tab === n.id
-                  ? 'text-primary font-bold border-r-4 border-primary bg-surface-container-high'
-                  : 'text-on-surface-variant hover:bg-surface-container-highest'
-              }`}
-            >
-              <span className="material-symbols-outlined">{n.icon}</span>
-              <span className="font-label-md text-label-md">{n.label}</span>
-            </button>
-          ))}
-        </nav>
-
-        <div className="mt-auto pt-stack-md border-t border-outline-variant/20">
-          <div className="flex items-center gap-3 p-2">
-            <div className="w-10 h-10 rounded-full overflow-hidden bg-sand-light flex-shrink-0">
-              <img src={AVATAR} alt="Avatar" className="w-full h-full object-cover" />
-            </div>
-            <div>
-              <p className="font-label-md text-label-md text-on-surface font-bold">Bienvenue</p>
-              <p className="font-caption text-caption text-on-surface-variant">Le sanctuaire vous attend</p>
-            </div>
-          </div>
-          <Link
-            to="/appointments"
-            className="block w-full mt-4 bg-primary text-on-primary py-3 rounded-xl font-label-md text-label-md text-center hover:bg-sage-deep transition-colors duration-300"
-          >
-            Nouvelle Session
-          </Link>
-        </div>
-      </aside>
-
-      {/* ── Main ── */}
-      <main className="flex-1 md:ml-64 min-h-screen flex flex-col">
-
-        {/* Header */}
-        <header className="sticky top-0 z-30 bg-surface/90 backdrop-blur-md px-6 md:px-margin-desktop py-6 flex justify-between items-center border-b border-outline-variant/10">
-          <div>
-            <h2 className="font-headline-md text-headline-sm md:text-headline-md text-sage-deep">Profil Utilisateur</h2>
-            <p className="font-body-md text-body-md text-on-surface-variant">Gérez vos informations personnelles et vos préférences.</p>
-          </div>
-          <button className="md:hidden p-2 text-on-surface">
-            <span className="material-symbols-outlined">menu</span>
-          </button>
-        </header>
-
-        {/* Content */}
-        <div className="flex-grow px-6 md:px-margin-desktop pb-section-gap pt-stack-lg max-w-4xl">
-
-          {tab === 'profile' && (
             <form className="space-y-stack-lg" onSubmit={handleSubmit}>
 
               {/* Photo */}
@@ -231,50 +154,9 @@ export default function Profile() {
                 </button>
               </div>
             </form>
-          )}
 
-          {tab === 'appointments' && (
-            <div className="text-center py-24">
-              <span className="material-symbols-outlined text-5xl text-outline-variant mb-4 block">calendar_today</span>
-              <p className="font-body-lg text-body-lg text-on-surface-variant mb-6">Consultez vos rendez-vous depuis votre tableau de bord.</p>
-              <Link to="/account" className="inline-block px-8 py-3 bg-primary text-on-primary rounded-full font-label-md text-label-md hover:bg-sage-deep transition-colors">
-                Aller au tableau de bord
-              </Link>
-            </div>
-          )}
 
-          {tab === 'orders' && (
-            <div className="text-center py-24">
-              <span className="material-symbols-outlined text-5xl text-outline-variant mb-4 block">shopping_bag</span>
-              <p className="font-body-lg text-body-lg text-on-surface-variant mb-6">Consultez vos commandes depuis votre tableau de bord.</p>
-              <Link to="/account" className="inline-block px-8 py-3 bg-primary text-on-primary rounded-full font-label-md text-label-md hover:bg-sage-deep transition-colors">
-                Aller au tableau de bord
-              </Link>
-            </div>
-          )}
-        </div>
-
-        <Footer />
-      </main>
-
-      {/* Mobile bottom nav */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-surface/90 backdrop-blur-md flex justify-around items-center py-3 px-margin-mobile z-50 border-t border-outline-variant/10">
-        {NAV.map(n => (
-          <button
-            key={n.id}
-            onClick={() => setTab(n.id)}
-            className={`flex flex-col items-center gap-1 transition-colors ${tab === n.id ? 'text-primary' : 'text-on-surface-variant'}`}
-          >
-            <span
-              className="material-symbols-outlined"
-              style={{ fontVariationSettings: tab === n.id ? "'FILL' 1" : "'FILL' 0" }}
-            >
-              {n.icon}
-            </span>
-            <span className="text-[10px] font-label-md">{n.label}</span>
-          </button>
-        ))}
-      </nav>
-    </div>
+      </div>
+    </UserLayout>
   )
 }

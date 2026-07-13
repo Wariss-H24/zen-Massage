@@ -1,14 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-
-const NAV = [
-  { icon: 'dashboard',      label: 'Dashboard',     to: '/admin' },
-  { icon: 'calendar_today', label: 'Appointments',  to: '/admin/bookings' },
-  { icon: 'inventory_2',    label: 'Products',      to: '/admin/products/add' },
-  { icon: 'history_edu',    label: 'Order History', to: '/admin/orders' },
-  { icon: 'analytics',      label: 'Analytics',     to: '/admin/analytics' },
-  { icon: 'settings',       label: 'Settings',      to: '/admin/settings', active: true },
-]
+import AdminLayout from '../../components/layout/AdminLayout'
 
 const AVATAR = 'https://lh3.googleusercontent.com/aida-public/AB6AXuAAGw3TfVJGM7Yfs3Glx18kp0tdiy0jf0ciemY3xunjuivxhOFtFCs6BilxVA7tr73MactUKydc6ptvTP9nsKt82ZEe8GXUsHfE1vCZXotzjuv4mPScMvkbd0scUicntMrkw-LfhPy4AClKuyWdOhYM2TOAUK9lix-YlI8Ef9K6-urjXR79VClJPy5VXS2F4ILI0pX1PWA7MQG4IHoyz0vUiVIi3Yh3AzV3GBy_ANhdd1i6iMfR98Dz7caqLVOAO4YHEKn8R0B6GasB'
 
@@ -74,68 +65,8 @@ export default function Settings() {
   ]
 
   return (
-    <div className="flex min-h-screen bg-background text-on-background font-body-md">
-
-      {/* ── Sidebar ── */}
-      <aside className="h-screen w-64 fixed left-0 top-0 flex flex-col py-8 border-r border-outline-variant bg-surface-container-low z-50">
-        <div className="px-6 mb-10">
-          <h1 className="font-headline-sm text-headline-sm text-sage-deep">Zen Admin</h1>
-          <p className="font-label-md text-label-md text-on-surface-variant opacity-70">Practitioner Suite</p>
-        </div>
-
-        <nav className="flex-1 space-y-1">
-          {NAV.map(n => (
-            <Link
-              key={n.to}
-              to={n.to}
-              className={`flex items-center gap-3 px-6 py-3 font-label-md text-label-md transition-colors ${
-                n.active
-                  ? 'text-primary font-semibold border-r-4 border-primary bg-primary-fixed'
-                  : 'text-on-surface-variant hover:bg-surface-variant'
-              }`}
-            >
-              <span className="material-symbols-outlined">{n.icon}</span>
-              {n.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="px-6 pt-6 border-t border-outline-variant space-y-1">
-          <a href="#" className="flex items-center gap-3 py-2 font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors">
-            <span className="material-symbols-outlined">help</span>Support
-          </a>
-          <a href="#" className="flex items-center gap-3 py-2 font-label-md text-label-md text-on-surface-variant hover:text-error transition-colors">
-            <span className="material-symbols-outlined">logout</span>Sign Out
-          </a>
-        </div>
-      </aside>
-
-      {/* ── Main ── */}
-      <main className="ml-64 flex-1">
-
-        {/* Top bar */}
-        <header className="fixed top-0 right-0 w-[calc(100%-16rem)] z-40 flex justify-between items-center h-16 px-6 bg-surface/90 backdrop-blur-md shadow-sm">
-          <h2 className="font-headline-sm text-headline-sm text-primary">Paramètres</h2>
-          <div className="flex items-center gap-6">
-            <div className="relative hidden lg:block">
-              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
-              <input
-                type="text"
-                placeholder="Rechercher un réglage..."
-                className="pl-10 pr-4 py-2 bg-surface-container rounded-full border-none focus:outline-none focus:ring-1 focus:ring-primary w-64 text-sm font-body-md"
-              />
-            </div>
-            <div className="flex items-center gap-4">
-              <button className="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">notifications</button>
-              <div className="h-8 w-8 rounded-full overflow-hidden border border-outline-variant">
-                <img src={AVATAR} alt="Admin" className="w-full h-full object-cover" />
-              </div>
-            </div>
-          </div>
-        </header>
-
-        {/* Content */}
-        <div className="pt-24 px-8 pb-20 max-w-5xl mx-auto">
+    <AdminLayout title="Paramètres">
+        <div className="px-8 pb-20 pt-8 max-w-5xl mx-auto">
 
           {/* Tab nav */}
           <div className="flex gap-8 mb-8 border-b border-outline-variant">
@@ -317,7 +248,6 @@ export default function Settings() {
           )}
 
         </div>
-      </main>
-    </div>
+    </AdminLayout>
   )
 }

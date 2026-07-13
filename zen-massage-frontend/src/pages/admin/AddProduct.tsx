@@ -1,14 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-
-/* ── Sidebar nav ── */
-const NAV = [
-  { icon: 'dashboard',      label: 'Dashboard',  to: '/admin' },
-  { icon: 'calendar_month', label: 'Bookings',   to: '/admin/bookings' },
-  { icon: 'group',          label: 'Clients',    to: '/admin/clients' },
-  { icon: 'spa',            label: 'Services',   to: '/admin/services', active: true },
-  { icon: 'settings',       label: 'Settings',   to: '/admin/settings' },
-]
+import AdminLayout from '../../components/layout/AdminLayout'
 
 const CATEGORIES = [
   { value: 'oils',   label: 'Huiles Essentielles' },
@@ -39,64 +31,18 @@ export default function AddProduct() {
     : 'Huiles Essentielles'
 
   return (
-    <div className="flex min-h-screen bg-background text-on-background font-body-md">
-
-      {/* ── Sidebar ── */}
-      <aside className="h-screen w-64 fixed left-0 top-0 flex flex-col py-8 px-4 bg-surface-container-low shadow-sm z-50">
-        <div className="mb-12 px-2">
-          <h1 className="font-display-lg text-[28px] text-sage-deep leading-tight">Zen Massage</h1>
-          <p className="font-label-md text-label-md text-on-surface-variant opacity-70">Management Portal</p>
+    <AdminLayout title="Ajouter un produit"
+      topbarRight={
+        <div className="flex items-center gap-4">
+          <span className="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-colors">notifications</span>
+          <span className="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-colors">help</span>
+          <div className="h-8 w-8 rounded-full overflow-hidden border border-outline-variant">
+            <img src={AVATAR_IMG} alt="Admin" className="w-full h-full object-cover" />
+          </div>
         </div>
-
-        <nav className="flex-1 space-y-2">
-          {NAV.map(n => (
-            <Link
-              key={n.to}
-              to={n.to}
-              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-300 font-label-md text-label-md ${
-                n.active
-                  ? 'text-sage-deep font-bold border-l-4 border-sage-deep bg-sand-light/30'
-                  : 'text-on-surface-variant opacity-70 hover:bg-sand-light'
-              }`}
-            >
-              <span className="material-symbols-outlined">{n.icon}</span>
-              {n.label}
-            </Link>
-          ))}
-        </nav>
-
-        <Link
-          to="/appointments"
-          className="mt-auto mx-2 py-4 px-6 border border-sage-deep text-sage-deep font-label-md text-label-md rounded-lg text-center hover:bg-sage-deep hover:text-white transition-all duration-300"
-        >
-          Book New Session
-        </Link>
-      </aside>
-
-      {/* ── Main ── */}
-      <main className="ml-64 flex-1 flex flex-col">
-
-        {/* Top bar */}
-        <header className="flex justify-between items-center h-16 px-8 bg-surface/90 backdrop-blur-md border-b border-outline-variant/30 sticky top-0 z-40">
-          <div className="flex items-center gap-4">
-            <Link to="/admin" className="p-2 hover:bg-surface-variant rounded-full transition-colors">
-              <span className="material-symbols-outlined">arrow_back</span>
-            </Link>
-            <h2 className="font-headline-md text-headline-md text-sage-deep">Ajouter un produit</h2>
-          </div>
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2 text-on-surface-variant">
-              <span className="material-symbols-outlined">notifications</span>
-              <span className="material-symbols-outlined">help</span>
-            </div>
-            <div className="h-8 w-8 rounded-full overflow-hidden border border-outline-variant">
-              <img src={AVATAR_IMG} alt="Admin" className="w-full h-full object-cover" />
-            </div>
-          </div>
-        </header>
-
-        {/* Content */}
-        <div className="p-12 max-w-[1400px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-16">
+      }
+    >
+      <div className="p-12 max-w-[1400px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-16">
 
           {/* ── Form ── */}
           <div className="lg:col-span-7 space-y-12">
@@ -293,8 +239,7 @@ export default function AddProduct() {
               </div>
             </div>
           </aside>
-        </div>
-      </main>
-    </div>
+      </div>
+    </AdminLayout>
   )
 }

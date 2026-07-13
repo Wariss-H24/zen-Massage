@@ -3,12 +3,12 @@ import { Link, NavLink } from 'react-router-dom'
 
 /* ── Nav ── */
 const NAV = [
-  { icon: 'dashboard',     label: 'Dashboard',     to: '/admin/super',       active: true },
-  { icon: 'calendar_today',label: 'Appointments',  to: '/admin/bookings'     },
-  { icon: 'inventory_2',   label: 'Products',      to: '/admin/products/add' },
-  { icon: 'history_edu',   label: 'Order History', to: '/admin/orders'       },
-  { icon: 'analytics',     label: 'Analytics',     to: '/admin/analytics'    },
-  { icon: 'settings',      label: 'Settings',      to: '/admin/settings'     },
+  { icon: 'dashboard',      label: 'Dashboard',   to: '/admin',              active: true },
+  { icon: 'calendar_today', label: 'Bookings',     to: '/admin/bookings'           },
+  { icon: 'inventory_2',    label: 'Produits',     to: '/admin/products/add'       },
+  { icon: 'history_edu',    label: 'Historique',   to: '/admin/orders'             },
+  { icon: 'analytics',      label: 'Analytics',    to: '/admin/analytics'          },
+  { icon: 'settings',       label: 'Paramètres',   to: '/admin/settings'           },
 ]
 
 /* ── Data ── */

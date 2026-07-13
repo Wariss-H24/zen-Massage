@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
-import Footer from '../components/layout/Footer'
+import UserLayout from '../components/layout/UserLayout'
 
 /* ── Types ── */
 type Filter = 'Tout' | 'En cours' | 'Livré' | 'Annulé'
@@ -67,9 +66,6 @@ const STATUS_STYLE: Record<string, string> = {
   'Livré':    'bg-surface-container-highest text-on-surface-variant',
   'Annulé':   'bg-error-container text-error',
 }
-
-const AVATAR =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuBZPIXdxXCcBtMDHUKk4oQRw55TVDuhvlX5yIHXbuQMZrnuOiZKpSAQdZeUl8_NKXhj0MBgkuDLaclcMRiR4WXoF2f9alTnpZxuNHmyp0ITYPZhtGsH0qrG5xiTrbjdcvMODI_n3YRe_9nA0BT7gdL9pv5mtjkC2c8zJH6sGe0QBlJMD1Uw-c7hAL8ahCPimMkEM4Org_J73VJ75n5W8_7xJ1Va4ennE4Rc7HeeRGJE8RUimXHI4CkZhQ'
 
 /* ── Composant carte commande ── */
 function OrderCard({ order }: { order: OrderItem }) {
@@ -155,81 +151,21 @@ export default function Orders() {
   )
 
   return (
-    <div className="flex min-h-screen bg-background text-on-background">
+    <UserLayout title="Mes Commandes" subtitle="Suivez vos achats de produits de soin et rituels bien-être.">
+      <div className="p-6 md:p-margin-desktop max-w-container-max mx-auto w-full">
 
-      {/* ── Sidebar ── */}
-      <aside className="h-full w-64 fixed left-0 top-0 bg-surface-container-low flex flex-col p-stack-md z-40 border-r border-outline-variant/30">
-        <div className="mb-stack-lg">
-          <h1 className="font-headline-sm text-headline-sm text-sage-deep leading-tight">Mon Compte Zen</h1>
-          <p className="font-body-md text-body-md text-on-surface-variant opacity-70">Bienvenue au sanctuaire</p>
-        </div>
-
-        <nav className="flex-1 space-y-2">
-          {[
-            { to: '/account',  icon: 'dashboard',    label: 'Tableau de bord' },
-            { to: '/appointments', icon: 'calendar_today', label: 'Rendez-vous' },
-            { to: '/orders',   icon: 'shopping_bag', label: 'Commandes', active: true },
-            { to: '/profile',  icon: 'person',       label: 'Profil' },
-          ].map(n => (
-            <Link
-              key={n.to}
-              to={n.to}
-              className={`flex items-center gap-3 px-4 py-3 font-label-md text-label-md transition-all duration-200 rounded-lg ${
-                n.active
-                  ? 'text-primary font-bold border-r-4 border-primary bg-surface-container-high rounded-l-lg'
-                  : 'text-on-surface-variant hover:bg-surface-container-highest'
-              }`}
-            >
-              <span className="material-symbols-outlined">{n.icon}</span>
-              {n.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="mt-auto pt-6 border-t border-outline-variant/20">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-full overflow-hidden bg-sand-light flex-shrink-0">
-              <img src={AVATAR} alt="Avatar" className="w-full h-full object-cover" />
-            </div>
-            <div>
-              <p className="font-label-md text-label-md text-on-surface">Marie N'goma</p>
-              <p className="font-caption text-caption text-on-surface-variant">Membre Or</p>
-            </div>
+        {/* Search + filtres */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+          <div className="relative">
+            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+            <input
+              type="text"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Rechercher une commande..."
+              className="pl-10 pr-4 py-2 border-b border-outline-variant bg-transparent focus:outline-none focus:border-primary transition-all font-body-md text-body-md w-64"
+            />
           </div>
-          <Link
-            to="/appointments"
-            className="block w-full py-3 px-4 border border-sage-deep text-sage-deep font-label-md text-label-md rounded-xl text-center hover:bg-sage-deep hover:text-white transition-colors duration-300"
-          >
-            Nouvelle Session
-          </Link>
-        </div>
-      </aside>
-
-      {/* ── Main ── */}
-      <main className="flex-1 ml-64 p-margin-desktop bg-background min-h-screen flex flex-col">
-
-        {/* Header */}
-        <header className="max-w-container-max mx-auto mb-stack-lg w-full">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4">
-            <div>
-              <h2 className="font-display-lg text-headline-md text-on-surface mb-2">Mes Commandes</h2>
-              <p className="font-body-md text-body-md text-on-surface-variant">
-                Suivez vos achats de produits de soin et rituels bien-être.
-              </p>
-            </div>
-            <div className="relative">
-              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
-              <input
-                type="text"
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                placeholder="Rechercher une commande..."
-                className="pl-10 pr-4 py-2 border-b border-outline-variant bg-transparent focus:outline-none focus:border-primary transition-all font-body-md text-body-md w-64"
-              />
-            </div>
-          </div>
-
-          {/* Filtres */}
           <div className="flex gap-3 flex-wrap">
             {FILTERS.map(f => (
               <button
@@ -245,10 +181,10 @@ export default function Orders() {
               </button>
             ))}
           </div>
-        </header>
+        </div>
 
         {/* Liste commandes */}
-        <section className="max-w-container-max mx-auto w-full space-y-stack-md flex-1">
+        <div className="space-y-stack-md">
           {filtered.length > 0 ? (
             filtered.map(o => <OrderCard key={o.id} order={o} />)
           ) : (
@@ -259,10 +195,8 @@ export default function Orders() {
               </p>
             </div>
           )}
-        </section>
-
-        <Footer />
-      </main>
-    </div>
+        </div>
+      </div>
+    </UserLayout>
   )
 }

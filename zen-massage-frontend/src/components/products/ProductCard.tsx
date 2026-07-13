@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { useInView } from '../../hooks/useInView'
 
 export interface ProductItem {
@@ -78,9 +79,12 @@ export default function ProductCard({ product, delay = 0 }: Props) {
           <span className="font-headline-sm text-headline-sm text-sage-deep">
             {product.price}
           </span>
-          <button className="font-label-md text-label-md text-primary border-b border-primary hover:text-sage-deep hover:border-sage-deep transition-colors">
+          <Link
+            to="/products/1"
+            className="font-label-md text-label-md text-primary border-b border-primary hover:text-sage-deep hover:border-sage-deep transition-colors"
+          >
             Voir détails
-          </button>
+          </Link>
         </div>
       </div>
     </div>

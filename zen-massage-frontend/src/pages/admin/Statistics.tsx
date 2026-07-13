@@ -1,15 +1,6 @@
 import { useEffect, useRef } from 'react'
-import { Link, NavLink } from 'react-router-dom'
-
-/* ── Nav ── */
-const NAV = [
-  { icon: 'dashboard',    label: 'Dashboard',       to: '/admin'            },
-  { icon: 'calendar_today', label: 'Appointments',  to: '/admin/bookings'   },
-  { icon: 'inventory_2',  label: 'Products',        to: '/admin/products/add' },
-  { icon: 'history_edu',  label: 'Order History',   to: '/admin/orders'     },
-  { icon: 'analytics',    label: 'Analytics',       to: '/admin/analytics', active: true },
-  { icon: 'settings',     label: 'Settings',        to: '/admin/settings'   },
-]
+import { Link } from 'react-router-dom'
+import AdminLayout from '../../components/layout/AdminLayout'
 
 /* ── Data ── */
 const STATS = [
@@ -96,63 +87,8 @@ export default function Statistics() {
   }, [])
 
   return (
-    <div className="flex min-h-screen bg-surface text-on-surface font-body-md">
-
-      {/* ── Sidebar ── */}
-      <aside className="h-screen w-64 fixed left-0 top-0 flex flex-col py-stack-lg border-r border-outline-variant bg-surface-container-low z-50">
-        <div className="px-gutter mb-stack-lg">
-          <h1 className="font-headline-sm text-headline-sm text-sage-deep">Zen Admin</h1>
-          <p className="font-label-md text-label-md text-on-surface-variant opacity-70">Practitioner Suite</p>
-        </div>
-
-        <nav className="flex-1 space-y-1">
-          {NAV.map(n => (
-            <NavLink
-              key={n.to}
-              to={n.to}
-              className={({ isActive }) =>
-                `flex items-center px-gutter py-3 transition-colors duration-200 font-label-md text-label-md ${
-                  isActive || n.active
-                    ? 'text-primary font-semibold border-r-4 border-primary bg-primary-fixed'
-                    : 'text-on-surface-variant hover:bg-surface-variant'
-                }`
-              }
-            >
-              <span className="material-symbols-outlined mr-3">{n.icon}</span>
-              {n.label}
-            </NavLink>
-          ))}
-        </nav>
-
-        <div className="mt-auto px-gutter pt-stack-lg border-t border-outline-variant space-y-1">
-          <a href="#" className="flex items-center py-2 text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md">
-            <span className="material-symbols-outlined mr-3">help</span>Support
-          </a>
-          <a href="#" className="flex items-center py-2 text-on-surface-variant hover:text-error transition-colors font-label-md text-label-md">
-            <span className="material-symbols-outlined mr-3">logout</span>Sign Out
-          </a>
-        </div>
-      </aside>
-
-      {/* ── Top bar ── */}
-      <header className="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 z-40 bg-surface/90 backdrop-blur-md shadow-sm flex justify-between items-center px-gutter">
-        <span className="font-headline-sm text-headline-sm text-primary font-bold">Zen Massage &amp; Wellness</span>
-        <div className="flex items-center gap-6">
-          <div className="relative hidden lg:flex items-center bg-surface-container rounded-full px-4 py-1.5 border border-outline-variant/30">
-            <span className="material-symbols-outlined text-on-surface-variant text-sm">search</span>
-            <input
-              className="bg-transparent border-none focus:outline-none text-sm font-label-md w-48 placeholder:opacity-50 ml-2"
-              placeholder="Rechercher..."
-              type="text"
-            />
-          </div>
-          <button className="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">notifications</button>
-          <button className="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">account_circle</button>
-        </div>
-      </header>
-
-      {/* ── Main ── */}
-      <main className="ml-64 pt-24 pb-stack-lg px-gutter min-h-screen">
+    <AdminLayout title="Zen Massage &amp; Wellness">
+      <main className="pt-8 pb-stack-lg px-gutter min-h-screen">
 
         {/* Header */}
         <section className="mb-stack-lg">
@@ -354,6 +290,6 @@ export default function Statistics() {
           <p className="font-label-md text-label-md">© 2024 Zen Massage &amp; Wellness Admin Suite</p>
         </footer>
       </main>
-    </div>
+    </AdminLayout>
   )
 }
