@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import AdminLayout from '../../components/layout/AdminLayout'
+import { useAuth } from '../../context/AuthContext'
 
 const APPOINTMENTS = [
   { id: 1, name: 'Julianne V.',    service: 'Thérapie Tissu Profond',   duration: '90 min', time: "Aujourd'hui, 16h30", avatar: 'JV', bg: 'bg-sand-light',      color: 'text-secondary' },
@@ -39,7 +40,10 @@ const DAYS_INIT = [
 ]
 
 export default function Dashboard() {
+  const { user } = useAuth()
   const [days, setDays] = useState(DAYS_INIT)
+  const firstName = user?.firstName || ''
+  const lastName = user?.lastName || ''
 
   useEffect(() => { document.title = 'Espace Praticien | Zen Massage' }, [])
 
@@ -54,7 +58,7 @@ export default function Dashboard() {
         <div className="flex flex-col md:flex-row md:items-end justify-between py-4 border-b border-outline-variant">
           <div>
             <h2 className="font-headline-md text-headline-md text-sage-deep">Espace Praticien</h2>
-            <p className="font-body-md text-on-surface-variant">Bienvenue, Dr. Elena. Voici l'aperçu de votre activité du jour.</p>
+            <p className="font-body-md text-on-surface-variant">Bienvenue, {firstName} {lastName}. Voici l'aperçu de votre activité du jour.</p>
           </div>
           <Link to="/appointments" className="mt-4 md:mt-0 px-6 py-2.5 border border-primary text-primary font-label-md text-label-md rounded-full hover:bg-primary hover:text-white transition-all duration-300">
             Réserver une séance

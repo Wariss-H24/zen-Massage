@@ -47,7 +47,7 @@ export default function AdminLayout({ children, title, topbarRight }: Props) {
       >
         <div className="px-6 mb-8 flex items-center justify-between">
           <Link to="/admin" onClick={() => setSidebarOpen(false)}>
-            <h1 className="font-headline-sm text-headline-sm text-sage-deep">Zen Admin</h1>
+            <h1 className="font-headline-sm text-headline-sm text-sage-deep">Ben Admin</h1>
             <p className="font-label-md text-label-md text-on-surface-variant opacity-70">Practitioner Suite</p>
           </Link>
           <button
@@ -115,7 +115,6 @@ export default function AdminLayout({ children, title, topbarRight }: Props) {
         {/* Top bar */}
         <header className="sticky top-0 z-30 flex justify-between items-center h-16 px-4 md:px-6 bg-surface/90 backdrop-blur-md shadow-sm">
           <div className="flex items-center gap-3">
-            {/* Bouton burger (mobile) */}
             <button
               className="lg:hidden flex items-center justify-center w-10 h-10 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-lg transition-all"
               onClick={() => setSidebarOpen(true)}
@@ -139,9 +138,15 @@ export default function AdminLayout({ children, title, topbarRight }: Props) {
                   <span className="material-symbols-outlined">notifications</span>
                   <span className="absolute top-2 right-2 w-2 h-2 bg-error rounded-full" />
                 </button>
-                <button className="p-2 text-on-surface-variant hover:text-primary transition-colors">
-                  <span className="material-symbols-outlined">account_circle</span>
-                </button>
+                <div className="hidden sm:flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-sage-deep text-white flex items-center justify-center text-xs font-bold">
+                    {user ? `${user.firstName[0]}${user.lastName[0]}`.toUpperCase() : '?'}
+                  </div>
+                  <div className="hidden lg:block">
+                    <p className="font-label-md text-label-md text-on-surface leading-tight">{user ? `${user.firstName} ${user.lastName}` : ''}</p>
+                    <p className="font-caption text-caption text-on-surface-variant leading-tight">{user?.email || ''}</p>
+                  </div>
+                </div>
               </>
             )}
           </div>

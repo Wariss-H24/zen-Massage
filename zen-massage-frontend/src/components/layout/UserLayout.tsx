@@ -9,22 +9,17 @@ const NAV = [
   { to: '/profile', icon: 'person',         label: 'Profil'          },
 ]
 
-const AVATAR =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuBR9YP2ilAO3sGRJTf7D0dVSbJXx3F_DaIzLcixdJSaYXX0NxaakKlAgcVCfUUaNH8rM8e10nUaIpus_fZImSdkxVHtmAlkfSevUvWtXtJ4tJOZys40pzX6Y9knrryM7FryYoEmTRFHRV-oQPo7UBkUEYDuR9jqNKAkquFMeInvS-_8oi_NjYflrAeKkET38drF1XMHROyVuMhHtbeQ9MI2Wi78xl1PmaFlPqSAWvPihwT75FbtqQJiCJMOCxs38DFdMwy-8k1L9YN4'
-
 interface Props {
   children: ReactNode
-  /** Titre affiché dans le header */
   title: string
   subtitle?: string
-  /** Contenu optionnel dans le header (droite) */
   headerRight?: ReactNode
 }
 
 export default function UserLayout({ children, title, subtitle, headerRight }: Props) {
   const { pathname } = useLocation()
   const navigate = useNavigate()
-  const { logout } = useAuth()
+  const { user, logout } = useAuth()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   async function handleLogout() {
@@ -33,6 +28,10 @@ export default function UserLayout({ children, title, subtitle, headerRight }: P
     navigate('/', { replace: true })
   }
 
+  const fullName = user ? `${user.firstName} ${user.lastName}` : 'Utilisateur'
+  const initials = user ? `${user.firstName[0]}${user.lastName[0]}`.toUpperCase() : '?'
+  const avatarUrl = user?.avatar || ''
+
   return (
     <div className="flex min-h-screen bg-background text-on-background">
 
@@ -40,7 +39,7 @@ export default function UserLayout({ children, title, subtitle, headerRight }: P
       <aside className="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 z-50 bg-surface-container-low border-r border-outline-variant/30 p-stack-md">
         <div className="mb-stack-lg px-2">
           <Link to="/" className="block">
-            <h1 className="font-headline-sm text-headline-sm text-sage-deep mb-1">Mon Compte Zen</h1>
+            <h1 className="font-headline-sm text-headline-sm text-sage-deep mb-1">Mon Compte</h1>
             <p className="font-caption text-caption text-on-surface-variant opacity-70">Le sanctuaire vous attend</p>
           </Link>
         </div>
@@ -67,12 +66,16 @@ export default function UserLayout({ children, title, subtitle, headerRight }: P
 
         <div className="mt-auto pt-stack-md border-t border-outline-variant/20">
           <div className="flex items-center gap-3 p-2 mb-4">
-            <div className="w-10 h-10 rounded-full overflow-hidden bg-sand-light flex-shrink-0">
-              <img src={AVATAR} alt="Avatar" className="w-full h-full object-cover" />
+            <div className="w-10 h-10 rounded-full overflow-hidden bg-sand-light flex-shrink-0 flex items-center justify-center font-bold text-sm text-sage-deep">
+              {avatarUrl ? (
+                <img src={avatarUrl} alt={fullName} className="w-full h-full object-cover" />
+              ) : (
+                <span>{initials}</span>
+              )}
             </div>
             <div className="min-w-0">
-              <p className="font-label-md text-label-md text-on-surface font-bold truncate">Marc Dupont</p>
-              <p className="font-caption text-caption text-on-surface-variant">Membre Sérénité</p>
+              <p className="font-label-md text-label-md text-on-surface font-bold truncate">{fullName}</p>
+              <p className="font-caption text-caption text-on-surface-variant">{user?.email || ''}</p>
             </div>
           </div>
           <Link
@@ -94,7 +97,7 @@ export default function UserLayout({ children, title, subtitle, headerRight }: P
       {/* ── Main ── */}
       <main className="flex-1 md:ml-64 min-h-screen flex flex-col">
 
-        {/* Header avec bouton burger mobile */}
+        {/* Header */}
         <header
           className="sticky top-0 z-30 px-4 md:px-margin-desktop py-4 flex justify-between items-center border-b border-outline-variant/10"
           style={{ backdropFilter: 'blur(12px)', backgroundColor: 'rgba(250,249,247,0.9)' }}
@@ -167,12 +170,16 @@ export default function UserLayout({ children, title, subtitle, headerRight }: P
 
                 <div className="pt-6 border-t border-outline-variant/20 space-y-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full overflow-hidden bg-sand-light flex-shrink-0">
-                      <img src={AVATAR} alt="Avatar" className="w-full h-full object-cover" />
+                    <div className="w-10 h-10 rounded-full overflow-hidden bg-sand-light flex-shrink-0 flex items-center justify-center font-bold text-sm text-sage-deep">
+                      {avatarUrl ? (
+                        <img src={avatarUrl} alt={fullName} className="w-full h-full object-cover" />
+                      ) : (
+                        <span>{initials}</span>
+                      )}
                     </div>
                     <div>
-                      <p className="font-label-md text-label-md text-on-surface font-bold">Marc Dupont</p>
-                      <p className="font-caption text-caption text-on-surface-variant">Membre Sérénité</p>
+                      <p className="font-label-md text-label-md text-on-surface font-bold">{fullName}</p>
+                      <p className="font-caption text-caption text-on-surface-variant">{user?.email || ''}</p>
                     </div>
                   </div>
                   <Link

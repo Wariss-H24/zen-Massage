@@ -123,7 +123,7 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-white/10 py-8 px-6 md:px-margin-desktop max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center">
         <p className="font-caption text-caption text-surface-variant">
-          © {new Date().getFullYear()} Zen Massage &amp; Wellness Gabon. Sanctuaire à travers le design.
+          © {new Date().getFullYear()} Ben Massage &amp; Wellness Gabon. Sanctuaire à travers le design.
         </p>
         <div className="flex space-x-8 mt-4 md:mt-0">
           <a href="#" className="font-caption text-caption text-surface-variant hover:text-white transition-colors">
