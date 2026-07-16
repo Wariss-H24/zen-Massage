@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
+import { useAuth } from './context/AuthContext'
 import Home from './pages/Home'
 import About from './pages/About'
 import Products from './pages/Products'
@@ -20,32 +21,98 @@ import ForgotPassword from './pages/ForgotPassword'
 import ProductDetail from './pages/ProductDetail'
 import Checkout from './pages/Checkout'
 
+// Redirige vers la bonne page d'accueil selon le rôle
+function HomeByRole() {
+  const { user, loading } = useAuth()
+  if (loading) return null
+  if (!user) return <Navigate to="/login" replace />
+  if (user.role === 'SUPER_ADMIN') return <Navigate to="/admin/super" replace />
+  if (user.role === 'ADMIN') return <Navigate to="/admin" replace />
+  return <Navigate to="/account" replace />
+}
+
+// Redirige les utilisateurs déjà connectés hors de login/register
+function GuestOnly({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useAuth()
+  if (loading) return null
+  if (!user) return <>{children}</>
+  if (user.role === 'SUPER_ADMIN') return <Navigate to="/admin/super" replace />
+  if (user.role === 'ADMIN') return <Navigate to="/admin" replace />
+  return <Navigate to="/account" replace />
+}
+
+// Requiert un utilisateur connecté (n'importe quel rôle)
+function RequireAuth({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useAuth()
+  if (loading) return null
+  if (!user) return <Navigate to="/login" replace />
+  return <>{children}</>
+}
+
+// Requiert le rôle USER uniquement (pas admin)
+function RequireUser({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useAuth()
+  if (loading) return null
+  if (!user) return <Navigate to="/login" replace />
+  if (user.role === 'ADMIN' || user.role === 'SUPER_ADMIN') return <Navigate to="/admin" replace />
+  return <>{children}</>
+}
+
+// Requiert ADMIN ou SUPER_ADMIN
+function RequireAdmin({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useAuth()
+  if (loading) return null
+  if (!user) return <Navigate to="/login" replace />
+  if (user.role !== 'ADMIN' && user.role !== 'SUPER_ADMIN') return <Navigate to="/account" replace />
+  return <>{children}</>
+}
+
+// Requiert SUPER_ADMIN uniquement
+function RequireSuperAdmin({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useAuth()
+  if (loading) return null
+  if (!user) return <Navigate to="/login" replace />
+  if (user.role !== 'SUPER_ADMIN') return <Navigate to="/admin" replace />
+  return <>{children}</>
+}
+
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/"             element={<Home />} />
-        <Route path="/about"        element={<About />} />
-        <Route path="/products"     element={<Products />} />
-        <Route path="/products/:id"  element={<ProductDetail />} />
-        <Route path="/checkout"      element={<Checkout />} />
-        <Route path="/services"     element={<Services />} />
-        <Route path="/appointments" element={<Appointments />} />
-        <Route path="/login"           element={<Login />} />
-        <Route path="/register"        element={<Register />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/account"      element={<Account />} />
-        <Route path="/admin"              element={<Dashboard />} />
-        <Route path="/admin/bookings"      element={<Bookings />} />
-        <Route path="/admin/products/add" element={<AddProduct />} />
-        <Route path="/admin/settings"      element={<Settings />} />
-        <Route path="/admin/orders"        element={<OrderHistory />} />
-        <Route path="/admin/analytics"     element={<Statistics />} />
-        <Route path="/admin/super"          element={<SuperAdminPanel />} />
-        <Route path="/profile"             element={<Profile />} />
-        <Route path="/orders"              element={<Orders />} />
-        <Route path="*"             element={<div className="flex items-center justify-center min-h-screen font-serif text-headline-sm text-sage-deep">Page introuvable</div>} />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      {/* Pages publiques */}
+      <Route path="/"                element={<Home />} />
+      <Route path="/about"           element={<About />} />
+      <Route path="/products"        element={<Products />} />
+      <Route path="/products/:id"    element={<ProductDetail />} />
+      <Route path="/services"        element={<Services />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+
+      {/* Pages auth — redirige si déjà connecté */}
+      <Route path="/login"    element={<GuestOnly><Login /></GuestOnly>} />
+      <Route path="/register" element={<GuestOnly><Register /></GuestOnly>} />
+
+      {/* Redirection intelligente selon le rôle */}
+      <Route path="/dashboard" element={<HomeByRole />} />
+
+      {/* Pages USER uniquement */}
+      <Route path="/appointments" element={<RequireUser><Appointments /></RequireUser>} />
+      <Route path="/checkout"     element={<RequireUser><Checkout /></RequireUser>} />
+      <Route path="/account"      element={<RequireUser><Account /></RequireUser>} />
+      <Route path="/orders"       element={<RequireUser><Orders /></RequireUser>} />
+      <Route path="/profile"      element={<RequireUser><Profile /></RequireUser>} />
+
+      {/* Pages ADMIN + SUPER_ADMIN */}
+      <Route path="/admin"              element={<RequireAdmin><Dashboard /></RequireAdmin>} />
+      <Route path="/admin/bookings"     element={<RequireAdmin><Bookings /></RequireAdmin>} />
+      <Route path="/admin/products/add" element={<RequireAdmin><AddProduct /></RequireAdmin>} />
+      <Route path="/admin/settings"     element={<RequireAdmin><Settings /></RequireAdmin>} />
+      <Route path="/admin/orders"       element={<RequireAdmin><OrderHistory /></RequireAdmin>} />
+      <Route path="/admin/analytics"    element={<RequireAdmin><Statistics /></RequireAdmin>} />
+
+      {/* Page SUPER_ADMIN uniquement */}
+      <Route path="/admin/super" element={<RequireSuperAdmin><SuperAdminPanel /></RequireSuperAdmin>} />
+
+      <Route path="*" element={<div className="flex items-center justify-center min-h-screen font-serif text-headline-sm text-sage-deep">Page introuvable</div>} />
+    </Routes>
   )
 }

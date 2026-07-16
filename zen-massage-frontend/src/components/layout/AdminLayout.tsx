@@ -1,23 +1,31 @@
 import type { ReactNode } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { authService } from '../../services/auth.service'
+import { useAuth } from '../../context/AuthContext'
 
 const NAV = [
-  { icon: 'dashboard',      label: 'Dashboard',  to: '/admin'               },
-  { icon: 'calendar_today', label: 'Bookings',    to: '/admin/bookings'      },
-  { icon: 'inventory_2',    label: 'Produits',    to: '/admin/products/add'  },
-  { icon: 'history_edu',    label: 'Commandes',   to: '/admin/orders'        },
-  { icon: 'analytics',      label: 'Analytics',   to: '/admin/analytics'     },
-  { icon: 'settings',       label: 'Paramètres',  to: '/admin/settings'      },
+  { icon: 'dashboard',      label: 'Espace Praticien', to: '/admin'               },
+  { icon: 'calendar_today', label: 'Réservations',      to: '/admin/bookings'      },
+  { icon: 'inventory_2',    label: 'Produits',           to: '/admin/products/add'  },
+  { icon: 'history_edu',    label: 'Commandes',          to: '/admin/orders'        },
+  { icon: 'analytics',      label: 'Analytiques',        to: '/admin/analytics'     },
+  { icon: 'settings',       label: 'Paramètres',         to: '/admin/settings'      },
 ]
 
 interface Props {
   children: ReactNode
   title: string
-  /** Contenu optionnel dans la topbar (droite) */
   topbarRight?: ReactNode
 }
 
 export default function AdminLayout({ children, title, topbarRight }: Props) {
+  const navigate = useNavigate()
+  const { user } = useAuth()
+
+  async function handleLogout() {
+    await authService.logout()
+    navigate('/login')
+  }
   return (
     <div className="flex min-h-screen bg-background text-on-background font-body-md">
 
@@ -48,15 +56,34 @@ export default function AdminLayout({ children, title, topbarRight }: Props) {
               {n.label}
             </NavLink>
           ))}
+          {user?.role === 'SUPER_ADMIN' && (
+            <NavLink
+              to="/admin/super"
+              end
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-6 py-3 font-label-md text-label-md transition-colors ${
+                  isActive
+                    ? 'text-primary font-semibold border-r-4 border-primary bg-primary-fixed'
+                    : 'text-on-surface-variant hover:bg-surface-variant'
+                }`
+              }
+            >
+              <span className="material-symbols-outlined">admin_panel_settings</span>
+              Dashboard
+            </NavLink>
+          )}
         </nav>
 
         <div className="px-6 pt-6 border-t border-outline-variant space-y-1">
           <a href="#" className="flex items-center gap-3 py-2 font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors">
             <span className="material-symbols-outlined">help</span>Support
           </a>
-          <Link to="/login" className="flex items-center gap-3 py-2 font-label-md text-label-md text-on-surface-variant hover:text-error transition-colors">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 py-2 font-label-md text-label-md text-on-surface-variant hover:text-error transition-colors w-full"
+          >
             <span className="material-symbols-outlined">logout</span>Sign Out
-          </Link>
+          </button>
         </div>
       </aside>
 

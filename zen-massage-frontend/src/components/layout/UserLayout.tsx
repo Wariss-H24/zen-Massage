@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import Footer from './Footer'
+import { authService } from '../../services/auth.service'
 
 const NAV = [
   { to: '/account', icon: 'calendar_today', label: 'Mes Rendez-vous' },
@@ -22,6 +23,12 @@ interface Props {
 
 export default function UserLayout({ children, title, subtitle, headerRight }: Props) {
   const { pathname } = useLocation()
+  const navigate = useNavigate()
+
+  async function handleLogout() {
+    await authService.logout()
+    navigate('/login')
+  }
 
   return (
     <div className="flex min-h-screen bg-background text-on-background">
@@ -71,6 +78,13 @@ export default function UserLayout({ children, title, subtitle, headerRight }: P
           >
             Nouvelle Session
           </Link>
+          <button
+            onClick={handleLogout}
+            className="mt-2 flex items-center gap-2 px-4 py-2 w-full text-on-surface-variant hover:text-error font-label-md text-label-md transition-colors"
+          >
+            <span className="material-symbols-outlined text-[18px]">logout</span>
+            Déconnexion
+          </button>
         </div>
       </aside>
 

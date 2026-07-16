@@ -1,15 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
-
-/* ── Nav ── */
-const NAV = [
-  { icon: 'dashboard',      label: 'Dashboard',   to: '/admin',              active: true },
-  { icon: 'calendar_today', label: 'Bookings',     to: '/admin/bookings'           },
-  { icon: 'inventory_2',    label: 'Produits',     to: '/admin/products/add'       },
-  { icon: 'history_edu',    label: 'Historique',   to: '/admin/orders'             },
-  { icon: 'analytics',      label: 'Analytics',    to: '/admin/analytics'          },
-  { icon: 'settings',       label: 'Paramètres',   to: '/admin/settings'           },
-]
+import { Link } from 'react-router-dom'
+import AdminLayout from '../../components/layout/AdminLayout'
 
 /* ── Data ── */
 const STATS = [
@@ -141,82 +132,9 @@ export default function SuperAdminPanel() {
     setUsers(u => u.map(x => x.name === name ? { ...x, role } : x))
 
   return (
-    <div className="flex min-h-screen bg-surface text-on-surface font-body-md">
-
-      {/* ── Sidebar ── */}
-      <aside className="h-screen w-64 fixed left-0 top-0 flex flex-col py-stack-lg border-r border-outline-variant bg-surface-container-low z-[60]">
-        <div className="px-6 mb-10">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-sage-deep flex items-center justify-center text-white shadow-sm">
-              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>spa</span>
-            </div>
-            <div>
-              <h1 className="font-headline-sm text-headline-sm text-sage-deep leading-none">Zen Admin</h1>
-              <p className="font-label-md text-[10px] tracking-widest uppercase text-outline mt-1">Practitioner Suite</p>
-            </div>
-          </div>
-        </div>
-
-        <nav className="flex-1 space-y-1">
-          {NAV.map(n => (
-            <NavLink
-              key={n.to}
-              to={n.to}
-              className={({ isActive }) =>
-                `flex items-center px-6 py-3 gap-3 transition-all duration-200 font-label-md text-label-md ${
-                  isActive || n.active
-                    ? 'text-primary font-semibold border-r-4 border-primary bg-primary-fixed'
-                    : 'text-on-surface-variant hover:bg-surface-variant'
-                }`
-              }
-            >
-              <span className="material-symbols-outlined">{n.icon}</span>
-              {n.label}
-            </NavLink>
-          ))}
-        </nav>
-
-        <div className="px-6 mt-auto pt-6 border-t border-outline-variant space-y-2">
-          <a href="#" className="flex items-center gap-3 py-2 text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md">
-            <span className="material-symbols-outlined">help</span>Support
-          </a>
-          <a href="#" className="flex items-center gap-3 py-2 text-on-surface-variant hover:text-error transition-colors font-label-md text-label-md">
-            <span className="material-symbols-outlined">logout</span>Sign Out
-          </a>
-        </div>
-      </aside>
-
-      {/* ── Top bar ── */}
-      <header className="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 bg-surface/90 backdrop-blur-md z-50 flex justify-between items-center px-gutter shadow-sm">
-        <h2 className="font-headline-sm text-headline-sm text-primary">System Overview</h2>
-        <div className="flex items-center gap-6">
-          <div className="relative hidden lg:flex items-center bg-surface-container-lowest border border-outline-variant/30 rounded-full px-4 py-1.5">
-            <span className="material-symbols-outlined text-outline text-lg">search</span>
-            <input
-              className="bg-transparent border-none focus:outline-none text-sm font-body-md w-52 placeholder:text-outline/50 ml-2"
-              placeholder="Global search..."
-              type="text"
-            />
-          </div>
-          <div className="flex items-center gap-3">
-            <button className="w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-variant transition-colors relative">
-              <span className="material-symbols-outlined">notifications</span>
-              <span className="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-surface" />
-            </button>
-            <div className="w-8 h-8 rounded-full overflow-hidden border border-outline-variant">
-              <img
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCb379I06t0SaHj-qvwonT2qxfyvP2z9JQl-CjjWG-bSlVqT1xVf0id_a5zNIxLML0wjALjdT8caSNZ9kAAfJowui_CPjtJMlJEEE8NMT4aQmBOtDO0eaAYxsqvT1OpOsw1MozVUGJTWg78cl_-BaV4v0Zr5Twp2IGd-hzoK7RTUPSMzVYM7Rnyfk7EYcGwj7uMFA0jxFv4grPrg92ZnqBUi-ftRzjrOWe8oKuerN2c12uyX5uc31DLuj2wUyt8rm0fxgYMIw9PWkzt"
-                alt="Admin"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* ── Main ── */}
-      <main className="ml-64 pt-16 min-h-screen px-gutter pb-section-gap">
-        <div className="max-w-container-max mx-auto pt-stack-lg space-y-stack-lg">
+    <AdminLayout title="Vue Système">
+      <div className="px-gutter pb-section-gap pt-stack-lg">
+        <div className="max-w-container-max mx-auto space-y-stack-lg">
 
           {/* ── KPI Cards ── */}
           <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
@@ -360,13 +278,8 @@ export default function SuperAdminPanel() {
             </aside>
           </div>
         </div>
+      </div>
 
-        <footer className="py-stack-lg border-t border-outline-variant mt-section-gap opacity-30 text-center">
-          <p className="font-label-md text-label-md">© 2024 Zen Massage &amp; Wellness Admin Suite • Tranquility in Every Pixel</p>
-        </footer>
-      </main>
-
-      {/* ── Modal ── */}
       {editUser && (
         <RoleModal
           user={editUser}
@@ -374,6 +287,6 @@ export default function SuperAdminPanel() {
           onSave={role => saveRole(editUser.name, role)}
         />
       )}
-    </div>
+    </AdminLayout>
   )
 }

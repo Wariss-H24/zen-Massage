@@ -1,15 +1,34 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { authService } from '../services/auth.service'
 
 export default function Login() {
   useEffect(() => {
     document.title = 'Connexion | Zen Massage & Wellness Gabon'
   }, [])
 
+  const navigate = useNavigate()
   const [email, setEmail]       = useState('')
   const [password, setPassword] = useState('')
   const [remember, setRemember] = useState(false)
   const [showPwd, setShowPwd]   = useState(false)
+  const [error, setError]       = useState('')
+  const [loading, setLoading]   = useState(false)
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setError('')
+    setLoading(true)
+    try {
+      const res = await authService.login({ email, password })
+      const role = res.data.role
+      navigate(role === 'USER' ? '/account' : '/admin')
+    } catch (err: any) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-surface font-body-md text-on-surface">
@@ -57,7 +76,7 @@ export default function Login() {
               </p>
             </div>
 
-            <form className="space-y-stack-lg" onSubmit={e => e.preventDefault()}>
+            <form className="space-y-stack-lg" onSubmit={handleSubmit}>
 
               {/* Email */}
               <div className="group">
@@ -123,13 +142,19 @@ export default function Login() {
                 </Link>
               </div>
 
+              {/* Erreur */}
+              {error && (
+                <p className="text-error font-body-md text-body-md text-center">{error}</p>
+              )}
+
               {/* CTA */}
               <div className="pt-4">
                 <button
                   type="submit"
-                  className="w-full py-4 px-stack-lg bg-transparent border-2 border-sage-deep text-sage-deep font-label-md text-label-md uppercase tracking-widest rounded-full hover:bg-sage-deep hover:text-white transition-all duration-300 active:scale-95 flex justify-center items-center gap-2"
+                  disabled={loading}
+                  className="w-full py-4 px-stack-lg bg-transparent border-2 border-sage-deep text-sage-deep font-label-md text-label-md uppercase tracking-widest rounded-full hover:bg-sage-deep hover:text-white transition-all duration-300 active:scale-95 flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Se connecter
+                  {loading ? 'Connexion...' : 'Se connecter'}
                   <span className="material-symbols-outlined">arrow_forward</span>
                 </button>
               </div>

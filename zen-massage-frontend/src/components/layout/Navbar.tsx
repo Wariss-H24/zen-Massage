@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
+import { useAuth } from '../../context/AuthContext'
 
 const navLinks = [
   { to: '/services', label: 'Services' },
@@ -10,6 +11,7 @@ const navLinks = [
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const { user } = useAuth()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50)
@@ -51,12 +53,33 @@ export default function Navbar() {
         </div>
 
         {/* CTA */}
-        <Link
-          to="/appointments"
-          className="hidden md:inline-flex px-6 py-2 border border-sage-deep text-sage-deep font-label-md text-label-md rounded-full hover:bg-sage-deep hover:text-white transition-all duration-300"
-        >
-          Prendre rendez-vous
-        </Link>
+        {user?.role === 'SUPER_ADMIN' || user?.role === 'ADMIN' ? (
+          <div className="hidden md:flex items-center gap-3">
+            <Link
+              to="/admin"
+              className="hidden md:inline-flex items-center gap-2 px-6 py-2 bg-sage-deep text-white font-label-md text-label-md rounded-full hover:opacity-90 transition-all duration-300"
+            >
+              <span className="material-symbols-outlined text-[18px]">dashboard</span>
+              Espace Praticien
+            </Link>
+            {user.role === 'SUPER_ADMIN' && (
+              <Link
+                to="/admin/super"
+                className="hidden md:inline-flex items-center gap-2 px-6 py-2 border border-sage-deep text-sage-deep font-label-md text-label-md rounded-full hover:bg-sage-deep hover:text-white transition-all duration-300"
+              >
+                <span className="material-symbols-outlined text-[18px]">admin_panel_settings</span>
+                Dashboard
+              </Link>
+            )}
+          </div>
+        ) : (
+          <Link
+            to="/appointments"
+            className="hidden md:inline-flex px-6 py-2 border border-sage-deep text-sage-deep font-label-md text-label-md rounded-full hover:bg-sage-deep hover:text-white transition-all duration-300"
+          >
+            Prendre rendez-vous
+          </Link>
+        )}
 
         {/* Mobile burger */}
         <button
@@ -94,6 +117,24 @@ export default function Navbar() {
           >
             Prendre rendez-vous
           </Link>
+          {(user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN') && (
+            <Link
+              to="/admin"
+              onClick={() => setMenuOpen(false)}
+              className="block w-full text-center px-6 py-2 bg-sage-deep text-white font-label-md text-label-md rounded-full hover:opacity-90 transition-all"
+            >
+              Espace Praticien
+            </Link>
+          )}
+          {user?.role === 'SUPER_ADMIN' && (
+            <Link
+              to="/admin/super"
+              onClick={() => setMenuOpen(false)}
+              className="block w-full text-center px-6 py-2 border border-sage-deep text-sage-deep font-label-md text-label-md rounded-full hover:bg-sage-deep hover:text-white transition-all"
+            >
+              Vue Système
+            </Link>
+          )}
         </div>
       )}
     </nav>

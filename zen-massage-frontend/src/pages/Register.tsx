@@ -1,16 +1,42 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { authService } from '../services/auth.service'
 
 export default function Register() {
   useEffect(() => {
     document.title = 'Inscription | Zen Massage & Wellness Gabon'
   }, [])
 
+  const navigate = useNavigate()
   const [form, setForm] = useState({
     firstName: '', lastName: '', email: '', phone: '', password: '', confirm: '', terms: false,
   })
+  const [error, setError]   = useState('')
+  const [loading, setLoading] = useState(false)
 
   const set = (k: string, v: string | boolean) => setForm(f => ({ ...f, [k]: v }))
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setError('')
+    if (form.password !== form.confirm) return setError('Les mots de passe ne correspondent pas')
+    if (!form.terms) return setError('Veuillez accepter les conditions d\'utilisation')
+    setLoading(true)
+    try {
+      await authService.register({
+        firstName: form.firstName,
+        lastName: form.lastName,
+        email: form.email,
+        password: form.password,
+        phone: form.phone || undefined,
+      })
+      navigate('/account')
+    } catch (err: any) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row overflow-x-hidden">
@@ -61,7 +87,7 @@ export default function Register() {
             </p>
           </header>
 
-          <form className="space-y-stack-lg" onSubmit={e => e.preventDefault()}>
+          <form className="space-y-stack-lg" onSubmit={handleSubmit}>
 
             {/* Prénom / Nom */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter">
@@ -133,13 +159,19 @@ export default function Register() {
               </label>
             </div>
 
+            {/* Erreur */}
+            {error && (
+              <p className="text-error font-body-md text-body-md text-center">{error}</p>
+            )}
+
             {/* CTA */}
             <div className="pt-6">
               <button
                 type="submit"
-                className="w-full py-4 px-6 rounded-full border-2 border-primary text-primary font-label-md text-label-md hover:bg-primary hover:text-white transition-all duration-300 group flex items-center justify-center gap-2"
+                disabled={loading}
+                className="w-full py-4 px-6 rounded-full border-2 border-primary text-primary font-label-md text-label-md hover:bg-primary hover:text-white transition-all duration-300 group flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <span>S'inscrire</span>
+                <span>{loading ? 'Inscription...' : "S'inscrire"}</span>
                 <span className="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
               </button>
             </div>
