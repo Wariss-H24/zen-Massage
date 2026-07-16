@@ -41,14 +41,6 @@ function GuestOnly({ children }: { children: React.ReactNode }) {
   return <Navigate to="/account" replace />
 }
 
-// Requiert un utilisateur connecté (n'importe quel rôle)
-function RequireAuth({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useAuth()
-  if (loading) return null
-  if (!user) return <Navigate to="/login" replace />
-  return <>{children}</>
-}
-
 // Requiert le rôle USER uniquement (pas admin)
 function RequireUser({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth()
