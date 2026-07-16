@@ -18,4 +18,4 @@ app.get('/health', (_req, res) => res.json({ status: 'ok' }))
 
 app.use(errorHandler)
 
-app.listen(PORT, () => console.log(`🌿 Zen API running on port ${PORT}`))
+app.listen(PORT, () => console.log(`🌿 Ben API running on port ${PORT}`))

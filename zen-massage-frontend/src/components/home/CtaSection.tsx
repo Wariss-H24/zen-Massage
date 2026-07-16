@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom'
 import { useInView } from '../../hooks/useInView'
+import { useAuth } from '../../context/AuthContext'
 
 export default function CtaSection() {
   const [ref, isInView] = useInView(0.1)
+  const { user } = useAuth()
 
   return (
     <section
@@ -27,7 +29,7 @@ export default function CtaSection() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              to="/appointments"
+              to={user ? "/appointments" : "/login"}
               className="bg-white text-sage-deep px-10 py-4 rounded-xl font-label-md text-label-md hover:bg-sand-light transition-colors shadow-lg"
             >
               Réserver maintenant

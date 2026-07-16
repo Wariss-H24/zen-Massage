@@ -1,7 +1,7 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import Footer from './Footer'
-import { authService } from '../../services/auth.service'
+import { useAuth } from '../../context/AuthContext'
 
 const NAV = [
   { to: '/account', icon: 'calendar_today', label: 'Mes Rendez-vous' },
@@ -24,10 +24,13 @@ interface Props {
 export default function UserLayout({ children, title, subtitle, headerRight }: Props) {
   const { pathname } = useLocation()
   const navigate = useNavigate()
+  const { logout } = useAuth()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   async function handleLogout() {
-    await authService.logout()
-    navigate('/login')
+    setMobileMenuOpen(false)
+    await logout()
+    navigate('/', { replace: true })
   }
 
   return (
@@ -91,9 +94,9 @@ export default function UserLayout({ children, title, subtitle, headerRight }: P
       {/* ── Main ── */}
       <main className="flex-1 md:ml-64 min-h-screen flex flex-col">
 
-        {/* Header */}
+        {/* Header avec bouton burger mobile */}
         <header
-          className="sticky top-0 z-30 px-6 md:px-margin-desktop py-5 flex justify-between items-center border-b border-outline-variant/10"
+          className="sticky top-0 z-30 px-4 md:px-margin-desktop py-4 flex justify-between items-center border-b border-outline-variant/10"
           style={{ backdropFilter: 'blur(12px)', backgroundColor: 'rgba(250,249,247,0.9)' }}
         >
           <div>
@@ -102,19 +105,95 @@ export default function UserLayout({ children, title, subtitle, headerRight }: P
               <p className="font-body-md text-body-md text-on-surface-variant">{subtitle}</p>
             )}
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             {headerRight ?? (
               <>
                 <button className="text-on-surface-variant hover:text-primary transition-colors">
                   <span className="material-symbols-outlined">notifications</span>
                 </button>
-                <button className="md:hidden p-2 text-on-surface">
-                  <span className="material-symbols-outlined">menu</span>
+                <button
+                  className="md:hidden flex items-center justify-center w-10 h-10 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-lg transition-all"
+                  onClick={() => setMobileMenuOpen(v => !v)}
+                  aria-label="Menu"
+                >
+                  <span className="material-symbols-outlined text-2xl">
+                    {mobileMenuOpen ? 'close' : 'menu'}
+                  </span>
                 </button>
               </>
             )}
           </div>
         </header>
+
+        {/* Panneau latéral mobile */}
+        {mobileMenuOpen && (
+          <>
+            <div
+              className="md:hidden fixed inset-0 bg-black/30 z-40"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+            <div className="md:hidden fixed top-0 right-0 h-full w-72 z-50 bg-surface shadow-2xl animate-slide-in">
+              <div className="flex flex-col h-full p-6">
+                <div className="flex items-center justify-between mb-8">
+                  <h3 className="font-headline-sm text-headline-sm text-sage-deep">Menu</h3>
+                  <button
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="p-2 text-on-surface-variant hover:text-primary rounded-lg"
+                  >
+                    <span className="material-symbols-outlined">close</span>
+                  </button>
+                </div>
+
+                <nav className="flex-1 space-y-2">
+                  {NAV.map(n => {
+                    const active = pathname === n.to
+                    return (
+                      <Link
+                        key={n.to}
+                        to={n.to}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 font-label-md text-label-md ${
+                          active
+                            ? 'text-primary font-bold bg-surface-container-high'
+                            : 'text-on-surface-variant hover:bg-surface-container-highest'
+                        }`}
+                      >
+                        <span className="material-symbols-outlined">{n.icon}</span>
+                        {n.label}
+                      </Link>
+                    )
+                  })}
+                </nav>
+
+                <div className="pt-6 border-t border-outline-variant/20 space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full overflow-hidden bg-sand-light flex-shrink-0">
+                      <img src={AVATAR} alt="Avatar" className="w-full h-full object-cover" />
+                    </div>
+                    <div>
+                      <p className="font-label-md text-label-md text-on-surface font-bold">Marc Dupont</p>
+                      <p className="font-caption text-caption text-on-surface-variant">Membre Sérénité</p>
+                    </div>
+                  </div>
+                  <Link
+                    to="/appointments"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block w-full py-3 px-4 border border-sage-deep text-sage-deep rounded-xl font-label-md text-label-md text-center hover:bg-sage-deep hover:text-white transition-all duration-300"
+                  >
+                    Nouvelle Session
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center justify-center gap-2 w-full py-3 px-4 text-on-surface-variant hover:text-error font-label-md text-label-md transition-colors rounded-xl hover:bg-error/5"
+                  >
+                    <span className="material-symbols-outlined text-[20px]">logout</span>
+                    Déconnexion
+                  </button>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
 
         {/* Content */}
         <div className="flex-1 pb-24 md:pb-0">
@@ -143,9 +222,12 @@ export default function UserLayout({ children, title, subtitle, headerRight }: P
             <span className="material-symbols-outlined text-3xl">add</span>
           </Link>
         </div>
-        <button className="flex flex-col items-center gap-1 text-on-surface-variant opacity-60">
-          <span className="material-symbols-outlined">notifications</span>
-          <span className="text-[10px] font-label-md">Alertes</span>
+        <button
+          onClick={handleLogout}
+          className="flex flex-col items-center gap-1 text-on-surface-variant opacity-60 hover:text-error transition-colors"
+        >
+          <span className="material-symbols-outlined">logout</span>
+          <span className="text-[10px] font-label-md">Déconnexion</span>
         </button>
         <Link to="/profile" className={`flex flex-col items-center gap-1 ${pathname === '/profile' ? 'text-primary' : 'text-on-surface-variant opacity-60'}`}>
           <span className="material-symbols-outlined" style={{ fontVariationSettings: pathname === '/profile' ? "'FILL' 1" : "'FILL' 0" }}>person</span>

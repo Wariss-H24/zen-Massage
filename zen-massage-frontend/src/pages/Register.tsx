@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import { authService } from '../services/auth.service'
 
 export default function Register() {
@@ -8,6 +9,7 @@ export default function Register() {
   }, [])
 
   const navigate = useNavigate()
+  const { refreshUser } = useAuth()
   const [form, setForm] = useState({
     firstName: '', lastName: '', email: '', phone: '', password: '', confirm: '', terms: false,
   })
@@ -23,6 +25,7 @@ export default function Register() {
     if (!form.terms) return setError('Veuillez accepter les conditions d\'utilisation')
     setLoading(true)
     try {
+      // Inscription — l'API renvoie un cookie de connexion
       await authService.register({
         firstName: form.firstName,
         lastName: form.lastName,
@@ -30,7 +33,9 @@ export default function Register() {
         password: form.password,
         phone: form.phone || undefined,
       })
-      navigate('/account')
+      // Recharge l'utilisateur connecté
+      await refreshUser()
+      navigate('/account', { replace: true })
     } catch (err: any) {
       setError(err.message)
     } finally {

@@ -1,4 +1,4 @@
-export const COOKIE_NAME = 'zen_token'
+export const COOKIE_NAME = 'ben_token'
 
 export const COOKIE_OPTIONS = {
   httpOnly: true,

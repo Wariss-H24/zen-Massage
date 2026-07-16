@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { authService } from '../services/auth.service'
+import { useAuth } from '../context/AuthContext'
 
 export default function Login() {
   useEffect(() => {
@@ -8,6 +8,7 @@ export default function Login() {
   }, [])
 
   const navigate = useNavigate()
+  const { login } = useAuth()
   const [email, setEmail]       = useState('')
   const [password, setPassword] = useState('')
   const [remember, setRemember] = useState(false)
@@ -20,9 +21,8 @@ export default function Login() {
     setError('')
     setLoading(true)
     try {
-      const res = await authService.login({ email, password })
-      const role = res.data.role
-      navigate(role === 'USER' ? '/account' : '/admin')
+      const user = await login(email, password)
+      navigate(user.role === 'USER' ? '/account' : '/admin', { replace: true })
     } catch (err: any) {
       setError(err.message)
     } finally {
