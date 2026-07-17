@@ -8,7 +8,7 @@ import QuoteSection from '../components/about/QuoteSection'
 
 export default function About() {
   useEffect(() => {
-    document.title = 'À propos | Zen Massage & Wellness Gabon'
+    document.title = 'À propos | Ben Massage & Wellness Gabon'
   }, [])
 
   return (

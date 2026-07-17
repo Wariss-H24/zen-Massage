@@ -26,7 +26,7 @@ export default function OrderHistory() {
   const [filter, setFilter] = useState<Status>('Tous')
   const [page, setPage] = useState(1)
 
-  useEffect(() => { document.title = 'Order History | Admin Zen Massage' }, [])
+  useEffect(() => { document.title = 'Order History | Admin Ben Massage' }, [])
 
   const filtered = filter === 'Tous' ? ORDERS : ORDERS.filter(o => o.status === filter)
   const FILTERS: Status[] = ['Tous', 'Livré', 'En cours', 'Annulé']

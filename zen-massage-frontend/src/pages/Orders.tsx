@@ -16,7 +16,7 @@ interface OrderItem {
 /* ── Data ── */
 const ORDERS: OrderItem[] = [
   {
-    id: '#ZEN-89422',
+    id: '#BEN-89422',
     date: '12 Octobre 2024',
     total: '84.000 FCFA',
     status: 'En cours',
@@ -24,10 +24,10 @@ const ORDERS: OrderItem[] = [
       'https://lh3.googleusercontent.com/aida-public/AB6AXuBUCdxco_IMGL6XCA4aWt4ykzPhb9SlZyV17tZdnSkLGykBW3ewdYmwwGi9yO920J1rUI6fGEY8KsLjI4sXShHkFnjsyGXkTRWluZerP81ySL3OaBgp2vLl16ub2UwCLMov-AiRaL_tTJX8P87__GBHUX-6iCKrhhVkHkgUIl2DjDlNwqbSRomeZ2MFR0oynddM66_W6TQIPszqY9fo00mwX0lEKFdN54ZGd1dB2CQqFSrmgWU-cKa5rg',
       'https://lh3.googleusercontent.com/aida-public/AB6AXuDL5YbFkarHwpeza00wPzBRc4F5mWxQawjTLQpb21cJLC4Eboo8QMZ5IgW6gvc-g5Q1htxftP2ooKpyj0z4kd1FNpKusQIFo1NFYARxVG7gJZwvgVlkfWKyt57-BcXTi3tKuNpsjxndlLGFKOgsuyqgMim6G0MAzE5V_lbzxy7WmYNItk6dBA-sgjwKK85pEr6fT8Dejh7LtndxbktOG2YoxPxCYFzotnMagLPXKg6xVwoVEAy4JOPhCw',
     ],
-    items: ['Huile de Massage Sérénité', 'Bougie Zen Arôme'],
+    items: ['Huile de Massage Sérénité', 'Bougie Ben Arôme'],
   },
   {
-    id: '#ZEN-77310',
+    id: '#BEN-77310',
     date: '28 Septembre 2024',
     total: '45.500 FCFA',
     status: 'Livré',
@@ -37,7 +37,7 @@ const ORDERS: OrderItem[] = [
     items: ['Kit Pierres Chaudes Himalaya'],
   },
   {
-    id: '#ZEN-66291',
+    id: '#BEN-66291',
     date: '15 Août 2024',
     total: '120.000 FCFA',
     status: 'Livré',
@@ -48,7 +48,7 @@ const ORDERS: OrderItem[] = [
     items: ['Huiles Essentielles Bio x3', 'Sauge & Palo Santo'],
   },
   {
-    id: '#ZEN-55104',
+    id: '#BEN-55104',
     date: '3 Juillet 2024',
     total: '28.000 FCFA',
     status: 'Annulé',
@@ -137,7 +137,7 @@ export default function Orders() {
   const [search, setSearch] = useState('')
 
   useEffect(() => {
-    document.title = 'Mes Commandes | Zen Massage & Wellness Gabon'
+    document.title = 'Mes Commandes | Ben Massage & Wellness Gabon'
   }, [])
 
   const filtered = useMemo(() =>

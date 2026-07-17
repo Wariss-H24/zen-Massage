@@ -87,7 +87,7 @@ export default function Checkout() {
   const [form, setForm] = useState({ name: '', email: '', address: '', phone: '' })
 
   useEffect(() => {
-    document.title = 'Finaliser la commande | Zen Massage & Wellness'
+    document.title = 'Finaliser la commande | Ben Massage & Wellness'
   }, [])
 
   const set = (k: string, v: string) => setForm(f => ({ ...f, [k]: v }))

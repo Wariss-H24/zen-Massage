@@ -158,7 +158,7 @@ export default function Appointments() {
   const [confirmed, setConfirmed]     = useState(false)
 
   useEffect(() => {
-    document.title = 'Prendre rendez-vous | Zen Massage & Wellness Gabon'
+    document.title = 'Prendre rendez-vous | Ben Massage & Wellness Gabon'
   }, [])
 
   const canGoStep2 = !!selectedService

@@ -35,7 +35,7 @@ const ORDERS: Order[] = [
   { id: '#ZN-94818', initials: 'AB', bg: 'bg-sand-light',      textColor: 'text-secondary',    name: 'Amélie Bertrand', email: 'a.bertrand@mail.com',    date: '21 Oct, 2023', status: 'Livré',    amount: '125.000 FCFA' },
   { id: '#ZN-94817', initials: 'JV', bg: 'bg-primary-fixed',   textColor: 'text-primary',      name: 'Jean Valjean',    email: 'j.valjean@history.com',  date: '20 Oct, 2023', status: 'Livré',    amount: '340.000 FCFA' },
   { id: '#ZN-94816', initials: 'KN', bg: 'bg-secondary-fixed', textColor: 'text-on-secondary-fixed', name: 'Kofi Ndong', email: 'k.ndong@gabon.com',   date: '19 Oct, 2023', status: 'En cours', amount: '78.000 FCFA'  },
-  { id: '#ZN-94815', initials: 'MO', bg: 'bg-primary-fixed',   textColor: 'text-primary',      name: 'Marie Obame',     email: 'm.obame@zen.com',        date: '18 Oct, 2023', status: 'Livré',    amount: '450.000 FCFA' },
+  { id: '#ZN-94815', initials: 'MO', bg: 'bg-primary-fixed',   textColor: 'text-primary',      name: 'Marie Obame',     email: 'm.obame@ben.com',        date: '18 Oct, 2023', status: 'Livré',    amount: '450.000 FCFA' },
 ]
 
 const STATUS_STYLE: Record<Status, string> = {
@@ -53,7 +53,7 @@ export default function ActivityLog() {
   const [page, setPage]       = useState(1)
 
   useEffect(() => {
-    document.title = 'Historique Commandes | Admin Zen Massage'
+    document.title = 'Historique Commandes | Admin Ben Massage'
   }, [])
 
   /* reset page on filter/search change */
@@ -78,7 +78,7 @@ export default function ActivityLog() {
       {/* ── Sidebar ── */}
       <aside className="h-screen w-64 fixed left-0 top-0 flex flex-col py-stack-lg border-r border-outline-variant bg-surface z-50">
         <div className="px-6 mb-10">
-          <h1 className="font-headline-sm text-headline-sm text-sage-deep">Zen Admin</h1>
+          <h1 className="font-headline-sm text-headline-sm text-sage-deep">Ben Admin</h1>
           <p className="font-label-md text-label-md text-on-surface-variant opacity-70">Practitioner Suite</p>
         </div>
 

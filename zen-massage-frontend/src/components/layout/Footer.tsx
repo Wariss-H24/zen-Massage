@@ -29,7 +29,7 @@ export default function Footer() {
             to="/"
             className="block font-display-lg text-headline-sm text-white hover:opacity-80 transition-opacity"
           >
-            Zen Massage &amp; Wellness
+            Ben Massage &amp; Wellness
           </Link>
           <p className="font-caption text-caption text-surface-container-high opacity-80 leading-relaxed max-w-xs">
             Votre sanctuaire de bien-être au Gabon. Excellence holistique et rituels de soins
@@ -88,7 +88,7 @@ export default function Footer() {
             </li>
             <li className="flex items-center space-x-3 text-surface-variant font-caption text-caption">
               <span className="material-symbols-outlined text-lg">mail</span>
-              <span>contact@zenwellness-gabon.com</span>
+              <span>contact@benwellness-gabon.com</span>
             </li>
           </ul>
         </div>

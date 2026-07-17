@@ -57,7 +57,7 @@ const TOP_SERVICES = [
 const TRANSACTIONS = [
   { initials: 'MB', bg: 'bg-secondary-fixed', text: 'text-on-secondary-fixed', name: 'Marie Bernard',    service: 'Massage Pierre Chaudes', date: '12 Juin, 14:00', amount: '95 €',  status: 'Confirmé' },
   { initials: 'JR', bg: 'bg-primary-fixed',   text: 'text-primary',            name: 'Jean-Luc Richard', service: 'Soin Énergie Vital',      date: '12 Juin, 11:30', amount: '120 €', status: 'Confirmé' },
-  { initials: 'AL', bg: 'bg-secondary-container', text: 'text-on-secondary-container', name: 'Alice Laurent', service: 'Abonnement Zen Gold', date: '11 Juin, 17:45', amount: '550 €', status: 'Confirmé' },
+  { initials: 'AL', bg: 'bg-secondary-container', text: 'text-on-secondary-container', name: 'Alice Laurent', service: 'Abonnement Ben Gold', date: '11 Juin, 17:45', amount: '550 €', status: 'Confirmé' },
 ]
 
 /* ── Animated bar ── */
@@ -83,17 +83,17 @@ function Bar({ height, color, delay }: { height: number; color: string; delay: n
 
 export default function Statistics() {
   useEffect(() => {
-    document.title = 'Analytics | Admin Zen Massage'
+    document.title = 'Analytics | Admin Ben Massage'
   }, [])
 
   return (
-    <AdminLayout title="Zen Massage &amp; Wellness">
+    <AdminLayout title="Ben Massage &amp; Wellness">
       <main className="pt-8 pb-stack-lg px-gutter min-h-screen">
 
         {/* Header */}
         <section className="mb-stack-lg">
           <h2 className="font-headline-md text-headline-md mb-2">Performance &amp; Insights</h2>
-          <p className="font-body-md text-body-md text-on-surface-variant">Suivi détaillé de l'activité du sanctuaire Zen Wellness.</p>
+          <p className="font-body-md text-body-md text-on-surface-variant">Suivi détaillé de l'activité du sanctuaire Ben Wellness.</p>
         </section>
 
         {/* ── KPI Cards ── */}
@@ -184,7 +184,7 @@ export default function Statistics() {
               ))}
               <div className="mt-4 p-4 bg-white/40 rounded-lg border border-white/50">
                 <p className="text-xs font-body-md text-on-surface-variant italic leading-relaxed">
-                  "Le programme de fidélité 'Zen Gold' a boosté la rétention de 12% ce trimestre."
+                  "Le programme de fidélité 'Ben Gold' a boosté la rétention de 12% ce trimestre."
                 </p>
               </div>
             </div>
@@ -287,7 +287,7 @@ export default function Statistics() {
         </section>
 
         <footer className="py-stack-lg border-t border-outline-variant mt-section-gap opacity-30 text-center">
-          <p className="font-label-md text-label-md">© 2024 Zen Massage &amp; Wellness Admin Suite</p>
+          <p className="font-label-md text-label-md">© 2024 Ben Massage &amp; Wellness Admin Suite</p>
         </footer>
       </main>
     </AdminLayout>

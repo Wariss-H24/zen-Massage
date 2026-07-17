@@ -142,7 +142,7 @@ export default function Products() {
   const [search, setSearch] = useState('')
 
   useEffect(() => {
-    document.title = 'Boutique | Zen Massage & Wellness Gabon'
+    document.title = 'Boutique | Ben Massage & Wellness Gabon'
   }, [])
 
   const filtered = useMemo(() => {

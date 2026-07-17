@@ -82,7 +82,7 @@ export default function ProductDetail() {
   const [openAccordion, setOpenAccordion] = useState<string | null>(null)
 
   useEffect(() => {
-    document.title = "Huile d'Éveil de l'Okoumé | Zen Massage & Wellness"
+    document.title = "Huile d'Éveil de l'Okoumé | Ben Massage & Wellness"
   }, [])
 
   const toggleAccordion = (key: string) =>

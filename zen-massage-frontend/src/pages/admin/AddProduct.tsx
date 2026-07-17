@@ -16,7 +16,7 @@ export default function AddProduct() {
   const [form, setForm] = useState({ name: '', description: '', price: '', stock: '', category: '' })
   const [visible, setVisible] = useState(true)
 
-  useEffect(() => { document.title = 'Ajouter un produit | Admin Zen Massage' }, [])
+  useEffect(() => { document.title = 'Ajouter un produit | Admin Ben Massage' }, [])
 
   const set = (k: string, v: string) => setForm(f => ({ ...f, [k]: v }))
 

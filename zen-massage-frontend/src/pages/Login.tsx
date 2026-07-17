@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext'
 
 export default function Login() {
   useEffect(() => {
-    document.title = 'Connexion | Zen Massage & Wellness Gabon'
+    document.title = 'Connexion | Ben Massage & Wellness Gabon'
   }, [])
 
   const navigate = useNavigate()
@@ -37,7 +37,7 @@ export default function Login() {
       <header className="fixed top-0 left-0 w-full z-50 py-stack-md flex justify-center md:justify-start md:px-margin-desktop">
         <Link to="/" className="group flex items-center gap-2">
           <span className="font-display-lg text-headline-sm text-sage-deep group-hover:text-primary transition-colors duration-300">
-            Zen Massage &amp; Wellness
+            Ben Massage &amp; Wellness
           </span>
         </Link>
       </header>
@@ -176,7 +176,7 @@ export default function Login() {
       {/* ── Bottom footer ── */}
       <footer className="fixed bottom-0 w-full py-6 px-margin-desktop hidden md:flex justify-between items-center bg-transparent pointer-events-none">
         <p className="font-caption text-caption text-on-surface-variant opacity-60">
-          © 2024 Zen Massage &amp; Wellness Gabon. Sanctuaire à travers le design.
+          © 2024 Ben Massage &amp; Wellness Gabon. Sanctuaire à travers le design.
         </p>
         <div className="flex gap-stack-lg pointer-events-auto">
           <a href="#" className="font-caption text-caption text-on-surface-variant hover:text-primary transition-colors">Contact</a>

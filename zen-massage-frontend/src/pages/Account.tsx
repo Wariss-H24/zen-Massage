@@ -35,7 +35,7 @@ const APPOINTMENTS = [
 
 export default function Account() {
   useEffect(() => {
-    document.title = 'Mon Compte | Zen Massage & Wellness Gabon'
+    document.title = 'Mon Compte | Ben Massage & Wellness Gabon'
   }, [])
 
   const { user } = useAuth()
@@ -67,7 +67,7 @@ export default function Account() {
               <div className="relative z-10">
                 <h3 className="font-headline-md text-headline-md text-sage-deep mb-2">Bonjour, {firstName}.</h3>
                 <p className="font-body-md text-body-md text-on-surface-variant max-w-lg mb-6">
-                  Votre sanctuaire vous attend. Vous avez 2 sessions prévues ce mois-ci et 150 points de fidélité Zen cumulés.
+                  Votre sanctuaire vous attend. Vous avez 2 sessions prévues ce mois-ci et 150 points de fidélité Ben cumulés.
                 </p>
                 <div className="flex flex-wrap gap-4">
                   <div className="px-6 py-4 bg-sand-light rounded-xl">
@@ -75,7 +75,7 @@ export default function Account() {
                     <span className="block font-headline-sm text-headline-sm text-sage-deep">12 Octobre, 14:00</span>
                   </div>
                   <div className="px-6 py-4 bg-primary-fixed/30 rounded-xl">
-                    <span className="block font-caption text-caption text-on-surface-variant uppercase tracking-widest mb-1">Points Zen</span>
+                    <span className="block font-caption text-caption text-on-surface-variant uppercase tracking-widest mb-1">Points Ben</span>
                     <span className="block font-headline-sm text-headline-sm text-primary">1 250 pts</span>
                   </div>
                 </div>

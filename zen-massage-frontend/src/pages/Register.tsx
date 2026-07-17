@@ -5,7 +5,7 @@ import { authService } from '../services/auth.service'
 
 export default function Register() {
   useEffect(() => {
-    document.title = 'Inscription | Zen Massage & Wellness Gabon'
+    document.title = 'Inscription | Ben Massage & Wellness Gabon'
   }, [])
 
   const navigate = useNavigate()
@@ -56,7 +56,7 @@ export default function Register() {
         <div className="relative z-10 flex flex-col justify-between p-margin-desktop w-full text-white">
           <div className="flex items-center gap-3">
             <span className="material-symbols-outlined text-4xl">spa</span>
-            <h1 className="font-display-lg text-headline-sm tracking-tight">Zen Massage &amp; Wellness</h1>
+            <h1 className="font-display-lg text-headline-sm tracking-tight">Ben Massage &amp; Wellness</h1>
           </div>
           <div className="max-w-md">
             <h2 className="font-display-lg text-display-lg mb-stack-md leading-tight">
@@ -67,7 +67,7 @@ export default function Register() {
             </p>
           </div>
           <p className="font-caption text-caption opacity-70">
-            © 2024 Zen Massage &amp; Wellness Gabon. Sanctuaire à travers le design.
+            © 2024 Ben Massage &amp; Wellness Gabon. Sanctuaire à travers le design.
           </p>
         </div>
       </aside>
@@ -78,7 +78,7 @@ export default function Register() {
         {/* Mobile logo */}
         <div className="md:hidden flex items-center gap-2 mb-stack-lg w-full">
           <span className="material-symbols-outlined text-primary text-3xl">spa</span>
-          <span className="font-display-lg text-headline-sm text-sage-deep">Zen</span>
+          <span className="font-display-lg text-headline-sm text-sage-deep">Ben</span>
         </div>
 
         <div className="w-full max-w-lg">
@@ -160,7 +160,7 @@ export default function Register() {
                 <a href="#" className="text-primary hover:underline">conditions d'utilisation</a>
                 {' '}et la{' '}
                 <a href="#" className="text-primary hover:underline">politique de confidentialité</a>
-                {' '}de Zen Massage &amp; Wellness.
+                {' '}de Ben Massage &amp; Wellness.
               </label>
             </div>
 

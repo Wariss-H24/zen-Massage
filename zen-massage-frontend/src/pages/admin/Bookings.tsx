@@ -20,7 +20,7 @@ const CAL_EVENTS: Record<number, CalEvent[]> = {
 }
 
 const TODAY_APTS = [
-  { id: 1, name: 'Marie Dupont',    service: 'Soin Signature Zen',      time: '10:00 - 11:30', practitioner: 'Sarah J.', status: 'Confirmé',  statusStyle: 'bg-status-confirmed/10 text-status-confirmed', variant: 'default' as const, avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCw9tIUWcnjmPiIiPAeCCYp-0oIz9dx7Kt0sf79I3KZrhBdc-FNW6G7yzR-aynY4xD74WFtPIZdKmsUEUDyXg62cg5Fk-UZV9FsiINJiDvUt_PFDDqaL1uYamDPm_hCNEf8f_J9XRlTDr59ic83-CP1Yo4y3waTrjuDxIbv6nkBKlIm2Od01nT6wr93G-RqfD3RF2ekIk3anmqgckct0XUQDM_Ax8Y7lzimyT_nrtnrfwUeLGX5hJR7eg' },
+  { id: 1, name: 'Marie Dupont',    service: 'Soin Signature Ben',      time: '10:00 - 11:30', practitioner: 'Sarah J.', status: 'Confirmé',  statusStyle: 'bg-status-confirmed/10 text-status-confirmed', variant: 'default' as const, avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCw9tIUWcnjmPiIiPAeCCYp-0oIz9dx7Kt0sf79I3KZrhBdc-FNW6G7yzR-aynY4xD74WFtPIZdKmsUEUDyXg62cg5Fk-UZV9FsiINJiDvUt_PFDDqaL1uYamDPm_hCNEf8f_J9XRlTDr59ic83-CP1Yo4y3waTrjuDxIbv6nkBKlIm2Od01nT6wr93G-RqfD3RF2ekIk3anmqgckct0XUQDM_Ax8Y7lzimyT_nrtnrfwUeLGX5hJR7eg' },
   { id: 2, name: 'Jean-Marc Leroy', service: 'Massage Pierres Chaudes', time: '12:30 - 14:00', practitioner: 'Marc A.',  status: 'En cours',  statusStyle: 'bg-primary text-white',                        variant: 'active'  as const, avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAcOe0q5XOhvhxsPAj6R6JRyLricN6_7bnZ8jUlmasDugSdZb8N4-Zj0Z4ji-Fcnbb0FDDWC8of3UbRV8fAOKD-31LnyruJoLHVD3Zbo6GqaBg2CQNBf48hKuVYr4vEXdocGWwNrXuNtP0Mm7qTi0S5KZt6i7TfjhaIVT62dt9fq7hr878oQo4zFsWOarpR0_zcmXW7tQitCwF64zsIr5yds2FZnP5oxAcptfDiWHxn9YlWmVH_85taRQ' },
   { id: 3, name: 'Sophie Laurent',  service: 'Réflexologie Plantaire',  time: '15:30 - 16:30', practitioner: 'Léa M.',   status: 'En attente', statusStyle: 'bg-status-pending/20 text-secondary',          variant: 'pending' as const, avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBQ-whtNur3cv81bLxJ2MWpKXcZPdSXEML84tALTnA_fbYQExQLDxTesLcrUVX-9OOVDVSgSSwMUu1kk5i8lEita9njW1UaJuVGRJIPgkY98fGnXx3Rse8rZLxIyp_fTvuoNot10h7vBAUmDVWmJUlQnnAuFFk48aJ0Hy1zwWvYEHFOV4JKDUTd-IpzlRo4eylVLEwz4LvD3CrQRW7GRmXV0uAMWhu_OITyMkVkl1w' },
 ]
@@ -28,7 +28,7 @@ const TODAY_APTS = [
 const WEEK_ROWS = [
   { initials: 'CD', bg: 'bg-secondary-container', color: 'text-secondary', name: 'Claire Dubois',    service: 'Drainage Lymphatique', practitioner: 'Sarah Jones',  date: '12 Oct. 2023', time: '09:00 - 10:00', status: 'Confirmé',   dot: 'bg-status-confirmed' },
   { initials: 'PL', bg: 'bg-tertiary-fixed',       color: 'text-tertiary',  name: 'Pierre Lefebvre', service: 'Massage Sportif',       practitioner: 'Marc Antoine', date: '12 Oct. 2023', time: '11:15 - 12:45', status: 'Terminé',    dot: 'bg-status-completed' },
-  { initials: 'ML', bg: 'bg-primary-fixed',        color: 'text-primary',   name: 'Marie Laurent',   service: 'Soin Signature Zen',    practitioner: 'Sarah Jones',  date: '13 Oct. 2023', time: '14:00 - 15:30', status: 'En attente', dot: 'bg-status-pending' },
+  { initials: 'ML', bg: 'bg-primary-fixed',        color: 'text-primary',   name: 'Marie Laurent',   service: 'Soin Signature Ben',    practitioner: 'Sarah Jones',  date: '13 Oct. 2023', time: '14:00 - 15:30', status: 'En attente', dot: 'bg-status-pending' },
   { initials: 'OD', bg: 'bg-sand-light',           color: 'text-secondary', name: 'Omar Diallo',     service: 'Hot Stone Therapy',     practitioner: 'Léa Martin',   date: '14 Oct. 2023', time: '10:00 - 11:15', status: 'Confirmé',   dot: 'bg-status-confirmed' },
 ]
 
@@ -36,7 +36,7 @@ export default function Bookings() {
   const [modal, setModal] = useState(false)
   const [view, setView] = useState<'calendar' | 'list'>('calendar')
 
-  useEffect(() => { document.title = 'Appointments | Admin Zen Massage' }, [])
+  useEffect(() => { document.title = 'Appointments | Admin Ben Massage' }, [])
 
   return (
     <AdminLayout title="Gestion des Rendez-vous">
@@ -235,7 +235,7 @@ export default function Bookings() {
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-6">
-                {[{ label: 'Service', value: 'Soin Signature Zen (90 min)' }, { label: 'Praticien', value: 'Sarah Jones' }, { label: 'Date', value: 'Vendredi 6 Octobre' }, { label: 'Heure', value: '10:00 - 11:30' }].map(f => (
+                {[{ label: 'Service', value: 'Soin Signature Ben (90 min)' }, { label: 'Praticien', value: 'Sarah Jones' }, { label: 'Date', value: 'Vendredi 6 Octobre' }, { label: 'Heure', value: '10:00 - 11:30' }].map(f => (
                   <div key={f.label} className="space-y-1">
                     <label className="text-[10px] uppercase tracking-widest text-outline font-bold">{f.label}</label>
                     <p className="font-label-md text-label-md">{f.value}</p>

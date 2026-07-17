@@ -265,7 +265,7 @@ function QuoteSection() {
 /* ── Page ── */
 export default function Services() {
   useEffect(() => {
-    document.title = 'Services & Soins | Zen Massage & Wellness Gabon'
+    document.title = 'Services & Soins | Ben Massage & Wellness Gabon'
   }, [])
 
   return (

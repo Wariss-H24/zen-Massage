@@ -8,7 +8,7 @@ export default function ForgotPassword() {
   const [step, setStep] = useState<Step>('form')
 
   useEffect(() => {
-    document.title = 'Récupération de mot de passe | Zen Massage & Wellness'
+    document.title = 'Récupération de mot de passe | Ben Massage & Wellness'
   }, [])
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -37,7 +37,7 @@ export default function ForgotPassword() {
             <div className="w-16 h-16 bg-primary-fixed rounded-full flex items-center justify-center mb-stack-md text-primary">
               <span className="material-symbols-outlined text-4xl">spa</span>
             </div>
-            <h1 className="font-headline-md text-headline-md text-sage-deep mb-1">Zen Wellness</h1>
+            <h1 className="font-headline-md text-headline-md text-sage-deep mb-1">Ben Wellness</h1>
             <p className="font-body-md text-body-md text-on-surface-variant text-center px-gutter">
               Sérénité retrouvée. Entrez votre email pour réinitialiser votre accès.
             </p>

@@ -299,7 +299,7 @@ export default function SuperAdminPanel() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    document.title = 'Super Admin | Zen Massage & Wellness'
+    document.title = 'Super Admin | Ben Massage & Wellness'
   }, [])
 
   const fetchData = useCallback(async () => {

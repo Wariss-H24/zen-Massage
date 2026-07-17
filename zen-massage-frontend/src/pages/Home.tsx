@@ -8,7 +8,7 @@ import CtaSection from '../components/home/CtaSection'
 
 export default function Home() {
   useEffect(() => {
-    document.title = 'Zen Massage & Wellness Gabon'
+    document.title = 'Ben Massage & Wellness Gabon'
   }, [])
 
   return (

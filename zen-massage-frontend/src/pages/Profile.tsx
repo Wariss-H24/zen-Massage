@@ -15,7 +15,7 @@ export default function Profile() {
   const [saved, setSaved]   = useState(false)
 
   useEffect(() => {
-    document.title = 'Mon Profil | Zen Massage & Wellness Gabon'
+    document.title = 'Mon Profil | Ben Massage & Wellness Gabon'
   }, [])
 
   const set = (k: string, v: string) => setForm(f => ({ ...f, [k]: v }))

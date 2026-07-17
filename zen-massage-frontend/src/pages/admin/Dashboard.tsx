@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext'
 
 const APPOINTMENTS = [
   { id: 1, name: 'Julianne V.',    service: 'Thérapie Tissu Profond',   duration: '90 min', time: "Aujourd'hui, 16h30", avatar: 'JV', bg: 'bg-sand-light',      color: 'text-secondary' },
-  { id: 2, name: 'Marcus Thorne', service: 'Massage Signature Zen',    duration: '60 min', time: 'Demain, 10h00',      avatar: 'MT', bg: 'bg-primary-fixed',   color: 'text-primary' },
+  { id: 2, name: 'Marcus Thorne', service: 'Massage Signature Ben',    duration: '60 min', time: 'Demain, 10h00',      avatar: 'MT', bg: 'bg-primary-fixed',   color: 'text-primary' },
   { id: 3, name: 'Léa Fontaine',  service: 'Séance Aromathérapie',     duration: '45 min', time: 'Demain, 14h00',      avatar: 'LF', bg: 'bg-surface-variant', color: 'text-on-surface-variant' },
   { id: 4, name: 'Omar Diallo',   service: 'Thérapie Pierres Chaudes', duration: '75 min', time: 'Jeu, 11h00',         avatar: 'OD', bg: 'bg-sand-light',      color: 'text-secondary' },
 ]
@@ -13,7 +13,7 @@ const APPOINTMENTS = [
 const PRODUCTS = [
   { name: 'Huile Sérénité',      price: '48 000 FCFA', units: 24,  status: 'En stock',     statusColor: 'bg-status-confirmed/90' },
   { name: 'Kit Sel Himalaya',    price: '32 500 FCFA', units: 3,   status: 'Stock faible', statusColor: 'bg-error/90' },
-  { name: 'Bougie Zen Arôme',    price: '18 000 FCFA', units: 112, status: 'En stock',     statusColor: 'bg-status-confirmed/90' },
+  { name: 'Bougie Ben Arôme',    price: '18 000 FCFA', units: 112, status: 'En stock',     statusColor: 'bg-status-confirmed/90' },
   { name: 'Parure Lin Texturé',  price: '65 000 FCFA', units: 18,  status: 'En stock',     statusColor: 'bg-status-confirmed/90' },
 ]
 
@@ -45,7 +45,7 @@ export default function Dashboard() {
   const firstName = user?.firstName || ''
   const lastName = user?.lastName || ''
 
-  useEffect(() => { document.title = 'Espace Praticien | Zen Massage' }, [])
+  useEffect(() => { document.title = 'Espace Praticien | Ben Massage' }, [])
 
   const toggleDay = (i: number) =>
     setDays(d => d.map((day, idx) => idx === i ? { ...day, active: !day.active } : day))
@@ -245,7 +245,7 @@ export default function Dashboard() {
         </div>
 
         <footer className="py-8 border-t border-outline-variant text-center opacity-30">
-          <p className="font-label-md text-label-md">© 2024 Zen Massage & Wellness</p>
+          <p className="font-label-md text-label-md">© 2024 Ben Massage & Wellness</p>
         </footer>
       </div>
     </AdminLayout>
