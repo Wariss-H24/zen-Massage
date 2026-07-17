@@ -48,8 +48,8 @@ export default function Navbar() {
           to="/"
           className="font-display-lg text-headline-sm text-sage-deep hover:opacity-80 transition-opacity whitespace-nowrap"
         >
-          <span className="hidden sm:inline">Zen Massage & Wellness</span>
-          <span className="sm:hidden text-[20px]">Zen Massage</span>
+          <span className="hidden sm:inline">Ben Massage & Wellness</span>
+          <span className="sm:hidden text-[20px]">Ben Massage</span>
         </Link>
 
         {/* Liens desktop (md+) */}

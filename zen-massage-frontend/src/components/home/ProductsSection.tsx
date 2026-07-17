@@ -58,7 +58,7 @@ export default function ProductsSection() {
         <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
           <div>
             <span className="font-label-md text-label-md text-primary tracking-widest uppercase mb-2 block">
-              La Boutique Zen
+              La Boutique Ben
             </span>
             <h2 className="font-display-lg text-headline-md text-sage-deep">Élixirs de Sérénité</h2>
           </div>

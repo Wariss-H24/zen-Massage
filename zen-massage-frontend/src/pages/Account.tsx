@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useAuth } from '../context/AuthContext'
 import UserLayout from '../components/layout/UserLayout'
 
 /* ── Data ── */
@@ -37,6 +38,9 @@ export default function Account() {
     document.title = 'Mon Compte | Zen Massage & Wellness Gabon'
   }, [])
 
+  const { user } = useAuth()
+  const firstName = user?.firstName || ''
+
   return (
     <UserLayout title="Tableau de bord"
       headerRight={
@@ -61,7 +65,7 @@ export default function Account() {
             <div className="lg:col-span-2 p-stack-lg bg-surface-container-lowest rounded-xl border border-outline-variant/10 relative overflow-hidden"
               style={{ boxShadow: '0 20px 40px -15px rgba(44,46,48,0.05)' }}>
               <div className="relative z-10">
-                <h3 className="font-headline-md text-headline-md text-sage-deep mb-2">Bonjour, Marc.</h3>
+                <h3 className="font-headline-md text-headline-md text-sage-deep mb-2">Bonjour, {firstName}.</h3>
                 <p className="font-body-md text-body-md text-on-surface-variant max-w-lg mb-6">
                   Votre sanctuaire vous attend. Vous avez 2 sessions prévues ce mois-ci et 150 points de fidélité Zen cumulés.
                 </p>

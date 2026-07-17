@@ -19,7 +19,7 @@ export default function QuoteSection() {
           et votre paix intérieure.
         </blockquote>
         <cite className="font-label-md text-label-md text-primary uppercase tracking-widest not-italic">
-          — Fondateur, Zen Wellness Gabon
+          — Fondateur, Ben Massage & Wellness Gabon
         </cite>
       </div>
     </section>

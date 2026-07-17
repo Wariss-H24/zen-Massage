@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import AdminLayout from '../../components/layout/AdminLayout'
-
-const AVATAR = 'https://lh3.googleusercontent.com/aida-public/AB6AXuAAGw3TfVJGM7Yfs3Glx18kp0tdiy0jf0ciemY3xunjuivxhOFtFCs6BilxVA7tr73MactUKydc6ptvTP9nsKt82ZEe8GXUsHfE1vCZXotzjuv4mPScMvkbd0scUicntMrkw-LfhPy4AClKuyWdOhYM2TOAUK9lix-YlI8Ef9K6-urjXR79VClJPy5VXS2F4ILI0pX1PWA7MQG4IHoyz0vUiVIi3Yh3AzV3GBy_ANhdd1i6iMfR98Dz7caqLVOAO4YHEKn8R0B6GasB'
+import { useAuth } from '../../context/AuthContext'
 
 type Tab = 'profile' | 'notifications' | 'security' | 'system'
 
@@ -52,10 +51,13 @@ function NumRow({ label, defaultValue }: { label: string; defaultValue: string }
 }
 
 export default function Settings() {
+  const { user } = useAuth()
   const [tab, setTab] = useState<Tab>('profile')
   const [notifs, setNotifs] = useState({ bookings: true, daily: false, stock: true, newsletter: false })
 
-  useEffect(() => { document.title = 'Paramètres | Admin Zen Massage' }, [])
+  useEffect(() => { document.title = 'Paramètres | Admin Ben Massage' }, [])
+
+  const initials = user ? `${user.firstName[0]}${user.lastName[0]}`.toUpperCase() : '?'
 
   const tabs: { id: Tab; label: string }[] = [
     { id: 'profile',       label: 'Profil' },
@@ -92,9 +94,9 @@ export default function Settings() {
                 <h3 className="font-headline-sm text-headline-sm mb-2">Informations Personnelles</h3>
                 <p className="font-body-md text-on-surface-variant opacity-80">Mettez à jour vos détails personnels et votre adresse email.</p>
                 <div className="mt-8 flex flex-col items-center md:items-start">
-                  <div className="w-32 h-32 rounded-full overflow-hidden bg-surface-container relative group cursor-pointer">
-                    <img src={AVATAR} alt="Avatar" className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="w-32 h-32 rounded-full overflow-hidden bg-surface-container relative group cursor-pointer flex items-center justify-center text-4xl font-bold text-sage-deep">
+                    <span>{initials}</span>
+                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-full">
                       <span className="material-symbols-outlined text-white">photo_camera</span>
                     </div>
                   </div>
@@ -104,10 +106,10 @@ export default function Settings() {
 
               <div className="md:col-span-2 bg-white rounded-xl p-6 shadow-sm space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <UInput label="Prénom" defaultValue="Aurélie" />
-                  <UInput label="Nom" defaultValue="Chen" />
+                  <UInput label="Prénom" defaultValue={user?.firstName || ''} />
+                  <UInput label="Nom" defaultValue={user?.lastName || ''} />
                 </div>
-                <UInput label="Email Professionnel" type="email" defaultValue="aurelie.chen@zenwellness.com" />
+                <UInput label="Email Professionnel" type="email" defaultValue={user?.email || ''} />
                 <UInput label="Bio / Spécialité" defaultValue="Spécialiste en massages thérapeutiques et aromathérapie holistique. 12 ans d'expérience." rows={3} />
                 <div className="pt-4 flex justify-end gap-4">
                   <button className="px-6 py-2 font-label-md text-label-md text-primary border border-primary rounded-full hover:bg-primary-fixed transition-colors">

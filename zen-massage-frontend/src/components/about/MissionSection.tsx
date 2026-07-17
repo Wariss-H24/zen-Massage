@@ -39,7 +39,7 @@ export default function MissionSection() {
         <div className="md:col-span-5 h-[450px] rounded-lg overflow-hidden">
           <img
             src={stoneImage}
-            alt="Zen river stones stack"
+            alt="Ben river stones stack"
             className="w-full h-full object-cover"
           />
         </div>

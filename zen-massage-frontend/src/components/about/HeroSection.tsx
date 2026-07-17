@@ -32,7 +32,7 @@ export default function HeroSection() {
             Sanctuaire à travers le design, harmonie par le soin.
           </h1>
           <p className="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
-            Né au cœur du Gabon, Zen Massage &amp; Wellness est une invitation au voyage
+            Né au cœur du Gabon, Ben Massage &amp; Wellness est une invitation au voyage
             intérieur. Nous marions l'excellence clinique aux rituels holistiques pour offrir
             un refuge contre le tumulte du monde moderne.
           </p>
