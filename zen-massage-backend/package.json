@@ -4,7 +4,7 @@
   "description": "API Zen Massage & Wellness Gabon",
   "main": "dist/server.js",
   "scripts": {
-    "seed": "tsx prisma/seed.ts",
+    "seed": "tsx seed.ts",
     "dev": "tsx --watch src/server.ts",
     "build": "prisma generate && tsc",
     "start": "node dist/server.js",
