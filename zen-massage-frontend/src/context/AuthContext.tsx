@@ -24,23 +24,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   async function login(email: string, password: string): Promise<AuthUser> {
-    setLoading(true)
-    try {
-      const res = await authService.login({ email, password })
-      setUser(res.data)
-      return res.data
-    } finally {
-      setLoading(false)
-    }
+    const res = await authService.login({ email, password })
+    setUser(res.data)
+    return res.data
   }
 
   async function logout() {
-    setLoading(true)
     try {
       await authService.logout()
     } finally {
       setUser(null)
-      setLoading(false)
     }
   }
 

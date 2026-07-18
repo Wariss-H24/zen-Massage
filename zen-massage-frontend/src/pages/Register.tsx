@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { authService } from '../services/auth.service'
+import ErrorMessage from '../components/ui/ErrorMessage'
 
 export default function Register() {
   useEffect(() => {
@@ -165,9 +166,7 @@ export default function Register() {
             </div>
 
             {/* Erreur */}
-            {error && (
-              <p className="text-error font-body-md text-body-md text-center">{error}</p>
-            )}
+            {error && <ErrorMessage message={error} />}
 
             {/* CTA */}
             <div className="pt-6">
