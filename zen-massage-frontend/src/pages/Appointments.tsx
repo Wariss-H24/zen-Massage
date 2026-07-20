@@ -13,22 +13,35 @@ interface Service {
 
 /* ── Data ── */
 const SERVICES: Service[] = [
-  { id: 1, name: 'Massage Signature Gabonais', description: "Un mélange d'essences locales et de pressions profondes.", duration: '60 min', price: '75€', priceNum: 75 },
-  { id: 2, name: 'Drainage Lymphatique',       description: 'Soin détoxifiant pour stimuler la circulation et le métabolisme.', duration: '90 min', price: '110€', priceNum: 110 },
-  { id: 3, name: 'Rituel Pierres Chaudes',      description: 'Chaleur volcanique pour une détente musculaire totale.', duration: '75 min', price: '95€', priceNum: 95 },
-  { id: 4, name: 'Massage Prénatal',            description: 'Douceur et soulagement adaptés aux futures mamans.', duration: '60 min', price: '80€', priceNum: 80 },
+  { id: 1, name: 'Consultation + Bilan', description: "Évaluation personnalisée pour définir le soin le plus adapté à vos besoins.", duration: '20 min', price: '10 000 F', priceNum: 10000  },
+  { id: 2, name: 'Séance de Détox',       description: "Soin ciblé pour favoriser l'élimination des toxines et revitaliser l'organisme", duration: '30 min', price: '10 000 F', priceNum: 10000 },
+  { id: 3, name: 'Massage Plantaire (Les pieds)',      description: 'Massage relaxant des pieds pour soulager les tensions et stimuler les points de pression.', duration: '30 min', price: '10 000 F', priceNum: 10000 },
+  { id: 4, name: 'Massage Semi (Pieds et dos)',  description: 'Soin ciblé pour détendre le dos et les pieds tout en réduisant les tensions musculaires.', duration: '45 min', price: '15 000 F', priceNum: 15000 },
+  { id: 5, name: 'Massage Complet (Tout le corps)',description: 'Massage intégral pour une détente profonde et un bien-être général.', duration: '60 min', price: '20 000 F', priceNum: 20000 },
+  { id: 6, name: 'Cure Amincissante', description: 'Programme de soins favorisant le raffermissement de la silhouette et le drainage du corps.', duration: '90 min', price: '30 000 F', priceNum: 30000 },
 ]
 
 const SLOTS = [
-  { time: '09:00', available: true },
-  { time: '10:30', available: true },
-  { time: '13:30', available: true },
-  { time: '15:00', available: true },
-  { time: '16:30', available: true },
-  { time: '18:00', available: true },
-  { time: '19:30', available: false },
-]
-
+  { time: '09:00' },
+  { time: '09:30' },
+  { time: '10:00' },
+  { time: '10:30' },
+  { time: '11:00' },
+  { time: '11:30' },
+  { time: '12:00' },
+  { time: '12:30' },
+  { time: '13:00' },
+  { time: '13:30' },
+  { time: '14:00' },
+  { time: '14:30' },
+  { time: '15:00' },
+  { time: '15:30' },
+  { time: '16:00' },
+  { time: '16:30' },
+  { time: '17:00' },
+  { time: '17:30' },
+  { time: '18:00' },
+];
 const DAYS_SHORT = ['L', 'M', 'M', 'J', 'V', 'S', 'D']
 const MONTHS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre']
 
