@@ -105,11 +105,8 @@ function MiniCalendar({
     };
   }, [currentMonth]);
 
-  const today = new Date();
+  const today = new Date()
   today.setHours(0,0,0,0);
-  
-  const isPastMonth = currentMonth.getFullYear() < today.getFullYear() ||
-    (currentMonth.getFullYear() === today.getFullYear() && currentMonth.getMonth() < today.getMonth());
 
   const prevMonth = () => {
     const prev = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1);

@@ -93,7 +93,7 @@ export async function getAllAppointments() {
 export async function updateAppointmentStatus(id: string, statut: string, raison_refus?: string) {
   return await prisma.rendezVous.update({
     where: { id },
-    data: { statut, raison_refus },
+    data: { statut: statut as any, raison_refus },
     include: {
       type_seance: true,
       utilisateur: { select: { id: true, email: true, firstName: true, lastName: true } }

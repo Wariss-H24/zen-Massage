@@ -58,7 +58,7 @@ export async function updateAppointmentStatus(req: Request, res: Response, next:
   try {
     const { id } = req.params
     const { statut, raison_refus } = req.body
-    const appointment = await appointmentService.updateAppointmentStatus(id, statut, raison_refus)
+    const appointment = await appointmentService.updateAppointmentStatus(id as string, statut, raison_refus)
     res.json({ success: true, message: 'Statut mis a jour', data: appointment })
   } catch (err) {
     next(err)
@@ -68,7 +68,7 @@ export async function updateAppointmentStatus(req: Request, res: Response, next:
 export async function deleteAppointment(req: Request, res: Response, next: NextFunction) {
   try {
     const { id } = req.params
-    await appointmentService.deleteAppointment(id, res.locals.user.id)
+    await appointmentService.deleteAppointment(id as string, res.locals.user.id)
     res.json({ success: true, message: 'Rendez-vous supprime' })
   } catch (err) {
     next(err)
@@ -80,7 +80,7 @@ export async function updateAppointment(req: Request, res: Response, next: NextF
     const { id } = req.params
     // Convertir date_heure en Date si elle est présente
     const data = req.body.date_heure ? { ...req.body, date_heure: new Date(req.body.date_heure) } : req.body
-    const appointment = await appointmentService.updateAppointment(id, res.locals.user.id, data)
+    const appointment = await appointmentService.updateAppointment(id as string, res.locals.user.id, data)
     res.json({ success: true, message: 'Rendez-vous mis a jour', data: appointment })
   } catch (err) {
     next(err)
@@ -90,7 +90,7 @@ export async function updateAppointment(req: Request, res: Response, next: NextF
 export async function cancelAppointment(req: Request, res: Response, next: NextFunction) {
   try {
     const { id } = req.params
-    const appointment = await appointmentService.cancelAppointment(id, res.locals.user.id)
+    const appointment = await appointmentService.cancelAppointment(id as string, res.locals.user.id)
     res.json({ success: true, message: 'Rendez-vous annule', data: appointment })
   } catch (err) {
     next(err)
