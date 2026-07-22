@@ -79,9 +79,11 @@ CREATE TABLE "TypeSeance" (
     "id" TEXT NOT NULL,
     "nom" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "durees" INTEGER[],
-    "prix" DOUBLE PRECISION NOT NULL,
+    "duree" INTEGER NOT NULL,
+    "prix" INTEGER NOT NULL,
+    "actif" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "TypeSeance_pkey" PRIMARY KEY ("id")
 );
@@ -177,13 +179,13 @@ ALTER TABLE "Avis" ADD CONSTRAINT "Avis_produit_id_fkey" FOREIGN KEY ("produit_i
 ALTER TABLE "Avis" ADD CONSTRAINT "Avis_utilisateur_id_fkey" FOREIGN KEY ("utilisateur_id") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Like" ADD CONSTRAINT "Like_utilisateur_id_fkey" FOREIGN KEY ("utilisateur_id") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "Like" ADD CONSTRAINT "Like_produit_id_fkey" FOREIGN KEY ("produit_id") REFERENCES "Produit"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "RendezVous" ADD CONSTRAINT "RendezVous_utilisateur_id_fkey" FOREIGN KEY ("utilisateur_id") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Like" ADD CONSTRAINT "Like_utilisateur_id_fkey" FOREIGN KEY ("utilisateur_id") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "RendezVous" ADD CONSTRAINT "RendezVous_type_seance_id_fkey" FOREIGN KEY ("type_seance_id") REFERENCES "TypeSeance"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "RendezVous" ADD CONSTRAINT "RendezVous_utilisateur_id_fkey" FOREIGN KEY ("utilisateur_id") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

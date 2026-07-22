@@ -1,9 +1,11 @@
 import { useEffect, useState, useMemo } from 'react'
 import MainLayout from '../components/layout/MainLayout'
+import { appointmentService, type PublicRendezVous } from '../services/appointment.service'
+import { useAuth } from '../context/AuthContext'
 
 /* ── Types ── */
 interface Service {
-  id: number
+  id: string
   name: string
   description: string
   duration: string
@@ -11,17 +13,24 @@ interface Service {
   priceNum: number
 }
 
-/* ── Data ── */
-const SERVICES: Service[] = [
-  { id: 1, name: 'Consultation + Bilan', description: "Évaluation personnalisée pour définir le soin le plus adapté à vos besoins.", duration: '20 min', price: '10 000 F', priceNum: 10000  },
-  { id: 2, name: 'Séance de Détox',       description: "Soin ciblé pour favoriser l'élimination des toxines et revitaliser l'organisme", duration: '30 min', price: '10 000 F', priceNum: 10000 },
-  { id: 3, name: 'Massage Plantaire (Les pieds)',      description: 'Massage relaxant des pieds pour soulager les tensions et stimuler les points de pression.', duration: '30 min', price: '10 000 F', priceNum: 10000 },
-  { id: 4, name: 'Massage Semi (Pieds et dos)',  description: 'Soin ciblé pour détendre le dos et les pieds tout en réduisant les tensions musculaires.', duration: '45 min', price: '15 000 F', priceNum: 15000 },
-  { id: 5, name: 'Massage Complet (Tout le corps)',description: 'Massage intégral pour une détente profonde et un bien-être général.', duration: '60 min', price: '20 000 F', priceNum: 20000 },
-  { id: 6, name: 'Cure Amincissante', description: 'Programme de soins favorisant le raffermissement de la silhouette et le drainage du corps.', duration: '90 min', price: '30 000 F', priceNum: 30000 },
-]
+/* ── Types pour les créneaux ── */
+interface Slot {
+  time: string
+  available: boolean
+}
 
-const SLOTS = [
+/* ── Helper functions ── */
+function formatDuration(minutes: number): string {
+  return `${minutes} min`
+}
+
+function formatPrice(price: number): string {
+  // Formater en FCFA avec séparateur de milliers
+  return new Intl.NumberFormat('fr-FR').format(price) + ' F'
+}
+
+// Créneaux de base (tous disponibles initialement)
+const BASE_SLOTS = [
   { time: '09:00' },
   { time: '09:30' },
   { time: '10:00' },
@@ -78,30 +87,43 @@ function Stepper({ step }: { step: number }) {
 }
 
 /* ── Mini Calendar ── */
-function MiniCalendar({ selectedDay, onSelect }: { selectedDay: number | null; onSelect: (d: number) => void }) {
-  const [month, setMonth] = useState(() => new Date())
+function MiniCalendar({ 
+  selectedDate, 
+  onSelect 
+}: { 
+  selectedDate: Date | null; 
+  onSelect: (d: Date) => void 
+}) {
+  const [currentMonth, setCurrentMonth] = useState(() => {
+    if (selectedDate) {
+      return new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
+    }
+    return new Date();
+  });
 
   const { daysInMonth, prevDays } = useMemo(() => {
-    const y = month.getFullYear(), m = month.getMonth()
-    const first = new Date(y, m, 1)
+    const y = currentMonth.getFullYear(), m = currentMonth.getMonth();
+    const first = new Date(y, m, 1);
     // Monday-based: 0=Mon … 6=Sun
-    const dow = (first.getDay() + 6) % 7
+    const dow = (first.getDay() + 6) % 7;
     return {
       daysInMonth: new Date(y, m + 1, 0).getDate(),
       prevDays: dow,
-    }
-  }, [month])
+    };
+  }, [currentMonth]);
 
-  const today = new Date()
-  const isPastMonth = month.getFullYear() < today.getFullYear() ||
-    (month.getFullYear() === today.getFullYear() && month.getMonth() < today.getMonth())
-  const isCurrentMonth = month.getFullYear() === today.getFullYear() && month.getMonth() === today.getMonth()
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  
+  const isPastMonth = currentMonth.getFullYear() < today.getFullYear() ||
+    (currentMonth.getFullYear() === today.getFullYear() && currentMonth.getMonth() < today.getMonth());
+  const isCurrentMonth = currentMonth.getFullYear() === today.getFullYear() && currentMonth.getMonth() === today.getMonth();
 
   const prevMonth = () => {
-    const prev = new Date(month.getFullYear(), month.getMonth() - 1, 1)
-    if (prev >= new Date(today.getFullYear(), today.getMonth(), 1)) setMonth(prev)
-  }
-  const nextMonth = () => setMonth(d => new Date(d.getFullYear(), d.getMonth() + 1, 1))
+    const prev = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1);
+    if (prev >= new Date(today.getFullYear(), today.getMonth(), 1)) setCurrentMonth(prev);
+  };
+  const nextMonth = () => setCurrentMonth(d => new Date(d.getFullYear(), d.getMonth() + 1, 1));
 
   return (
     <div className="p-4 bg-white rounded-lg border border-outline-variant/30">
@@ -111,7 +133,7 @@ function MiniCalendar({ selectedDay, onSelect }: { selectedDay: number | null; o
           <span className="material-symbols-outlined">chevron_left</span>
         </button>
         <span className="font-label-md text-label-md text-sage-deep uppercase tracking-wider">
-          {MONTHS_FR[month.getMonth()]} {month.getFullYear()}
+          {MONTHS_FR[currentMonth.getMonth()]} {currentMonth.getFullYear()}
         </span>
         <button onClick={nextMonth} className="p-1 hover:bg-sand-light rounded-full transition-colors">
           <span className="material-symbols-outlined">chevron_right</span>
@@ -130,19 +152,34 @@ function MiniCalendar({ selectedDay, onSelect }: { selectedDay: number | null; o
         {/* Filler prev month */}
         {Array.from({ length: prevDays }).map((_, i) => (
           <span key={`p${i}`} className="font-caption text-caption text-outline/30 py-2">
-            {new Date(month.getFullYear(), month.getMonth(), -prevDays + i + 1).getDate()}
+            {new Date(currentMonth.getFullYear(), currentMonth.getMonth(), -prevDays + i + 1).getDate()}
           </span>
         ))}
         {/* Current month days */}
         {Array.from({ length: daysInMonth }).map((_, i) => {
-          const day = i + 1
-          const isPast = isPastMonth || (isCurrentMonth && day < today.getDate())
-          const isSelected = selectedDay === day
+          const day = i + 1;
+          const thisDayDate = new Date(
+            currentMonth.getFullYear(), 
+            currentMonth.getMonth(), 
+            day
+          );
+          thisDayDate.setHours(0,0,0,0);
+          
+          const isPast = thisDayDate < today;
+          
+          let isSelected = false;
+          if (selectedDate) {
+            isSelected = 
+              thisDayDate.getFullYear() === selectedDate.getFullYear() &&
+              thisDayDate.getMonth() === selectedDate.getMonth() &&
+              thisDayDate.getDate() === selectedDate.getDate();
+          }
+
           return (
             <button
               key={day}
               disabled={isPast}
-              onClick={() => !isPast && onSelect(day)}
+              onClick={() => !isPast && onSelect(thisDayDate)}
               className={`font-caption text-caption py-2 rounded-lg transition-colors ${
                 isSelected
                   ? 'bg-primary text-white font-bold shadow-md'
@@ -154,33 +191,148 @@ function MiniCalendar({ selectedDay, onSelect }: { selectedDay: number | null; o
             >
               {day}
             </button>
-          )
+          );
         })}
       </div>
     </div>
-  )
+  );
 }
 
 /* ── Page ── */
 export default function Appointments() {
   const [step, setStep]               = useState(1)
   const [selectedService, setService] = useState<Service | null>(null)
-  const [selectedDay, setDay]         = useState<number | null>(null)
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [selectedSlot, setSlot]       = useState<string | null>(null)
   const [form, setForm]               = useState({ name: '', email: '', notes: '' })
   const [confirmed, setConfirmed]     = useState(false)
+  const [services, setServices]       = useState<Service[]>([])
+  const [loading, setLoading]         = useState(true)
+  const [error, setError]             = useState<string | null>(null)
+  const [appointments, setAppointments] = useState<PublicRendezVous[]>([])
+  const { user } = useAuth()
+
+  // Calculer les créneaux disponibles en fonction des rendez-vous existants
+  const slots: Slot[] = useMemo(() => {
+    if (!selectedDate) {
+      // Si pas de jour sélectionné, tous les créneaux sont "disponibles" mais désactivés
+      return BASE_SLOTS.map(s => ({ ...s, available: true }))
+    }
+
+    // Pour chaque créneau, vérifier s'il est pris
+    return BASE_SLOTS.map(baseSlot => {
+      // Construire la date+heure du créneau
+      const [hours, minutes] = baseSlot.time.split(':').map(Number)
+      const slotDateTime = new Date(selectedDate)
+      slotDateTime.setHours(hours, minutes, 0, 0)
+
+      // Vérifier si ce créneau est déjà pris par un rendez-vous non annulé
+      const isTaken = appointments.some(apt => {
+        const aptDate = new Date(apt.date_heure)
+        return (
+          aptDate.getFullYear() === slotDateTime.getFullYear() &&
+          aptDate.getMonth() === slotDateTime.getMonth() &&
+          aptDate.getDate() === slotDateTime.getDate() &&
+          aptDate.getHours() === slotDateTime.getHours() &&
+          aptDate.getMinutes() === slotDateTime.getMinutes() &&
+          apt.statut !== 'CANCELLED'
+        )
+      })
+
+      return {
+        ...baseSlot,
+        available: !isTaken
+      }
+    })
+  }, [selectedDate, appointments])
 
   useEffect(() => {
     document.title = 'Prendre rendez-vous | Ben Massage & Wellness Gabon'
   }, [])
 
+  // Charger les services depuis l'API
+  useEffect(() => {
+    async function loadServices() {
+      try {
+        setLoading(true)
+        setError(null)
+        const response = await appointmentService.getTypeSeances()
+        // Convertir TypeSeance en Service pour le composant
+        const mappedServices: Service[] = response.data.map(ts => ({
+          id: ts.id,
+          name: ts.nom,
+          description: ts.description,
+          duration: formatDuration(ts.duree),
+          price: formatPrice(ts.prix),
+          priceNum: ts.prix
+        }))
+        setServices(mappedServices)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Erreur lors du chargement des services')
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadServices()
+  }, [])
+
+  // Charger les rendez-vous existants (pour vérifier les disponibilites)
+  useEffect(() => {
+    async function loadAppointments() {
+      try {
+        const response = await appointmentService.getPublicAppointments()
+        setAppointments(response.data)
+      } catch (err) {
+        console.error('Erreur chargement rendez-vous', err)
+      }
+    }
+    loadAppointments()
+  }, [])
+
   const canGoStep2 = !!selectedService
-  const canGoStep3 = canGoStep2 && !!selectedDay && !!selectedSlot
+  const canGoStep3 = canGoStep2 && !!selectedDate && !!selectedSlot
   const canConfirm = canGoStep3 && form.name.trim() !== '' && form.email.trim() !== ''
 
-  const handleConfirm = (e: React.FormEvent) => {
+  // Pré-remplir le formulaire si l'utilisateur est connecté
+  useEffect(() => {
+    if (user) {
+      setForm(prev => ({
+        ...prev,
+        name: `${user.firstName} ${user.lastName}`,
+        email: user.email
+      }))
+    }
+  }, [user])
+
+  const handleConfirm = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (canConfirm) setConfirmed(true)
+    if (!canConfirm || !selectedService || !selectedDate || !selectedSlot) return
+
+    try {
+      // Construire la date complète
+      const appointmentDate = new Date(selectedDate)
+      // Ajouter l'heure
+      const [hours, minutes] = selectedSlot.split(':').map(Number)
+      appointmentDate.setHours(hours, minutes, 0, 0)
+
+      // Trouver le type de séance original pour la durée
+      const typeSeance = services.find(s => s.id === selectedService.id)
+      if (!typeSeance) return
+
+      // Convertir la durée en minutes (enlever ' min' et parser)
+      const durationMinutes = parseInt(typeSeance.duration.replace(' min', ''), 10)
+
+      await appointmentService.createAppointment({
+        date_heure: appointmentDate.toISOString(),
+        duree: durationMinutes,
+        type_seance_id: selectedService.id,
+        notes: form.notes
+      })
+
+      setConfirmed(true)
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Erreur lors de la réservation')
+    }
   }
 
   if (confirmed) {
@@ -198,7 +350,7 @@ export default function Appointments() {
               {selectedService?.name}
             </p>
             <p className="font-body-md text-body-md text-on-surface-variant mb-8">
-              Le {selectedDay} — à {selectedSlot}
+              Le {selectedDate?.getDate()} {MONTHS_FR[selectedDate?.getMonth() || 0]} {selectedDate?.getFullYear()} — à {selectedSlot}
             </p>
             <p className="font-caption text-caption text-on-surface-variant">
               Un email de confirmation vous sera envoyé à <strong>{form.email}</strong>
@@ -241,38 +393,54 @@ export default function Appointments() {
                 )}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {SERVICES.map((s) => {
-                  const isSelected = selectedService?.id === s.id
-                  return (
-                    <button
-                      key={s.id}
-                      onClick={() => { setService(s); setStep(s2 => Math.max(s2, 2)) }}
-                      className={`group text-left border rounded-xl p-4 transition-all relative ${
-                        isSelected
-                          ? 'border-primary bg-primary-container/5'
-                          : 'border-outline-variant bg-white hover:border-primary'
-                      }`}
-                    >
-                      {/* Check icon */}
-                      <span className={`absolute top-4 right-4 text-primary transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
-                        <span className="material-symbols-outlined" style={{ fontVariationSettings: isSelected ? "'FILL' 1" : "'FILL' 0" }}>
-                          check_circle
+              {loading ? (
+                <div className="flex justify-center py-12">
+                  <span className="text-sage-deep">Chargement des services...</span>
+                </div>
+              ) : error ? (
+                <div className="text-center py-12 text-red-500">
+                  <p>{error}</p>
+                  <button 
+                    onClick={() => window.location.reload()} 
+                    className="mt-4 px-4 py-2 bg-primary text-white rounded-lg"
+                  >
+                    Réessayer
+                  </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {services.map((s) => {
+                    const isSelected = selectedService?.id === s.id
+                    return (
+                      <button
+                        key={s.id}
+                        onClick={() => { setService(s); setStep(s2 => Math.max(s2, 2)) }}
+                        className={`group text-left border rounded-xl p-4 transition-all relative ${
+                          isSelected
+                            ? 'border-primary bg-primary-container/5'
+                            : 'border-outline-variant bg-white hover:border-primary'
+                        }`}
+                      >
+                        {/* Check icon */}
+                        <span className={`absolute top-4 right-4 text-primary transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                          <span className="material-symbols-outlined" style={{ fontVariationSettings: isSelected ? "'FILL' 1" : "'FILL' 0" }}>
+                            check_circle
+                          </span>
                         </span>
-                      </span>
-                      <h3 className="font-headline-sm text-base text-on-surface mb-1">{s.name}</h3>
-                      <p className="font-caption text-caption text-on-surface-variant mb-4">{s.description}</p>
-                      <div className="flex justify-between items-center">
-                        <span className="flex items-center gap-1 font-label-md text-label-md text-sage-deep">
-                          <span className="material-symbols-outlined text-[18px]">schedule</span>
-                          {s.duration}
-                        </span>
-                        <span className="font-display-lg text-[20px] text-primary">{s.price}</span>
-                      </div>
-                    </button>
-                  )
-                })}
-              </div>
+                        <h3 className="font-headline-sm text-base text-on-surface mb-1">{s.name}</h3>
+                        <p className="font-caption text-caption text-on-surface-variant mb-4">{s.description}</p>
+                        <div className="flex justify-between items-center">
+                          <span className="flex items-center gap-1 font-label-md text-label-md text-sage-deep">
+                            <span className="material-symbols-outlined text-[18px]">schedule</span>
+                            {s.duration}
+                          </span>
+                          <span className="font-display-lg text-[20px] text-primary">{s.price}</span>
+                        </div>
+                      </button>
+                    )
+                  })}
+                </div>
+              )}
 
 
             </section>
@@ -283,25 +451,25 @@ export default function Appointments() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter">
                 {/* Calendar */}
-                <MiniCalendar selectedDay={selectedDay} onSelect={(d) => { setDay(d); setSlot(null) }} />
+                <MiniCalendar selectedDate={selectedDate} onSelect={(d) => { setSelectedDate(d); setSlot(null) }} />
 
                 {/* Time slots */}
                 <div className="flex flex-col">
                   <span className="font-label-md text-label-md text-sage-deep mb-4 block">
-                    {selectedDay ? `Disponibilités pour le ${selectedDay}` : 'Sélectionnez une date'}
+                    {selectedDate ? `Disponibilités pour le ${selectedDate.getDate()} ${MONTHS_FR[selectedDate.getMonth()]} ${selectedDate.getFullYear()}` : 'Sélectionnez une date'}
                   </span>
                   <div className="grid grid-cols-2 gap-3 max-h-[220px] overflow-y-auto pr-2" style={{ scrollbarWidth: 'thin', scrollbarColor: '#c3c8c1 transparent' }}>
-                    {SLOTS.map((slot) => (
+                    {slots.map((slot) => (
                       <button
                         key={slot.time}
-                        disabled={!slot.available || !selectedDay}
+                        disabled={!slot.available || !selectedDate}
                         onClick={() => { setSlot(slot.time); setStep(s => Math.max(s, 3)) }}
                         className={`py-3 px-4 rounded-lg font-caption text-caption text-center transition-all border ${
                           !slot.available
                             ? 'opacity-40 border-outline-variant cursor-not-allowed line-through'
                             : selectedSlot === slot.time
                             ? 'border-primary shadow-md'
-                            : !selectedDay
+                            : !selectedDate
                             ? 'border-outline-variant opacity-40 cursor-not-allowed'
                             : 'border-outline-variant hover:border-primary'
                         }`}
@@ -360,7 +528,7 @@ export default function Appointments() {
                   </div>
                 </div>
 
-                {step >= 3 && (
+                {/* {step >= 3 && (
                   <button
                     type="submit"
                     disabled={!canConfirm}
@@ -368,7 +536,7 @@ export default function Appointments() {
                   >
                     Confirmer la réservation
                   </button>
-                )}
+                )} */}
               </form>
             </section>
           </div>
@@ -408,8 +576,8 @@ export default function Appointments() {
                     <div>
                       <p className="font-caption text-caption opacity-70">Date et Heure</p>
                       <p className="font-label-md text-label-md">
-                        {selectedDay
-                          ? `${selectedDay} ${MONTHS_FR[new Date().getMonth()]} ${new Date().getFullYear()}`
+                        {selectedDate
+                          ? `${selectedDate.getDate()} ${MONTHS_FR[selectedDate.getMonth()]} ${selectedDate.getFullYear()}`
                           : <span className="opacity-40 italic">Non sélectionnée</span>}
                       </p>
                       {selectedSlot && (
@@ -428,7 +596,11 @@ export default function Appointments() {
 
                   {/* CTA */}
                   <button
-                    onClick={() => canConfirm && setConfirmed(true)}
+                    onClick={() => {
+                      const formElement = document.querySelector('form')
+                      formElement?.requestSubmit()
+                    }}
+                    disabled={!canConfirm}
                     className="w-full py-4 bg-primary-fixed text-on-primary-fixed font-label-md text-label-md rounded-full hover:bg-white transition-colors duration-300 shadow-lg"
                   >
                     Confirmer la réservation
