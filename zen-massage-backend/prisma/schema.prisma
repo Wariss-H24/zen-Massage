@@ -1,7 +1,6 @@
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
-  
 }
 
 datasource db {
@@ -93,8 +92,8 @@ model TypeSeance {
   id          String       @id @default(cuid())
   nom         String       @unique
   description String
-  duree       Int          // Durée en minutes (ex: 20, 30, 45, 60, 90)
-  prix        Int          // Prix en Francs CFA (ex: 10000, 15000, 20000, 30000)
+  duree       Int
+  prix        Int
   actif       Boolean      @default(true)
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
