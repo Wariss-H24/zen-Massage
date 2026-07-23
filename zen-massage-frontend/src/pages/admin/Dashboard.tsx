@@ -99,12 +99,18 @@ export default function Dashboard() {
   const { user } = useAuth()
   const [days, setDays] = useState(DAYS_INIT)
   const [appointments, setAppointments] = useState<RendezVousWithUser[]>([])
+  const [publicAppointments, setPublicAppointments] = useState<PublicRendezVous[]>([])
   const [loading, setLoading] = useState(true)
   const [statusModalOpen, setStatusModalOpen] = useState(false)
+  const [rescheduleModalOpen, setRescheduleModalOpen] = useState(false)
   const [selectedAppt, setSelectedAppt] = useState<RendezVousWithUser | null>(null)
   const [newStatus, setNewStatus] = useState<RendezVousWithUser['statut']>('PENDING')
   const [raisonRefus, setRaisonRefus] = useState('')
   const [processingStatus, setProcessingStatus] = useState(false)
+  // États pour la reprogrammation
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null)
+  const [selectedSlot, setSelectedSlot] = useState<string | null>(null)
+  const [processingReschedule, setProcessingReschedule] = useState(false)
   const firstName = user?.firstName || ''
   const lastName = user?.lastName || ''
 
@@ -116,9 +122,13 @@ export default function Dashboard() {
       try {
         setLoading(true)
         console.log('Chargement des rendez-vous...')
-        const response = await appointmentService.getAllAppointments()
-        console.log('Rendez-vous chargés:', response.data)
-        setAppointments(response.data)
+        const [allResponse, publicResponse] = await Promise.all([
+          appointmentService.getAllAppointments(),
+          appointmentService.getPublicAppointments()
+        ])
+        console.log('Rendez-vous chargés:', allResponse.data)
+        setAppointments(allResponse.data)
+        setPublicAppointments(publicResponse.data)
       } catch (err) {
         console.error('Erreur lors du chargement des rendez-vous:', err)
         alert('Erreur lors du chargement des rendez-vous: ' + (err as Error).message)
@@ -128,6 +138,41 @@ export default function Dashboard() {
     }
     loadAppointments()
   }, [])
+
+  // Calculer les créneaux disponibles en fonction des rendez-vous existants
+  const slots: Slot[] = useMemo(() => {
+    if (!selectedDate) {
+      // Si pas de jour sélectionné, tous les créneaux sont "disponibles" mais désactivés
+      return BASE_SLOTS.map(s => ({ ...s, available: true }))
+    }
+
+    // Pour chaque créneau, vérifier s'il est pris
+    return BASE_SLOTS.map(baseSlot => {
+      // Construire la date+heure du créneau
+      const [hours, minutes] = baseSlot.time.split(':').map(Number)
+      const slotDateTime = new Date(selectedDate)
+      slotDateTime.setHours(hours, minutes, 0, 0)
+
+      // Vérifier si ce créneau est déjà pris par un rendez-vous non annulé, et pas le rendez-vous en cours de reprogrammation
+      const isTaken = publicAppointments.some(apt => {
+        if (selectedAppt && apt.id === selectedAppt.id) return false
+        const aptDate = new Date(apt.date_heure)
+        return (
+          aptDate.getFullYear() === slotDateTime.getFullYear() &&
+          aptDate.getMonth() === slotDateTime.getMonth() &&
+          aptDate.getDate() === slotDateTime.getDate() &&
+          aptDate.getHours() === slotDateTime.getHours() &&
+          aptDate.getMinutes() === slotDateTime.getMinutes() &&
+          apt.statut !== 'CANCELLED'
+        )
+      })
+
+      return {
+        ...baseSlot,
+        available: !isTaken
+      }
+    })
+  }, [selectedDate, publicAppointments, selectedAppt])
 
   // Filtrer les rendez-vous en attente
   const pendingAppointments = useMemo(() => {
@@ -147,11 +192,41 @@ export default function Dashboard() {
         raison_refus: newStatus === 'CANCELLED' ? raisonRefus : undefined
       })
       setAppointments(prev => prev.map(a => a.id === selectedAppt.id ? updatedAppt.data : a))
+      setPublicAppointments(prev => prev.map(a => a.id === selectedAppt.id ? { ...a, statut: newStatus } : a))
       setStatusModalOpen(false)
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Erreur lors de la mise à jour')
     } finally {
       setProcessingStatus(false)
+    }
+  }
+
+  // Gérer la reprogrammation
+  const handleReschedule = async () => {
+    if (!selectedAppt || !selectedDate || !selectedSlot) return
+    try {
+      setProcessingReschedule(true)
+      // Construire la date complète
+      const appointmentDate = new Date(selectedDate)
+      // Ajouter l'heure
+      const [hours, minutes] = selectedSlot.split(':').map(Number)
+      appointmentDate.setHours(hours, minutes, 0, 0)
+
+      const updatedAppt = await appointmentService.updateAppointment(selectedAppt.id, {
+        date_heure: appointmentDate.toISOString(),
+        duree: selectedAppt.duree,
+        type_seance_id: selectedAppt.type_seance_id,
+        notes: selectedAppt.notes
+      })
+      setAppointments(prev => prev.map(a => a.id === selectedAppt.id ? updatedAppt.data : a))
+      setPublicAppointments(prev => prev.map(a => a.id === selectedAppt.id ? { ...a, date_heure: appointmentDate.toISOString() } : a))
+      setRescheduleModalOpen(false)
+      setSelectedDate(null)
+      setSelectedSlot(null)
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Erreur lors de la reprogrammation')
+    } finally {
+      setProcessingReschedule(false)
     }
   }
 
@@ -223,8 +298,12 @@ export default function Dashboard() {
                         className="p-2 text-on-surface-variant hover:bg-surface-variant rounded-full transition-colors" 
                         title="Reprogrammer"
                         onClick={() => {
-                          // TODO: Ajouter la logique de reprogrammation
-                          alert('Fonctionnalité de reprogrammation à venir !')
+                          setSelectedAppt(apt)
+                          // Initialiser la date sélectionnée avec la date actuelle du rendez-vous
+                          const currentDate = new Date(apt.date_heure)
+                          setSelectedDate(new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()))
+                          setSelectedSlot(`${String(currentDate.getHours()).padStart(2, '0')}:${String(currentDate.getMinutes()).padStart(2, '0')}`)
+                          setRescheduleModalOpen(true)
                         }}
                       >
                         <span className="material-symbols-outlined">calendar_clock</span>
@@ -454,6 +533,91 @@ export default function Dashboard() {
                   {processingStatus ? 'Mise à jour...' : 'Enregistrer'}
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de reprogrammation */}
+      {rescheduleModalOpen && selectedAppt && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+          <div className="bg-white rounded-xl p-6 max-w-2xl w-full shadow-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <span className="material-symbols-outlined text-primary text-3xl">schedule</span>
+                <h3 className="font-headline-md text-sage-deep">Reprogrammer le rendez-vous</h3>
+              </div>
+              <button 
+                className="p-1 hover:bg-sand-light rounded-full transition-colors"
+                onClick={() => {
+                  setRescheduleModalOpen(false)
+                  setSelectedDate(null)
+                  setSelectedSlot(null)
+                }}
+              >
+                <span className="material-symbols-outlined text-on-surface-variant">close</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              {/* Calendar */}
+              <MiniCalendar 
+                selectedDate={selectedDate} 
+                onSelect={(date) => {
+                  setSelectedDate(date)
+                  setSelectedSlot(null)
+                }} 
+              />
+
+              {/* Time slots */}
+              <div className="flex flex-col">
+                <span className="font-label-md text-label-md text-sage-deep mb-4 block">
+                  {selectedDate ? `Disponibilités pour le ${selectedDate.getDate()} ${MONTHS_FR[selectedDate.getMonth()]} ${selectedDate.getFullYear()}` : 'Sélectionnez une date'}
+                </span>
+                <div className="grid grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-2" style={{ scrollbarWidth: 'thin', scrollbarColor: '#c3c8c1 transparent' }}>
+                  {slots.map((slot) => (
+                    <button
+                      key={slot.time}
+                      disabled={!slot.available || !selectedDate}
+                      onClick={() => setSelectedSlot(slot.time)}
+                      className={`py-3 px-4 rounded-lg font-caption text-caption text-center transition-all border ${
+                        !slot.available
+                          ? 'opacity-40 border-outline-variant cursor-not-allowed line-through'
+                          : selectedSlot === slot.time
+                          ? 'border-primary bg-primary text-white shadow-md'
+                          : !selectedDate
+                          ? 'border-outline-variant opacity-40 cursor-not-allowed'
+                          : 'border-outline-variant hover:border-primary hover:bg-sand-light'
+                      }`}
+                      style={selectedSlot === slot.time ? { backgroundColor: '#425646', color: '#ffffff' } : {}}
+                    >
+                      {slot.time}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3 pt-4 border-t border-outline-variant/20">
+              <button 
+                className="flex-1 py-2 font-label-md text-label-md text-on-surface-variant border border-outline-variant/30 rounded-lg hover:bg-surface-variant transition-colors"
+                onClick={() => {
+                  setRescheduleModalOpen(false)
+                  setSelectedDate(null)
+                  setSelectedSlot(null)
+                }}
+                disabled={processingReschedule}
+              >
+                Annuler
+              </button>
+              <button 
+                className="flex-1 py-2 font-label-md text-label-md bg-primary text-white rounded-lg hover:bg-sage-deep transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={handleReschedule}
+                disabled={processingReschedule || !selectedDate || !selectedSlot}
+                style={{ backgroundColor: '#425646' }}
+              >
+                {processingReschedule ? 'Reprogrammation...' : 'Enregistrer'}
+              </button>
             </div>
           </div>
         </div>

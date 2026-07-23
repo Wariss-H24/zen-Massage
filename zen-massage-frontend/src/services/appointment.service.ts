@@ -83,7 +83,7 @@ export const appointmentService = {
       type_seance_id?: string
       notes?: string
     }
-  ) => api.put<ApiResponse<RendezVous>>(`/appointments/${id}`, body),
+  ) => api.put<ApiResponse<RendezVousWithUser>>(`/appointments/${id}`, body),
 
   // Annuler un rendez-vous
   cancelAppointment: (id: string) =>
