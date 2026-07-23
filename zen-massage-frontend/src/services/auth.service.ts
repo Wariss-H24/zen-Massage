@@ -5,8 +5,9 @@ export interface AuthUser {
   email: string
   firstName: string
   lastName: string
-  role: 'SUPER_ADMIN' | 'ADMIN' | 'USER'
-  avatar: string | null
+  role: 'SUPER_ADMIN' | 'ADMIN' | 'CLIENT'
+  avatar?: string
+  phone?: string | null
 }
 
 interface AuthResponse {
