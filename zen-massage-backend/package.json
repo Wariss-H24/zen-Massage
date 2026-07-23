@@ -6,7 +6,7 @@
   "scripts": {
     "seed": "tsx seed.ts",
     "dev": "tsx --watch src/server.ts",
-    "build": "prisma generate && tsc",
+    "build": "prisma generate && tsc && shx cp -r src/generated dist/generated",
     "start": "node dist/server.js",
     "postinstall": "prisma generate",
     "test": "echo \"Error: no test specified\" && exit 1"
