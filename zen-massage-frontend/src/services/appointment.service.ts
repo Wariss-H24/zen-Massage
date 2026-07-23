@@ -28,6 +28,16 @@ export interface RendezVous {
   type_seance: TypeSeance
 }
 
+// Type pour RendezVous avec utilisateur (admin view)
+export interface RendezVousWithUser extends RendezVous {
+  utilisateur: {
+    id: string
+    email: string
+    firstName: string
+    lastName: string
+  }
+}
+
 export interface PublicRendezVous {
   id: string
   date_heure: string
@@ -78,4 +88,18 @@ export const appointmentService = {
   // Annuler un rendez-vous
   cancelAppointment: (id: string) =>
     api.patch<ApiResponse<RendezVous>>(`/appointments/${id}/cancel`),
+
+  // --- Admin methods ---
+  // Récupérer TOUS les rendez-vous
+  getAllAppointments: () =>
+    api.get<ApiResponse<RendezVousWithUser[]>>('/appointments/all'),
+
+  // Mettre à jour le statut d'un rendez-vous
+  updateAppointmentStatus: (
+    id: string,
+    body: {
+      statut: 'PENDING' | 'CONFIRMED' | 'COMPLETED' | 'CANCELLED'
+      raison_refus?: string
+    }
+  ) => api.put<ApiResponse<RendezVousWithUser>>(`/appointments/${id}/status`, body),
 }

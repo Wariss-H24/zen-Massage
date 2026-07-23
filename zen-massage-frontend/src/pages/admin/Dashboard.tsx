@@ -1,14 +1,39 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import AdminLayout from '../../components/layout/AdminLayout'
 import { useAuth } from '../../context/AuthContext'
+import { appointmentService, type RendezVousWithUser } from '../../services/appointment.service'
 
-const APPOINTMENTS = [
-  { id: 1, name: 'Julianne V.',    service: 'Thérapie Tissu Profond',   duration: '90 min', time: "Aujourd'hui, 16h30", avatar: 'JV', bg: 'bg-sand-light',      color: 'text-secondary' },
-  { id: 2, name: 'Marcus Thorne', service: 'Massage Signature Ben',    duration: '60 min', time: 'Demain, 10h00',      avatar: 'MT', bg: 'bg-primary-fixed',   color: 'text-primary' },
-  { id: 3, name: 'Léa Fontaine',  service: 'Séance Aromathérapie',     duration: '45 min', time: 'Demain, 14h00',      avatar: 'LF', bg: 'bg-surface-variant', color: 'text-on-surface-variant' },
-  { id: 4, name: 'Omar Diallo',   service: 'Thérapie Pierres Chaudes', duration: '75 min', time: 'Jeu, 11h00',         avatar: 'OD', bg: 'bg-sand-light',      color: 'text-secondary' },
-]
+// Fonction pour formater la date en français (ex: "Aujourd'hui, 16h30")
+const formatAppointmentTime = (dateStr: string): string => {
+  const date = new Date(dateStr)
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const tomorrow = new Date(today)
+  tomorrow.setDate(tomorrow.getDate() + 1)
+  
+  const dateOnly = new Date(date)
+  dateOnly.setHours(0, 0, 0, 0)
+  
+  let dateLabel: string
+  if (dateOnly.getTime() === today.getTime()) {
+    dateLabel = "Aujourd'hui"
+  } else if (dateOnly.getTime() === tomorrow.getTime()) {
+    dateLabel = "Demain"
+  } else {
+    const days = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi']
+    dateLabel = days[date.getDay()]
+  }
+  
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+  return `${dateLabel}, ${hours}h${minutes}`
+}
+
+// Fonction pour générer les initiales du client
+const getClientInitials = (firstName: string, lastName: string): string => {
+  return `${firstName[0]}${lastName[0]}`.toUpperCase()
+}
 
 const PRODUCTS = [
   { name: 'Huile Sérénité',      price: '48 000 FCFA', units: 24,  status: 'En stock',     statusColor: 'bg-status-confirmed/90' },
@@ -42,13 +67,62 @@ const DAYS_INIT = [
 export default function Dashboard() {
   const { user } = useAuth()
   const [days, setDays] = useState(DAYS_INIT)
+  const [appointments, setAppointments] = useState<RendezVousWithUser[]>([])
+  const [loading, setLoading] = useState(true)
+  const [statusModalOpen, setStatusModalOpen] = useState(false)
+  const [selectedAppt, setSelectedAppt] = useState<RendezVousWithUser | null>(null)
+  const [newStatus, setNewStatus] = useState<RendezVousWithUser['statut']>('PENDING')
+  const [raisonRefus, setRaisonRefus] = useState('')
+  const [processingStatus, setProcessingStatus] = useState(false)
   const firstName = user?.firstName || ''
   const lastName = user?.lastName || ''
 
   useEffect(() => { document.title = 'Espace Praticien | Ben Massage' }, [])
 
+  // Charger les rendez-vous
+  useEffect(() => {
+    async function loadAppointments() {
+      try {
+        setLoading(true)
+        console.log('Chargement des rendez-vous...')
+        const response = await appointmentService.getAllAppointments()
+        console.log('Rendez-vous chargés:', response.data)
+        setAppointments(response.data)
+      } catch (err) {
+        console.error('Erreur lors du chargement des rendez-vous:', err)
+        alert('Erreur lors du chargement des rendez-vous: ' + (err as Error).message)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadAppointments()
+  }, [])
+
+  // Filtrer les rendez-vous en attente
+  const pendingAppointments = useMemo(() => {
+    return appointments.filter(appt => appt.statut === 'PENDING')
+  }, [appointments])
+
   const toggleDay = (i: number) =>
     setDays(d => d.map((day, idx) => idx === i ? { ...day, active: !day.active } : day))
+
+  // Gérer la mise à jour du statut
+  const handleUpdateStatus = async () => {
+    if (!selectedAppt) return
+    try {
+      setProcessingStatus(true)
+      const updatedAppt = await appointmentService.updateAppointmentStatus(selectedAppt.id, {
+        statut: newStatus,
+        raison_refus: newStatus === 'CANCELLED' ? raisonRefus : undefined
+      })
+      setAppointments(prev => prev.map(a => a.id === selectedAppt.id ? updatedAppt.data : a))
+      setStatusModalOpen(false)
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Erreur lors de la mise à jour')
+    } finally {
+      setProcessingStatus(false)
+    }
+  }
 
   return (
     <AdminLayout title="Espace Praticien">
@@ -72,35 +146,74 @@ export default function Dashboard() {
             <div className="flex items-center justify-between">
               <h3 className="font-headline-sm text-headline-sm text-charcoal-muted">Rendez-vous en attente</h3>
               <span className="bg-status-pending px-3 py-1 rounded-full text-[10px] font-bold text-on-secondary-fixed uppercase tracking-wider">
-                {APPOINTMENTS.length} demandes
+                {pendingAppointments.length} demande{pendingAppointments.length > 1 ? 's' : ''}
               </span>
             </div>
             <div className="space-y-3">
-              {APPOINTMENTS.map(apt => (
-                <div key={apt.id} className="bg-white/70 backdrop-blur-sm border border-white/30 p-4 rounded-xl flex items-center justify-between hover:scale-[1.01] transition-transform shadow-sm">
-                  <div className="flex items-center gap-4">
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0 ${apt.bg} ${apt.color}`}>
-                      {apt.avatar}
-                    </div>
-                    <div>
-                      <h4 className="font-label-md text-label-md text-primary">{apt.name}</h4>
-                      <p className="font-caption text-on-surface-variant">{apt.service} • {apt.duration}</p>
-                      <p className="font-caption text-on-surface-variant">{apt.time}</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-1">
-                    <button className="p-2 text-status-confirmed hover:bg-status-confirmed/10 rounded-full transition-colors" title="Accepter">
-                      <span className="material-symbols-outlined">check_circle</span>
-                    </button>
-                    <button className="p-2 text-on-surface-variant hover:bg-surface-variant rounded-full transition-colors" title="Reprogrammer">
-                      <span className="material-symbols-outlined">calendar_clock</span>
-                    </button>
-                    <button className="p-2 text-error hover:bg-error/10 rounded-full transition-colors" title="Refuser">
-                      <span className="material-symbols-outlined">cancel</span>
-                    </button>
-                  </div>
+              {loading ? (
+                <div className="text-center py-8">
+                  <p className="text-on-surface-variant">Chargement des rendez-vous...</p>
                 </div>
-              ))}
+              ) : pendingAppointments.length === 0 ? (
+                <div className="text-center py-8">
+                  <span className="material-symbols-outlined text-4xl text-outline block mb-4">event</span>
+                  <p className="font-body-md text-body-md text-on-surface-variant">Aucun rendez-vous en attente</p>
+                </div>
+              ) : (
+                pendingAppointments.map(apt => (
+                  <div key={apt.id} className="bg-white/70 backdrop-blur-sm border border-white/30 p-4 rounded-xl flex items-center justify-between hover:scale-[1.01] transition-transform shadow-sm">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0 bg-sand-light text-secondary">
+                        {getClientInitials(apt.utilisateur.firstName, apt.utilisateur.lastName)}
+                      </div>
+                      <div>
+                        <h4 className="font-label-md text-label-md text-primary">{apt.utilisateur.firstName} {apt.utilisateur.lastName}</h4>
+                        <p className="font-caption text-on-surface-variant">{apt.type_seance.nom} • {apt.duree} min</p>
+                        <p className="font-caption text-on-surface-variant">{formatAppointmentTime(apt.date_heure)}</p>
+                        {apt.notes && (
+                          <p className="font-caption text-on-surface-variant mt-1 italic">"{apt.notes}"</p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex gap-1">
+                      <button 
+                        className="p-2 text-status-confirmed hover:bg-status-confirmed/10 rounded-full transition-colors" 
+                        title="Accepter"
+                        onClick={() => {
+                          setSelectedAppt(apt)
+                          setNewStatus('CONFIRMED')
+                          setRaisonRefus('')
+                          setStatusModalOpen(true)
+                        }}
+                      >
+                        <span className="material-symbols-outlined">check_circle</span>
+                      </button>
+                      <button 
+                        className="p-2 text-on-surface-variant hover:bg-surface-variant rounded-full transition-colors" 
+                        title="Reprogrammer"
+                        onClick={() => {
+                          // TODO: Ajouter la logique de reprogrammation
+                          alert('Fonctionnalité de reprogrammation à venir !')
+                        }}
+                      >
+                        <span className="material-symbols-outlined">calendar_clock</span>
+                      </button>
+                      <button 
+                        className="p-2 text-error hover:bg-error/10 rounded-full transition-colors" 
+                        title="Refuser"
+                        onClick={() => {
+                          setSelectedAppt(apt)
+                          setNewStatus('CANCELLED')
+                          setRaisonRefus('')
+                          setStatusModalOpen(true)
+                        }}
+                      >
+                        <span className="material-symbols-outlined">cancel</span>
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </section>
 
@@ -248,6 +361,72 @@ export default function Dashboard() {
           <p className="font-label-md text-label-md">© 2024 Ben Massage & Wellness</p>
         </footer>
       </div>
+
+      {/* Modal de mise à jour de statut */}
+      {statusModalOpen && selectedAppt && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <span className="material-symbols-outlined text-primary text-3xl">edit_calendar</span>
+                <h3 className="font-headline-md text-sage-deep">Mettre à jour le rendez-vous</h3>
+              </div>
+              <button 
+                className="p-1 hover:bg-sand-light rounded-full transition-colors"
+                onClick={() => setStatusModalOpen(false)}
+              >
+                <span className="material-symbols-outlined text-on-surface-variant">close</span>
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="font-label-md text-label-md text-sage-deep block mb-2">Nouveau statut</label>
+                <select
+                  value={newStatus}
+                  onChange={(e) => setNewStatus(e.target.value as any)}
+                  className="w-full p-3 rounded-lg border border-outline-variant/30 bg-surface-container-lowest"
+                >
+                  <option value="PENDING">En attente</option>
+                  <option value="CONFIRMED">Confirmé</option>
+                  <option value="COMPLETED">Terminé</option>
+                  <option value="CANCELLED">Annulé</option>
+                </select>
+              </div>
+
+              {newStatus === 'CANCELLED' && (
+                <div>
+                  <label className="font-label-md text-label-md text-sage-deep block mb-2">Raison de l'annulation</label>
+                  <textarea
+                    value={raisonRefus}
+                    onChange={(e) => setRaisonRefus(e.target.value)}
+                    className="w-full p-3 rounded-lg border border-outline-variant/30 bg-surface-container-lowest min-h-[100px]"
+                    placeholder="Entrez la raison..."
+                  />
+                </div>
+              )}
+
+              <div className="flex gap-3 pt-4 border-t border-outline-variant/20">
+                <button 
+                  className="flex-1 py-2 font-label-md text-label-md text-on-surface-variant border border-outline-variant/30 rounded-lg hover:bg-surface-variant transition-colors"
+                  onClick={() => setStatusModalOpen(false)}
+                  disabled={processingStatus}
+                >
+                  Annuler
+                </button>
+                <button 
+                  className="flex-1 py-2 font-label-md text-label-md bg-primary text-white rounded-lg hover:bg-sage-deep transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={handleUpdateStatus}
+                  disabled={processingStatus}
+                  style={{ backgroundColor: '#425646' }}
+                >
+                  {processingStatus ? 'Mise à jour...' : 'Enregistrer'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </AdminLayout>
   )
 }
