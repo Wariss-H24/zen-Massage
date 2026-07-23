@@ -139,19 +139,29 @@ export default function Dashboard() {
     loadAppointments()
   }, [])
 
-  // Calculer les créneaux disponibles en fonction des rendez-vous existants
+  // Calculer les créneaux disponibles en fonction des rendez-vous existants et de l'heure actuelle
   const slots: Slot[] = useMemo(() => {
     if (!selectedDate) {
       // Si pas de jour sélectionné, tous les créneaux sont "disponibles" mais désactivés
       return BASE_SLOTS.map(s => ({ ...s, available: true }))
     }
 
-    // Pour chaque créneau, vérifier s'il est pris
+    const now = new Date()
+
+    // Pour chaque créneau, vérifier s'il est pris ou passé
     return BASE_SLOTS.map(baseSlot => {
       // Construire la date+heure du créneau
       const [hours, minutes] = baseSlot.time.split(':').map(Number)
       const slotDateTime = new Date(selectedDate)
       slotDateTime.setHours(hours, minutes, 0, 0)
+
+      // Vérifier si la date est aujourd'hui et si l'heure est déjà passée
+      const isToday = 
+        slotDateTime.getFullYear() === now.getFullYear() &&
+        slotDateTime.getMonth() === now.getMonth() &&
+        slotDateTime.getDate() === now.getDate()
+
+      const isPast = isToday && slotDateTime < now
 
       // Vérifier si ce créneau est déjà pris par un rendez-vous non annulé, et pas le rendez-vous en cours de reprogrammation
       const isTaken = publicAppointments.some(apt => {
@@ -169,7 +179,7 @@ export default function Dashboard() {
 
       return {
         ...baseSlot,
-        available: !isTaken
+        available: !isTaken && !isPast
       }
     })
   }, [selectedDate, publicAppointments, selectedAppt])

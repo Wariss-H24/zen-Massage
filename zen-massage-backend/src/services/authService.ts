@@ -68,3 +68,33 @@ export async function getMe(id: string) {
   }
   return user
 }
+
+export async function updateProfile(
+  id: string,
+  data: {
+    firstName?: string
+    lastName?: string
+    phone?: string
+    password?: string
+  }
+) {
+  // Préparer les données à mettre à jour
+  const updateData: any = {}
+
+  if (data.firstName) updateData.firstName = data.firstName
+  if (data.lastName) updateData.lastName = data.lastName
+  if (data.phone !== undefined) updateData.phone = data.phone
+  if (data.password) {
+    // Hasher le mot de passe
+    updateData.password = await hashPassword(data.password)
+  }
+
+  // Mettre à jour l'utilisateur
+  const user = await prisma.user.update({
+    where: { id },
+    data: updateData,
+    select: { id: true, email: true, firstName: true, lastName: true, role: true, avatar: true, phone: true },
+  })
+
+  return user
+}

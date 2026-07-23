@@ -27,4 +27,12 @@ export const authService = {
 
   me: () =>
     api.get<AuthResponse>('/auth/me'),
+
+  updateProfile: (body: {
+    firstName?: string
+    lastName?: string
+    phone?: string
+    password?: string
+  }) =>
+    api.put<AuthResponse>('/auth/me', body),
 }

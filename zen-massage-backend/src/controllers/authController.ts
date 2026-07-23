@@ -38,3 +38,15 @@ export async function me(req: Request, res: Response, next: NextFunction) {
     next(err)
   }
 }
+
+export async function updateProfile(req: Request, res: Response, next: NextFunction) {
+  try {
+    const user = await authService.updateProfile(
+      res.locals.user.id,
+      req.body
+    )
+    res.json({ success: true, message: 'Profil mis à jour avec succès', data: user })
+  } catch (err) {
+    next(err)
+  }
+}

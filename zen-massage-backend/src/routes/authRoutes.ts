@@ -9,5 +9,6 @@ router.post('/register', validateBody(['firstName', 'lastName', 'email', 'passwo
 router.post('/login',    validateBody(['email', 'password']), auth.login)
 router.post('/logout',   auth.logout)
 router.get('/me',        requireAuth, auth.me)
+router.put('/me',        requireAuth, auth.updateProfile)
 
 export default router
