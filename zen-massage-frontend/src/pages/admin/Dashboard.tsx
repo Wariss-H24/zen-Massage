@@ -1,8 +1,9 @@
 import { useEffect, useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import AdminLayout from '../../components/layout/AdminLayout'
+import MiniCalendar from '../../components/MiniCalendar'
 import { useAuth } from '../../context/AuthContext'
-import { appointmentService, type RendezVousWithUser } from '../../services/appointment.service'
+import { appointmentService, type RendezVousWithUser, type PublicRendezVous } from '../../services/appointment.service'
 
 // Fonction pour formater la date en français (ex: "Aujourd'hui, 16h30")
 const formatAppointmentTime = (dateStr: string): string => {
@@ -33,6 +34,36 @@ const formatAppointmentTime = (dateStr: string): string => {
 // Fonction pour générer les initiales du client
 const getClientInitials = (firstName: string, lastName: string): string => {
   return `${firstName[0]}${lastName[0]}`.toUpperCase()
+}
+
+// Créneaux de base (tous disponibles initialement)
+const BASE_SLOTS = [
+  { time: '09:00' },
+  { time: '09:30' },
+  { time: '10:00' },
+  { time: '10:30' },
+  { time: '11:00' },
+  { time: '11:30' },
+  { time: '12:00' },
+  { time: '12:30' },
+  { time: '13:00' },
+  { time: '13:30' },
+  { time: '14:00' },
+  { time: '14:30' },
+  { time: '15:00' },
+  { time: '15:30' },
+  { time: '16:00' },
+  { time: '16:30' },
+  { time: '17:00' },
+  { time: '17:30' },
+  { time: '18:00' },
+];
+const MONTHS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre']
+
+/* ── Types pour les créneaux ── */
+interface Slot {
+  time: string
+  available: boolean
 }
 
 const PRODUCTS = [
