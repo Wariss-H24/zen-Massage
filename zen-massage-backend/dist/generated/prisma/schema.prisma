@@ -1,0 +1,141 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id         String       @id @default(cuid())
+  email      String       @unique
+  password   String
+  firstName  String
+  lastName   String
+  phone      String?
+  avatar     String?
+  role       UserRole     @default(USER)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  deletedAt  DateTime?
+  avis       Avis[]
+  likes      Like[]
+  rendezVous RendezVous[]
+
+  @@index([email])
+  @@index([role])
+}
+
+model Categorie {
+  id          String    @id @default(cuid())
+  nom         String    @unique
+  description String?
+  icone       String?
+  ordre       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  produits    Produit[]
+
+  @@index([nom])
+}
+
+model Produit {
+  id           String    @id @default(cuid())
+  nom          String
+  description  String
+  prix         Float
+  stock        Int
+  categorie_id String
+  images       String[]
+  sku          String?   @unique
+  publie       Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  avis         Avis[]
+  likes        Like[]
+  categorie    Categorie @relation(fields: [categorie_id], references: [id])
+
+  @@index([categorie_id])
+  @@index([publie])
+}
+
+model Avis {
+  id             String   @id @default(cuid())
+  note           Int
+  titre          String
+  contenu        String
+  produit_id     String
+  utilisateur_id String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  produit        Produit  @relation(fields: [produit_id], references: [id], onDelete: Cascade)
+  utilisateur    User     @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
+
+  @@unique([utilisateur_id, produit_id])
+  @@index([produit_id])
+  @@index([utilisateur_id])
+}
+
+model Like {
+  id             String   @id @default(cuid())
+  utilisateur_id String
+  produit_id     String
+  createdAt      DateTime @default(now())
+  produit        Produit  @relation(fields: [produit_id], references: [id], onDelete: Cascade)
+  utilisateur    User     @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
+
+  @@unique([utilisateur_id, produit_id])
+  @@index([produit_id])
+}
+
+model TypeSeance {
+  id          String       @id @default(cuid())
+  nom         String       @unique
+  description String
+  duree       Int
+  prix        Int
+  actif       Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  rendezVous  RendezVous[]
+}
+
+model RendezVous {
+  id             String            @id @default(cuid())
+  utilisateur_id String
+  date_heure     DateTime
+  duree          Int
+  type_seance_id String
+  notes          String?
+  statut         AppointmentStatus @default(PENDING)
+  raison_refus   String?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  type_seance    TypeSeance        @relation(fields: [type_seance_id], references: [id])
+  utilisateur    User              @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
+
+  @@index([utilisateur_id])
+  @@index([date_heure])
+  @@index([statut])
+}
+
+model Configuration {
+  id          String   @id @default(cuid())
+  cle         String   @unique
+  valeur      String
+  description String?
+  updatedAt   DateTime @updatedAt
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  USER
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
