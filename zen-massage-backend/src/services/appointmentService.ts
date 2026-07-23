@@ -119,7 +119,7 @@ export async function deleteAppointment(id: string, userId: string) {
 }
 
 // Modifier un rendez-vous
-export async function updateAppointment(id: string, userId: string, data: {
+export async function updateAppointment(id: string, userId: string, userRole: string, data: {
   date_heure?: Date
   duree?: number
   type_seance_id?: string
@@ -131,12 +131,14 @@ export async function updateAppointment(id: string, userId: string, data: {
     err.status = 404
     throw err
   }
-  if (appointment.utilisateur_id !== userId) {
+  // Vérifier que l'utilisateur est propriétaire OU admin
+  if (appointment.utilisateur_id !== userId && userRole !== 'ADMIN' && userRole !== 'SUPER_ADMIN') {
     const err = new Error('Non autorisé') as any
     err.status = 403
     throw err
   }
-  if (appointment.statut !== 'PENDING') {
+  // Seulement les clients ne peuvent pas modifier des rendez-vous non en attente
+  if (userRole === 'CLIENT' && appointment.statut !== 'PENDING') {
     const err = new Error('Impossible de modifier un rendez-vous non en attente') as any
     err.status = 400
     throw err
@@ -166,19 +168,21 @@ export async function updateAppointment(id: string, userId: string, data: {
   })
 }
 
-export async function cancelAppointment(id: string, userId: string) {
+export async function cancelAppointment(id: string, userId: string, userRole: string) {
   const appointment = await prisma.rendezVous.findUnique({ where: { id } })
   if (!appointment) {
     const err = new Error('Rendez-vous introuvable') as any
     err.status = 404
     throw err
   }
-  if (appointment.utilisateur_id !== userId) {
+  // Vérifier que l'utilisateur est propriétaire OU admin
+  if (appointment.utilisateur_id !== userId && userRole !== 'ADMIN' && userRole !== 'SUPER_ADMIN') {
     const err = new Error('Non autorisé') as any
     err.status = 403
     throw err
   }
-  if (appointment.statut !== 'PENDING') {
+  // Seulement les clients ne peuvent pas annuler des rendez-vous non en attente
+  if (userRole === 'CLIENT' && appointment.statut !== 'PENDING') {
     const err = new Error('Impossible d annuler un rendez-vous non en attente') as any
     err.status = 400
     throw err

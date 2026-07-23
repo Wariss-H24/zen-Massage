@@ -80,7 +80,12 @@ export async function updateAppointment(req: Request, res: Response, next: NextF
     const { id } = req.params
     // Convertir date_heure en Date si elle est présente
     const data = req.body.date_heure ? { ...req.body, date_heure: new Date(req.body.date_heure) } : req.body
-    const appointment = await appointmentService.updateAppointment(id as string, res.locals.user.id, data)
+    const appointment = await appointmentService.updateAppointment(
+      id as string, 
+      res.locals.user.id, 
+      res.locals.user.role,
+      data
+    )
     res.json({ success: true, message: 'Rendez-vous mis a jour', data: appointment })
   } catch (err) {
     next(err)
@@ -90,7 +95,7 @@ export async function updateAppointment(req: Request, res: Response, next: NextF
 export async function cancelAppointment(req: Request, res: Response, next: NextFunction) {
   try {
     const { id } = req.params
-    const appointment = await appointmentService.cancelAppointment(id as string, res.locals.user.id)
+    const appointment = await appointmentService.cancelAppointment(id as string, res.locals.user.id, res.locals.user.role)
     res.json({ success: true, message: 'Rendez-vous annule', data: appointment })
   } catch (err) {
     next(err)
