@@ -1,56 +1,31 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import MainLayout from '../components/layout/MainLayout'
 import { useInView } from '../hooks/useInView'
+import { appointmentService, type TypeSeance } from '../services/appointment.service'
 
-/* ── Data ── */
-const SERVICES = [
-  {
-    id: 1,
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA32qrrPwe5vnBYAbvbXqb9hScN-Ymb98SZAUeO_BfUx9n0zBzaP9nQ8nf5QHA_qGkqzuHB9Wn_ASZRNmV_4EpdjEIjUDOEGTmxP0rCZDl4sVg74hukaUFx1L7ugHk5Q--_ejl5nOtfZopd3n4eru_t9tJM-nh2sJGtVdPucR35ssWQA9uwQByg_N0eqzNU9iFScw3JcBUz6p2dpIMKWIRmbPqmYD8akuj0PRmruP42UGsriuy-AwSlSA',
-    badge: 'Populaire',
-    name: 'Massage Signature Gabonais',
-    duration: '90 min',
-    price: '75.000 FCFA',
-    description: 'Un rituel ancestral utilisant des huiles botaniques locales pour une relaxation profonde et une revitalisation totale.',
-  },
-  {
-    id: 2,
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD85hNUETDvz6LAFC9TzpMiuJFdqn0loVB9c6h_9-1bffuKwpfx1Ni-AJhjF-I9qu-rskroOsGpP3FYTMRsJ5yQJpyg4zc-_2pWB6uL_5v6xRgqAIBhN8-bi60ybQSyw_0_1YYVOoNdyqL5fE680u3hYuwpNij-6ghdyQGKJ7LfmcGRzuhhe33oYe4ID4QbL9GDWNzJn1ZxUVbZ3GglQOt5Y3FPwq4yD7syO2ygQ1KXHzYn0Yw4DPpYLA',
-    badge: null,
-    name: 'Drainage Lymphatique',
-    duration: '60 min',
-    price: '55.000 FCFA',
-    description: 'Technique manuelle douce visant à stimuler la circulation de la lymphe et à détoxifier l\'organisme en profondeur.',
-  },
-  {
-    id: 3,
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAm2p6sBUKvm2iPjEGIBHvt_IHcf0VWy5ojuGgIVfqp9ZY-ZzYlwcEglEgBSyfc5PsiUAD5lkHVbdNbF2_oE64Dd36YpNcI3DfDIUOFVYwkZWyJuiG6mgTyqaVjSUILpxJMYb9RuX1Tj3QkM1jN9-SXDlWxOMq3O-0zI9ETHJ-xPxQYSIpkiDOMZ_gKhQDSodBqWNvNcba_ST1smVjrPPREHIHJnB4LL4s5WuHYIeSa747459C2-RX0ZQ',
-    badge: null,
-    name: 'Rituel Pierres Chaudes',
-    duration: '75 min',
-    price: '65.000 FCFA',
-    description: 'La chaleur des pierres volcaniques alliée à des manœuvres fluides pour dénouer les tensions musculaires les plus tenaces.',
-  },
-  {
-    id: 4,
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDDWUZ1bHlrox_E_XnuVmNvQew4voUYG1ppUmXtUVwx1_a82WqOILLDe8nUCK7gik6hhqXt8tpqqX1kTBMZkoxs-CdECBnaeUDPmQLRCBtE-4MklFVVwegIp793HAHA9eDUGwk6kjcH-58fsNGjzaRj8c8gSTlww8XojT12po4lxo_aXRTq-pdbsDPQmj47-QWKhgqrnucmCHmjVmnN6ix2KYD1Ec6bJHiylrrgqE20CQKkV8BSFPgheg',
-    badge: null,
-    name: 'Massage Prénatal',
-    duration: '60 min',
-    price: '50.000 FCFA',
-    description: 'Un accompagnement tout en douceur pour soulager les maux liés à la grossesse et offrir un moment de communion avec bébé.',
-  },
-]
+/* ── Génère les initiales (2 premiers mots) depuis un nom ── */
+function getInitials(name: string): string {
+  const words = name.trim().split(/\s+/)
+  if (words.length === 1) return words[0].slice(0, 2).toUpperCase()
+  return (words[0][0] + words[1][0]).toUpperCase()
+}
 
-const RITUALS = [
-  { name: 'Gommage au Café du Gabon', description: 'Élimine les impuretés et tonifie la peau', price: '25.000 FCFA' },
-  { name: 'Enveloppement à l\'Argile', description: 'Régénère et hydrate intensément', price: '30.000 FCFA' },
-  { name: 'Réflexologie Plantaire', description: 'Harmonise les flux énergétiques', price: '35.000 FCFA' },
-]
+/* ── Formate le prix depuis la BDD (nombre entier FCFA) ── */
+function formatPrice(prix: number): string {
+  return prix.toLocaleString('fr-FR') + ' FCFA'
+}
+
+/* ── Formate la durée en minutes ── */
+function formatDuration(duree: number): string {
+  if (duree < 60) return `${duree} min`
+  const h = Math.floor(duree / 60)
+  const m = duree % 60
+  return m > 0 ? `${h}h${m.toString().padStart(2, '0')}` : `${h}h`
+}
 
 /* ── Service Card ── */
-function ServiceCard({ service, delay = 0 }: { service: typeof SERVICES[0]; delay?: number }) {
+function ServiceCard({ service, delay = 0 }: { service: TypeSeance; delay?: number }) {
   const [ref, isInView] = useInView(0.1)
 
   return (
@@ -61,33 +36,26 @@ function ServiceCard({ service, delay = 0 }: { service: typeof SERVICES[0]; dela
       }`}
       style={{ transitionDelay: `${delay}ms` }}
     >
-      {/* Image */}
-      <div className="h-64 overflow-hidden relative">
-        <img
-          src={service.image}
-          alt={service.name}
-          className="w-full h-full object-cover transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-105"
-        />
-        {service.badge && (
-          <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full font-label-md text-caption text-sage-deep">
-            {service.badge}
-          </div>
-        )}
+      {/* Avatar initiales — couleur uniforme sage */}
+      <div className="h-64 flex items-center justify-center bg-sage-deep/10 transition-all duration-500 group-hover:bg-sage-deep/15">
+        <span className="text-6xl font-bold tracking-tight select-none text-sage-deep opacity-80">
+          {getInitials(service.nom)}
+        </span>
       </div>
 
       {/* Body */}
       <div className="p-stack-md flex-grow flex flex-col">
-        <h3 className="font-headline-sm text-headline-sm text-sage-deep mb-2">{service.name}</h3>
+        <h3 className="font-headline-sm text-headline-sm text-sage-deep mb-2">{service.nom}</h3>
 
         {/* Meta */}
         <div className="flex items-center gap-4 text-on-surface-variant mb-4">
           <span className="flex items-center gap-1 font-label-md text-caption">
             <span className="material-symbols-outlined text-[18px]">schedule</span>
-            {service.duration}
+            {formatDuration(service.duree)}
           </span>
           <span className="flex items-center gap-1 font-label-md text-caption">
             <span className="material-symbols-outlined text-[18px]">payments</span>
-            {service.price}
+            {formatPrice(service.prix)}
           </span>
         </div>
 
@@ -101,6 +69,28 @@ function ServiceCard({ service, delay = 0 }: { service: typeof SERVICES[0]; dela
         >
           Réserver
         </Link>
+      </div>
+    </div>
+  )
+}
+
+/* ── Skeleton Card pendant le chargement ── */
+function ServiceCardSkeleton() {
+  return (
+    <div className="flex flex-col bg-surface-container-low rounded-xl overflow-hidden border border-outline-variant/30 animate-pulse">
+      <div className="h-64 bg-outline-variant/20" />
+      <div className="p-stack-md space-y-3">
+        <div className="h-5 bg-outline-variant/20 rounded w-3/4" />
+        <div className="flex gap-4">
+          <div className="h-4 bg-outline-variant/20 rounded w-16" />
+          <div className="h-4 bg-outline-variant/20 rounded w-20" />
+        </div>
+        <div className="space-y-2">
+          <div className="h-3 bg-outline-variant/20 rounded w-full" />
+          <div className="h-3 bg-outline-variant/20 rounded w-5/6" />
+          <div className="h-3 bg-outline-variant/20 rounded w-4/6" />
+        </div>
+        <div className="h-10 bg-outline-variant/20 rounded-xl mt-4" />
       </div>
     </div>
   )
@@ -145,7 +135,11 @@ function HeroSection() {
   )
 }
 
-function ServicesGridSection() {
+function ServicesGridSection({ services, loading, error }: {
+  services: TypeSeance[]
+  loading: boolean
+  error: string | null
+}) {
   const [ref, isInView] = useInView(0.05)
 
   return (
@@ -164,17 +158,41 @@ function ServicesGridSection() {
         </p>
       </div>
 
+      {/* Erreur */}
+      {error && (
+        <div className="text-center py-12 text-on-surface-variant">
+          <span className="material-symbols-outlined text-4xl mb-3 block">error_outline</span>
+          <p className="font-body-md text-body-md">{error}</p>
+        </div>
+      )}
+
+      {/* Grille */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
-        {SERVICES.map((service, i) => (
-          <ServiceCard key={service.id} service={service} delay={i * 100} />
-        ))}
+        {loading
+          ? Array.from({ length: 4 }).map((_, i) => <ServiceCardSkeleton key={i} />)
+          : services.map((service, i) => (
+              <ServiceCard key={service.id} service={service} delay={i * 100} />
+            ))}
       </div>
+
+      {/* Aucun service */}
+      {!loading && !error && services.length === 0 && (
+        <div className="text-center py-12 text-on-surface-variant">
+          <span className="material-symbols-outlined text-4xl mb-3 block">spa</span>
+          <p className="font-body-md text-body-md">Aucun service disponible pour le moment.</p>
+        </div>
+      )}
     </section>
   )
 }
 
-function RitualsSection() {
+function RitualsSection({ services }: { services: TypeSeance[] }) {
   const [ref, isInView] = useInView(0.1)
+
+  // On prend les 3 services les moins chers comme "rituels complémentaires"
+  const rituals = [...services]
+    .sort((a, b) => a.prix - b.prix)
+    .slice(0, 3)
 
   return (
     <section
@@ -208,24 +226,36 @@ function RitualsSection() {
               tant le corps que l'esprit.
             </p>
 
-            {/* Ritual list */}
+            {/* Liste des rituels dynamiques */}
             <div className="space-y-4 pt-4">
-              {RITUALS.map((ritual) => (
-                <div
-                  key={ritual.name}
-                  className="flex justify-between items-center border-b border-outline-variant pb-3"
-                >
-                  <div>
-                    <h4 className="font-label-md text-label-md text-sage-deep">{ritual.name}</h4>
-                    <p className="font-caption text-caption text-on-surface-variant">
-                      {ritual.description}
-                    </p>
-                  </div>
-                  <span className="font-label-md text-label-md text-sage-deep shrink-0 ml-4">
-                    {ritual.price}
-                  </span>
-                </div>
-              ))}
+              {rituals.length > 0
+                ? rituals.map((ritual) => (
+                    <div
+                      key={ritual.id}
+                      className="flex justify-between items-center border-b border-outline-variant pb-3"
+                    >
+                      <div>
+                        <h4 className="font-label-md text-label-md text-sage-deep">{ritual.nom}</h4>
+                        <p className="font-caption text-caption text-on-surface-variant">
+                          {formatDuration(ritual.duree)}
+                        </p>
+                      </div>
+                      <span className="font-label-md text-label-md text-sage-deep shrink-0 ml-4">
+                        {formatPrice(ritual.prix)}
+                      </span>
+                    </div>
+                  ))
+                : /* Skeleton si chargement */
+                  Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i} className="flex justify-between items-center border-b border-outline-variant pb-3 animate-pulse">
+                      <div className="space-y-1">
+                        <div className="h-4 bg-outline-variant/30 rounded w-40" />
+                        <div className="h-3 bg-outline-variant/20 rounded w-24" />
+                      </div>
+                      <div className="h-4 bg-outline-variant/30 rounded w-20" />
+                    </div>
+                  ))
+              }
             </div>
 
             <Link
@@ -264,15 +294,26 @@ function QuoteSection() {
 
 /* ── Page ── */
 export default function Services() {
+  const [services, setServices] = useState<TypeSeance[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
   useEffect(() => {
     document.title = 'Services & Soins | Ben Massage & Wellness Gabon'
+  }, [])
+
+  useEffect(() => {
+    appointmentService.getTypeSeances()
+      .then(res => setServices(Array.isArray(res.data) ? res.data : []))
+      .catch(() => setError('Impossible de charger les services. Veuillez réessayer.'))
+      .finally(() => setLoading(false))
   }, [])
 
   return (
     <MainLayout>
       <HeroSection />
-      <ServicesGridSection />
-      <RitualsSection />
+      <ServicesGridSection services={services} loading={loading} error={error} />
+      <RitualsSection services={services} />
       <QuoteSection />
 
       {/* FAB mobile */}

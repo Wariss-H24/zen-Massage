@@ -5,6 +5,8 @@ import MiniCalendar from '../../components/MiniCalendar'
 import { useAuth } from '../../context/AuthContext'
 import { appointmentService, type AppointmentScheduleConfig, type DayKey, type RendezVousWithUser, type PublicRendezVous } from '../../services/appointment.service'
 import { productService } from '../../services/product.service'
+import { reviewService } from '../../services/review.service'
+import type { Review } from '../../types/review'
 import type { Produit } from '../../types/product'
 import Toast from '../../components/ui/Toast'
 
@@ -105,6 +107,25 @@ const SALES = [
   { id: '#ZN-9732', customer: 'Sophia Lane',   total: '32 500 FCFA',  status: 'Retourné',  statusStyle: 'bg-status-cancelled/10 text-status-cancelled' },
 ]
 
+/* ── Formate une date en temps relatif ── */
+function timeAgo(dateStr: string): string {
+  const diff = Date.now() - new Date(dateStr).getTime()
+  const minutes = Math.floor(diff / 60_000)
+  if (minutes < 1)  return "À l'instant"
+  if (minutes < 60) return `Il y a ${minutes} min`
+  const hours = Math.floor(minutes / 60)
+  if (hours < 24)   return `Il y a ${hours}h`
+  const days = Math.floor(hours / 24)
+  if (days === 1)   return 'Hier'
+  if (days < 7)     return `Il y a ${days} jours`
+  return new Date(dateStr).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
+}
+
+/* ── Initiales d'un reviewer ── */
+function getReviewerInitials(firstName: string, lastName: string): string {
+  return `${firstName?.[0] ?? ''}${lastName?.[0] ?? ''}`.toUpperCase()
+}
+
 const DAY_LABELS: { key: DayKey; label: string }[] = [
   { key: 'mon', label: 'Lun' },
   { key: 'tue', label: 'Mar' },
@@ -122,6 +143,8 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true)
   const [products, setProducts] = useState<Produit[]>([])
   const [loadingProducts, setLoadingProducts] = useState(true)
+  const [reviews, setReviews] = useState<Review[]>([])
+  const [loadingReviews, setLoadingReviews] = useState(true)
   const [schedule, setSchedule] = useState<AppointmentScheduleConfig | null>(null)
   const [scheduleDraft, setScheduleDraft] = useState<AppointmentScheduleConfig | null>(null)
   const [savingSchedule, setSavingSchedule] = useState(false)
@@ -175,9 +198,23 @@ export default function Dashboard() {
       if (mounted) setLoadingProducts(false)
     }
     loadProducts()
-    return () => {
-      mounted = false
+    return () => { mounted = false }
+  }, [])
+
+  useEffect(() => {
+    let mounted = true
+    async function loadReviews() {
+      setLoadingReviews(true)
+      try {
+        const res = await reviewService.listReviews({ tri: 'recent', limite: 5 })
+        if (mounted) setReviews(res.data.avis ?? [])
+      } catch {
+        if (mounted) setReviews([])
+      }
+      if (mounted) setLoadingReviews(false)
     }
+    loadReviews()
+    return () => { mounted = false }
   }, [])
 
   // Charger les rendez-vous
@@ -604,39 +641,82 @@ export default function Dashboard() {
 
           {/* Avis récents */}
           <section className="col-span-12 lg:col-span-6 space-y-4">
-            <h3 className="font-headline-sm text-headline-sm text-charcoal-muted">Avis récents</h3>
+            <div className="flex items-center justify-between">
+              <h3 className="font-headline-sm text-headline-sm text-charcoal-muted">Avis récents</h3>
+              <span className="font-caption text-on-surface-variant">{reviews.length} avis</span>
+            </div>
             <div className="space-y-4">
-              {[
-                { stars: 5, text: '"L\'Huile Sérénité est un vrai changement. Le parfum est incroyablement apaisant. Parfait pour mon rituel du soir."', name: 'Sarah M.', time: 'Il y a 2h', reply: null },
-                { stars: 4, text: '"Excellente séance de massage aujourd\'hui. Elena a un toucher très intuitif. La salle était un peu fraîche cependant."', name: 'David L.', time: 'Hier', reply: '"Merci pour votre retour, David ! Je veillerai à ajuster la température pour votre prochaine visite."' },
-              ].map((r, i) => (
-                <div key={i} className="bg-white/50 p-4 rounded-xl border-l-4 border-status-confirmed shadow-sm">
-                  <div className="flex justify-between items-start mb-2">
-                    <div className="flex gap-1 text-[#D4AF37]">
-                      {[...Array(r.stars)].map((_, j) => (
-                        <span key={j} className="material-symbols-outlined text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                      ))}
-                      {r.stars < 5 && <span className="material-symbols-outlined text-[16px]" style={{ fontVariationSettings: "'FILL' 0" }}>star</span>}
-                    </div>
-                    <span className="font-caption text-on-surface-variant">{r.time}</span>
-                  </div>
-                  <p className="font-body-md italic text-primary mb-2">{r.text}</p>
-                  <span className="font-label-md opacity-60">— {r.name}</span>
-                  {r.reply ? (
-                    <div className="mt-3 pl-4 border-l border-outline-variant pt-2">
-                      <div className="text-xs text-on-surface-variant bg-surface-variant/50 p-2 rounded-lg">
-                        <p className="font-semibold mb-1">Votre réponse :</p>{r.reply}
+              {loadingReviews ? (
+                /* Skeletons */
+                Array.from({ length: 2 }).map((_, i) => (
+                  <div key={i} className="bg-white/50 p-4 rounded-xl border-l-4 border-outline-variant animate-pulse">
+                    <div className="flex justify-between mb-2">
+                      <div className="flex gap-1">
+                        {Array.from({ length: 5 }).map((_, j) => (
+                          <div key={j} className="w-4 h-4 bg-outline-variant/30 rounded" />
+                        ))}
                       </div>
+                      <div className="w-16 h-3 bg-outline-variant/20 rounded" />
                     </div>
-                  ) : (
+                    <div className="space-y-1 mb-3">
+                      <div className="h-3 bg-outline-variant/20 rounded w-full" />
+                      <div className="h-3 bg-outline-variant/20 rounded w-4/5" />
+                    </div>
+                    <div className="h-3 bg-outline-variant/20 rounded w-24" />
+                  </div>
+                ))
+              ) : reviews.length === 0 ? (
+                <div className="text-center py-8">
+                  <span className="material-symbols-outlined text-4xl text-outline block mb-4">rate_review</span>
+                  <p className="font-body-md text-body-md text-on-surface-variant">Aucun avis pour le moment</p>
+                </div>
+              ) : (
+                reviews.map((r) => (
+                  <div key={r.id} className="bg-white/50 p-4 rounded-xl border-l-4 border-status-confirmed shadow-sm">
+                    <div className="flex justify-between items-start mb-2">
+                      {/* Étoiles */}
+                      <div className="flex gap-0.5 text-[#D4AF37]">
+                        {Array.from({ length: 5 }).map((_, j) => (
+                          <span
+                            key={j}
+                            className="material-symbols-outlined text-[16px]"
+                            style={{ fontVariationSettings: j < r.note ? "'FILL' 1" : "'FILL' 0" }}
+                          >
+                            star
+                          </span>
+                        ))}
+                      </div>
+                      <span className="font-caption text-on-surface-variant">{timeAgo(r.createdAt)}</span>
+                    </div>
+
+                    {/* Titre */}
+                    {r.titre && (
+                      <p className="font-label-md text-label-md text-sage-deep mb-1">{r.titre}</p>
+                    )}
+
+                    {/* Contenu */}
+                    <p className="font-body-md italic text-primary mb-2 line-clamp-2">"{r.contenu}"</p>
+
+                    {/* Auteur avec initiales */}
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-full bg-sage-deep/10 text-sage-deep flex items-center justify-center text-[10px] font-bold shrink-0">
+                        {getReviewerInitials(r.utilisateur.firstName, r.utilisateur.lastName)}
+                      </div>
+                      <span className="font-label-md text-label-md opacity-60">
+                        {r.utilisateur.firstName} {r.utilisateur.lastName[0]}.
+                      </span>
+                    </div>
+
+                    {/* Bouton répondre */}
                     <div className="pl-4 border-l border-outline-variant pt-2 mt-3">
                       <button className="text-xs text-primary font-semibold flex items-center gap-1 hover:underline">
-                        <span className="material-symbols-outlined text-sm">reply</span>Répondre au client
+                        <span className="material-symbols-outlined text-sm">reply</span>
+                        Répondre au client
                       </button>
                     </div>
-                  )}
-                </div>
-              ))}
+                  </div>
+                ))
+              )}
             </div>
           </section>
 
