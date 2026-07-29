@@ -5,7 +5,9 @@ import { useAuth } from '../../context/AuthContext'
 const NAV = [
   { icon: 'dashboard',      label: 'Espace Praticien', to: '/admin'               },
   { icon: 'calendar_today', label: 'Réservations',      to: '/admin/bookings'      },
-  { icon: 'inventory_2',    label: 'Produits',           to: '/admin/products/add'  },
+  { icon: 'category',       label: 'Catégories',        to: '/admin/categories'    },
+  { icon: 'inventory_2',    label: 'Produits',           to: '/admin/products'      },
+  { icon: 'add',            label: 'Ajouter produit',    to: '/admin/products/add'  },
   { icon: 'history_edu',    label: 'Commandes',          to: '/admin/orders'        },
   { icon: 'analytics',      label: 'Analytiques',        to: '/admin/analytics'     },
   { icon: 'settings',       label: 'Paramètres',         to: '/admin/settings'      },

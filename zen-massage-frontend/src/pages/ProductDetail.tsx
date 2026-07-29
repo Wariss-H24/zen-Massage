@@ -1,62 +1,16 @@
-import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useState, useEffect, useCallback } from 'react'
+import { Link, useParams } from 'react-router-dom'
 import MainLayout from '../components/layout/MainLayout'
+import { productService } from '../services/product.service'
+import { reviewService } from '../services/review.service'
+import { useAuth } from '../context/AuthContext'
+import type { ProduitDetail } from '../types/product'
+import type { Review, ReviewStats } from '../types/review'
+import Spinner from '../components/ui/Spinner'
+import Toast from '../components/ui/Toast'
 
-/* ── Types ── */
-interface Review {
-  initials: string
-  bg: string
-  name: string
-  verified: boolean
-  rating: number
-  title: string
-  body: string
-  date: string
-  helpful: number
-}
-
-/* ── Data ── */
-const IMAGES = [
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuBx3Am1b4NXlKZunsJr0XUo3CDp7JWQ_J79ntsGFtXqVvxVNbkeHEu5RrYHtvDELBPWTzcssrLiI1jStFVD5bEXr4esdMM6mJXHHLeR1Pkgw69NY-BqSU1X9ulwrHxRGpQ41K91vRNpQzY2IrRXtVMfhJmqpZLnPwQ4oeCN2SEqfUPwXqX8JSaq7Tjz3qgejrVO-f7a6iG2W7v9kYdQLIzzxFf2C9pH9dMQgiuGedu0idKoxgs6SUTAdA',
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuAL_PgyNlnuCBuQmiHaMValSZ4mMaAi9qj581PgRpzkbuIELk_vdEs2-iu4x2dxLv13bz3pdY1JoXJv5Lh54TKJ6-SjV5HenGESL1Kx7LaVfuSdKtmiygr9FEZXiSuEaUI6-zF4iBnNwnnZvZo8fMOqzL3chJRYYyrJXSP2U4xedwFgEkAFKAPJzwri8AWbPI6NF_vPq9_W6JgcUKdb2pgRzf5Eeej3wAyJS1uZ4O2t20hMxJf_tjB7uA',
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuCAEw1I2t-SoszqzV0MsPgUu0yGLDSXUKgkQ7Qi-hEgDlPcXv3lefF42C5t2X6fUY8_1Tih40biKYhQ6mBRSrkff2V0cffLQmnkKg7VPiFPueQoXzQO6LTibmNLsu7_mkNbANF3NR3MUSES14ioROst3nSBu5BpEURgzDeZT-gOq40IDyFH8c019l8IsMuUIchvVCQibDbOWd0AeaArnkA290LOU5XnRev_A7bE6XZXlULEOwkisddrOg',
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuAx38u8BF1GrKsw_a2hduPAApaJMBLT5iJselSProrahc9rSZdSophBuLCsNVGJOjIjkChGm-VzcDlooP7TyvijliVxaOOuFIcQzVcnoA6Fg0-RNFcJ-VLOdFQ0L5c6y_XY2PSMzlNRKPWUrRK7V72zjngHMsIjkagmJ7hYFfs-XnPTaE8rBF8opsibb-2L0SX0poKMGhTa0K14a2oH8owxSgEuYsCycEW33oyIH1WGBV2rTgrWMUM4LQ',
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuBNtY-tIvDy2Kdv7Ulxg0TKlYRauOi4YZDqGsl10c9f7njY4MYbLSd_cM_ncJVUVJP4dwxAmR5203ZjUB8EbPAdwqYUjyw1L2BrJ2dwDXcUkF2x6fluuA47QdAZNkQV0GZcj-y8cS0h69gcMXJBsS84__6DeJ1sUIw0gqVY9NSznc4vVWVZKJCEcwj0KPp4vF9O78oQcQQddSydDvo-zq1YAjKAkT_EsMfTeZGiT19u1PeIBj7mNXTygQ',
-]
-
-const FEATURES = [
-  '100% Naturel & Bio',
-  'Propriétés anti-stress',
-  'Hydratation 24h',
-  'Artisanat Local',
-]
-
-const REVIEWS: Review[] = [
-  {
-    initials: 'EM', bg: 'bg-secondary-fixed',
-    name: 'Elsa M.', verified: true, rating: 5,
-    title: 'Un voyage olfactif incroyable',
-    body: "Cette huile est devenue mon rituel du soir. L'odeur est apaisante sans être entêtante. Je l'utilise après ma douche et ma peau est incroyablement douce au réveil.",
-    date: 'Il y a 3 jours', helpful: 12,
-  },
-  {
-    initials: 'KB', bg: 'bg-primary-fixed',
-    name: 'Kevin B.', verified: true, rating: 4,
-    title: 'Très bon produit local',
-    body: "Fier de voir un produit de cette qualité fabriqué chez nous. Le packaging est superbe et l'huile de très bonne facture. Seul bémol, le flacon se finit trop vite !",
-    date: 'Il y a 1 semaine', helpful: 8,
-  },
-]
-
-const RELATED = [
-  { name: 'Bougie Forêt Équatoriale', price: '18 500 FCFA', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBkUhWOTSrtUDUovRP0on8dOt6mDBbKRdS4nXJHZJ-9KTj7qSaziyF5ty-4CFkx8gdVq3_KLdvt5dO0P7jlVPC9CoYzXPGFEFbDGHZY5bIbMdaUx0MkZGPxny61dW5ZbEmxJbZc_LDi5JXCVd_gAt-PO8YOJ5Qj9kvf8-K-NAwWiHL_uDgbvzpq6TV0AUo3glVYv4pTeuTqDS353LgjU6QoBFGuxtiaIvYQSiqrY9WyGL4SJ6hSXqm3Zw' },
-  { name: 'Tisane Détox Tropicale',    price: '12 000 FCFA', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCdBLVU6kx931LUVx2gP322_TENmynJ2kkdVhHQ3dn7rVcJ5TFsfL1I6-JussTteJb9uLMfT2kjluryG_FdRRLLjfvgVJWfEvAJqusy0ImNoZQqyJotruNSWJ73Cby_WMibLBe4iE5lwpEN4Fi_oLBFRT4CKB92cqKYt383S8MZbtXCpxjWsUAJ42BIuTENobraHN6L-iYTB2I4sn-yl0yIft4kJ5JkMLE-3bt0HOXJt8OS-0CBQuDFwA' },
-  { name: 'Kit Massage Pierre Noire',  price: '35 000 FCFA', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC2zzSxRgVbxfhodBLyYweg17r7BEmsserSGgTf_0wa78-NQKbUwytR527Efw-8u_HDPZNAzq1gCKb9Ap_4ThLQM-8KBV0IAtWZTfX_QFnfhZizqd9R-VTXceCYJhKFN08K7DiiNJMnPSvGyTVYTZiLPKUz2keF8J7Ex_lz7FPyLCM6CAnQRKfFg9SYaPNMSzb7VPt7W2J8nRCugNcMu_G7TPNy4VCOCSf45fW_9kxXfxthCwsWuGmV5A' },
-  { name: 'Sels de Bain des Lagunes', price: '15 500 FCFA', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBQ02fe2M0WazTfK5SQj181zpt3VVE3rMgTNNOu45hCXGdcOI17YmDfyeDN43ObNhS4e7L8EqkwazPiNoR7zCHqgNE39awvADH81ivDDApGsC3TFpjmwCuABrIbRJAZzW7bDhtnKWt9qa-sL_BvRcrU4sprA4TJ9M5Z1zUarSwj1mFVtREDnyK7gG6nLLjsNk6ScBMPBRE1XQXV4FbOsV1-Pko4rPvrzgONZBSbSJgAgxROdWhWzKmE8Q' },
-]
-
-/* ── Stars ── */
 function Stars({ rating, size = 'sm' }: { rating: number; size?: 'sm' | 'xs' }) {
+  const r = Math.round(rating * 2) / 2
   const px = size === 'sm' ? 'text-sm' : 'text-xs'
   return (
     <div className={`flex text-[#D4AF37] ${px}`}>
@@ -64,7 +18,7 @@ function Stars({ rating, size = 'sm' }: { rating: number; size?: 'sm' | 'xs' }) 
         <span
           key={i}
           className="material-symbols-outlined"
-          style={{ fontVariationSettings: `'FILL' ${i <= rating ? 1 : i - 0.5 <= rating ? 0.5 : 0}`, fontSize: 'inherit' }}
+          style={{ fontVariationSettings: `'FILL' ${i <= r ? 1 : i - 0.5 <= r ? 0.5 : 0}`, fontSize: 'inherit' }}
         >
           star
         </span>
@@ -73,54 +27,205 @@ function Stars({ rating, size = 'sm' }: { rating: number; size?: 'sm' | 'xs' }) 
   )
 }
 
-/* ── Page ── */
+function formatPrice(prix: number) {
+  return `${prix.toLocaleString('fr-FR')} FCFA`
+}
+
+function formatDate(dateStr: string) {
+  try {
+    const d = new Date(dateStr)
+    const now = new Date()
+    const diffMs = now.getTime() - d.getTime()
+    const diffJours = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+    if (diffJours === 0) return "Aujourd'hui"
+    if (diffJours === 1) return 'Hier'
+    if (diffJours < 7) return `Il y a ${diffJours} jours`
+    if (diffJours < 30) return `Il y a ${Math.floor(diffJours / 7)} sem.`
+    return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })
+  } catch {
+    return ''
+  }
+}
+
+function getInitials(first?: string, last?: string) {
+  return `${(first || '').slice(0, 1)}${(last || '').slice(0, 1)}`.toUpperCase() || 'U'
+}
+
+const BG_COLORS = ['bg-secondary-fixed', 'bg-primary-fixed', 'bg-tertiary-fixed', 'bg-error-container']
+
 export default function ProductDetail() {
-  const navigate = useNavigate()
+  const { id } = useParams<{ id: string }>()
+  const { user } = useAuth()
   const [activeImg, setActiveImg] = useState(0)
   const [qty, setQty] = useState(1)
   const [liked, setLiked] = useState(false)
+  const [likeCount, setLikeCount] = useState(0)
   const [openAccordion, setOpenAccordion] = useState<string | null>(null)
 
-  useEffect(() => {
-    document.title = "Huile d'Éveil de l'Okoumé | Ben Massage & Wellness"
-  }, [])
+  const [data, setData] = useState<ProduitDetail | null>(null)
+  const [reviews, setReviews] = useState<Review[]>([])
+  const [stats, setStats] = useState<ReviewStats | null>(null)
+  const [related, setRelated] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info'; msg: string } | null>(null)
+
+  const [showReviewForm, setShowReviewForm] = useState(false)
+  const [reviewForm, setReviewForm] = useState({ note: 5, titre: '', contenu: '' })
+  const [submittingReview, setSubmittingReview] = useState(false)
+
+  /* ---- Chargement ---- */
+  const loadData = useCallback(async () => {
+    if (!id) return
+    setLoading(true)
+    setError(null)
+    try {
+      const [detailRes, statsRes, reviewsRes] = await Promise.all([
+        productService.getProduit(id),
+        reviewService.getProductStats(id),
+        reviewService.listProductReviews(id, { limite: 10, tri: 'recent' }),
+      ])
+      setData(detailRes.data)
+      setStats(statsRes.data)
+      setReviews(reviewsRes.data.avis)
+      document.title = `${detailRes.data.produit.nom} | Ben Massage & Wellness`
+
+      if (user) {
+        try {
+          const likeStatusRes = await productService.getLikeStatus(id)
+          setLiked(likeStatusRes.data.liked)
+        } catch { /* non connecté ok */ }
+      }
+      const likeCountRes = await productService.getLikesCount(id)
+      setLikeCount(likeCountRes.data.count)
+
+      try {
+        const relatedRes = await productService.listProduits({
+          categorie_id: detailRes.data.produit.categorie_id,
+          limite: 4,
+          tri: 'populaire',
+        })
+        setRelated(relatedRes.data.produits.filter(p => p.id !== id).slice(0, 4))
+      } catch {
+        setRelated([])
+      }
+    } catch (err: any) {
+      setError(err.message || 'Erreur de chargement')
+    } finally {
+      setLoading(false)
+    }
+  }, [id, user])
+
+  useEffect(() => { loadData() }, [loadData])
+
+  /* ---- Actions ---- */
+  const toggleLike = async () => {
+    if (!user) {
+      setToast({ type: 'info', msg: 'Connectez-vous pour aimer ce produit' })
+      return
+    }
+    try {
+      const res = await productService.toggleLike(id!)
+      setLiked(res.data.liked)
+      setLikeCount(res.data.count)
+    } catch (err: any) {
+      setToast({ type: 'error', msg: err.message })
+    }
+  }
 
   const toggleAccordion = (key: string) =>
     setOpenAccordion(v => (v === key ? null : key))
 
-  const handleAddToCart = () => navigate('/checkout')
+  const handleAddToCart = () => {
+    setToast({ type: 'success', msg: `${qty} article(s) ajouté(s) au panier !` })
+  }
+
+  const submitReview = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!user) {
+      setToast({ type: 'info', msg: 'Connectez-vous pour laisser un avis' })
+      return
+    }
+    setSubmittingReview(true)
+    try {
+      await reviewService.createReview({ ...reviewForm, produit_id: id! })
+      setToast({ type: 'success', msg: 'Merci pour votre avis !' })
+      setReviewForm({ note: 5, titre: '', contenu: '' })
+      setShowReviewForm(false)
+      loadData()
+    } catch (err: any) {
+      setToast({ type: 'error', msg: err.message })
+    } finally {
+      setSubmittingReview(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <MainLayout>
+        <div className="min-h-screen flex items-center justify-center">
+          <Spinner size="lg" />
+        </div>
+      </MainLayout>
+    )
+  }
+  if (error || !data) {
+    return (
+      <MainLayout>
+        <div className="min-h-screen flex flex-col items-center justify-center text-center p-8">
+          <span className="material-symbols-outlined text-6xl text-error mb-4">error_outline</span>
+          <p className="font-body-lg text-body-lg text-error mb-6">{error || 'Produit introuvable'}</p>
+          <Link to="/products" className="px-6 py-3 rounded-full bg-primary text-white font-label-md hover:bg-sage-deep transition-colors">
+            Retour à la boutique
+          </Link>
+        </div>
+      </MainLayout>
+    )
+  }
+
+  const p = data.produit
+  const images = p.images?.length ? p.images : ['']
+  const moyenne = data.moyenne
+  const stockOk = p.stock > 0
 
   return (
     <MainLayout>
+      {toast && <Toast type={toast.type} message={toast.msg} onClose={() => setToast(null)} />}
+
       <main className="pt-8 pb-section-gap px-4 md:px-margin-desktop max-w-container-max mx-auto">
 
-        {/* ── Breadcrumb ── */}
+        {/* Breadcrumb */}
         <nav className="flex items-center gap-2 mb-8 text-on-surface-variant font-label-md text-caption overflow-x-auto whitespace-nowrap">
           <Link to="/products" className="hover:text-primary transition-colors">Boutique</Link>
           <span className="material-symbols-outlined text-sm">chevron_right</span>
-          <span className="hover:text-primary cursor-pointer transition-colors">Huiles essentielles</span>
-          <span className="material-symbols-outlined text-sm">chevron_right</span>
-          <span className="text-primary font-semibold">Huile d'Éveil de l'Okoumé</span>
+          {p.categorie?.nom && (
+            <>
+              <span className="hover:text-primary cursor-pointer transition-colors">{p.categorie.nom}</span>
+              <span className="material-symbols-outlined text-sm">chevron_right</span>
+            </>
+          )}
+          <span className="text-primary font-semibold">{p.nom}</span>
         </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
 
-          {/* ── Galerie bento ── */}
+          {/* Galerie bento */}
           <div className="lg:col-span-7 grid grid-cols-4 gap-3">
-            {/* Image principale */}
             <div className="col-span-4 aspect-[4/5] relative rounded-2xl overflow-hidden bg-sand-light group cursor-zoom-in">
               <img
-                src={IMAGES[activeImg]}
-                alt="Huile d'Éveil de l'Okoumé"
+                src={images[activeImg]}
+                alt={p.nom}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
-              <div className="absolute top-4 left-4 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full font-label-md text-caption text-sage-deep">
-                Extraction Durable
-              </div>
+              {likeCount > 0 && (
+                <div className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full font-label-md text-caption flex items-center gap-1">
+                  <span className="material-symbols-outlined text-[14px] text-error" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
+                  {likeCount}
+                </div>
+              )}
             </div>
 
-            {/* Miniatures */}
-            {IMAGES.slice(0, 4).map((img, i) => (
+            {images.slice(0, 4).map((img, i) => (
               <button
                 key={i}
                 onClick={() => setActiveImg(i)}
@@ -128,47 +233,45 @@ export default function ProductDetail() {
                   activeImg === i ? 'border-primary' : 'border-transparent opacity-60 hover:opacity-100'
                 }`}
               >
-                {i === 3 && IMAGES.length > 4 ? (
-                  <div className="relative w-full h-full">
-                    <img src={img} alt="" className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center text-white font-bold text-sm">
-                      +{IMAGES.length - 4}
-                    </div>
-                  </div>
-                ) : (
+                {img ? (
                   <img src={img} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-outline font-caption">
+                    N/A
+                  </div>
                 )}
               </button>
             ))}
           </div>
 
-          {/* ── Infos produit ── */}
+          {/* Infos produit */}
           <div className="lg:col-span-5 flex flex-col">
 
-            {/* Badge + titre */}
             <span className="inline-flex items-center px-3 py-1 rounded-full font-label-md text-caption bg-primary-fixed text-on-primary-fixed-variant mb-3 w-fit">
-              Best-seller
+              {p.categorie?.nom || 'Produit'}
             </span>
             <h1 className="font-headline-md text-headline-md text-sage-deep mb-3 leading-tight">
-              Huile d'Éveil de l'Okoumé
+              {p.nom}
             </h1>
 
             {/* Note + stock */}
-            <div className="flex items-center gap-4 mb-6">
+            <div className="flex items-center gap-4 mb-6 flex-wrap">
               <div className="flex items-center gap-2">
-                <Stars rating={4.5} />
-                <span className="font-label-md text-caption text-on-surface-variant">(48 avis)</span>
+                <Stars rating={moyenne} />
+                <span className="font-label-md text-caption text-on-surface-variant">
+                  {moyenne.toFixed(1)} ({stats?.total ?? 0} avis)
+                </span>
               </div>
               <div className="h-4 w-px bg-outline-variant" />
-              <div className="flex items-center gap-1.5 text-status-confirmed font-label-md text-caption">
+              <div className={`flex items-center gap-1.5 font-label-md text-caption ${stockOk ? 'text-status-confirmed' : 'text-error'}`}>
                 <span className="material-symbols-outlined text-sm">inventory_2</span>
-                En Stock
+                {stockOk ? (p.stock <= 3 ? `Stock faible (${p.stock})` : 'En Stock') : 'Rupture de stock'}
               </div>
             </div>
 
             {/* Prix */}
             <div className="mb-8">
-              <span className="font-headline-sm text-headline-sm text-primary block">24 500 FCFA</span>
+              <span className="font-headline-sm text-headline-sm text-primary block">{formatPrice(p.prix)}</span>
               <p className="font-caption text-caption text-on-surface-variant mt-1 italic">
                 Livraison gratuite au Gabon pour toute commande supérieure à 50 000 FCFA
               </p>
@@ -176,22 +279,8 @@ export default function ProductDetail() {
 
             {/* Description */}
             <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed mb-6">
-              Inspirée des rituels ancestraux du bassin du Congo, cette huile précieuse extraite de la résine
-              d'Okoumé gabonais est un véritable élixir de vitalité. Sa texture soyeuse pénètre instantanément
-              pour apaiser l'esprit et régénérer la barrière cutanée, laissant un sillage boisé et mystique.
+              {p.description}
             </p>
-
-            {/* Features */}
-            <ul className="grid grid-cols-2 gap-y-2 gap-x-4 mb-8">
-              {FEATURES.map(f => (
-                <li key={f} className="flex items-center gap-2 font-label-md text-label-md">
-                  <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>
-                    check_circle
-                  </span>
-                  {f}
-                </li>
-              ))}
-            </ul>
 
             {/* Quantité + Panier */}
             <div className="space-y-3 mb-4">
@@ -200,28 +289,31 @@ export default function ProductDetail() {
                   <button
                     onClick={() => setQty(q => Math.max(1, q - 1))}
                     className="hover:text-primary transition-colors p-1"
+                    disabled={!stockOk}
                   >
                     <span className="material-symbols-outlined">remove</span>
                   </button>
                   <span className="w-10 text-center font-bold font-body-md">{qty}</span>
                   <button
-                    onClick={() => setQty(q => q + 1)}
+                    onClick={() => setQty(q => Math.min(p.stock || 99, q + 1))}
                     className="hover:text-primary transition-colors p-1"
+                    disabled={!stockOk}
                   >
                     <span className="material-symbols-outlined">add</span>
                   </button>
                 </div>
                 <button
                   onClick={handleAddToCart}
-                  className="flex-1 h-14 bg-primary text-white rounded-xl font-label-md text-label-md flex items-center justify-center gap-3 hover:bg-sage-deep transition-all active:scale-95 shadow-md"
+                  disabled={!stockOk}
+                  className="flex-1 h-14 bg-primary text-white rounded-xl font-label-md text-label-md flex items-center justify-center gap-3 hover:bg-sage-deep transition-all active:scale-95 shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span className="material-symbols-outlined">shopping_cart</span>
-                  Ajouter au Panier
+                  {stockOk ? 'Ajouter au Panier' : 'Indisponible'}
                 </button>
               </div>
 
               <button
-                onClick={() => setLiked(v => !v)}
+                onClick={toggleLike}
                 className="w-full h-14 border-2 border-primary text-primary rounded-xl font-label-md text-label-md flex items-center justify-center gap-3 hover:bg-primary-fixed transition-all"
               >
                 <span
@@ -238,24 +330,22 @@ export default function ProductDetail() {
             <div className="mt-8 pt-8 border-t border-outline-variant space-y-0">
               {[
                 {
-                  key: 'ingredients',
-                  label: 'Ingrédients Complets',
-                  content: (
-                    <p className="text-sm text-on-surface-variant leading-loose">
-                      Aucoumea Klaineana (Okoumé) Resin Extract, Simmondsia Chinensis (Jojoba) Seed Oil*,
-                      Santalum Album (Sandalwood) Oil, Tocopherol (Vitamin E), Limonene, Linalool.{' '}
-                      <span className="text-primary font-medium block mt-2">*Ingrédients issus de l'agriculture biologique.</span>
-                    </p>
-                  ),
-                },
-                {
                   key: 'usage',
                   label: "Conseils d'utilisation",
                   content: (
                     <p className="text-sm text-on-surface-variant leading-relaxed">
-                      Appliquer quelques gouttes sur les points de pulsation (poignets, tempes, cou) ou mélanger
-                      à votre crème de corps habituelle pour une expérience sensorielle amplifiée. Parfait pour
-                      une séance de méditation ou de massage relaxant.
+                      Appliquer selon les besoins sur les zones concernées. Pour un massage relaxant,
+                      utiliser 3-5 gouttes en application locale ou diluée dans une huile de support.
+                    </p>
+                  ),
+                },
+                {
+                  key: 'livraison',
+                  label: 'Livraison & Retours',
+                  content: (
+                    <p className="text-sm text-on-surface-variant leading-relaxed">
+                      Livraison sous 48h à Libreville, 3-5 jours en province. Retours sous 14 jours
+                      si le produit n'a pas été utilisé.
                     </p>
                   ),
                 },
@@ -282,95 +372,176 @@ export default function ProductDetail() {
           </div>
         </div>
 
-        {/* ── Section Avis ── */}
+        {/* Section Avis */}
         <section className="mt-section-gap">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
             <div>
               <h2 className="font-headline-md text-headline-md text-sage-deep mb-2">Avis de la Communauté</h2>
-              <p className="font-body-md text-body-md text-on-surface-variant">48 clients ont partagé leur expérience.</p>
+              <p className="font-body-md text-body-md text-on-surface-variant">
+                {stats?.total ?? 0} client{stats?.total && stats.total > 1 ? 's' : ''} ont partagé leur expérience.
+              </p>
             </div>
 
-            {/* Score global */}
             <div className="flex items-center gap-8 bg-white p-6 rounded-2xl shadow-sm border border-outline-variant/30">
               <div className="text-center">
-                <span className="font-headline-md text-headline-md text-primary block">4.8</span>
-                <Stars rating={5} size="xs" />
+                <span className="font-headline-md text-headline-md text-primary block">
+                  {moyenne ? moyenne.toFixed(1) : '—'}
+                </span>
+                <Stars rating={moyenne} size="xs" />
               </div>
               <div className="hidden sm:block space-y-1.5 w-44">
-                {[{ n: 5, w: '85%' }, { n: 4, w: '10%' }, { n: 3, w: '5%' }].map(({ n, w }) => (
-                  <div key={n} className="flex items-center gap-2">
-                    <span className="font-label-md text-caption w-3">{n}</span>
-                    <div className="flex-1 h-1.5 bg-surface-container rounded-full overflow-hidden">
-                      <div className="h-full bg-primary rounded-full" style={{ width: w }} />
+                {[5, 4, 3, 2, 1].map(n => {
+                  const count = stats?.distribution?.[n] ?? 0
+                  const total = stats?.total ?? 1
+                  const w = `${Math.round((count / total) * 100)}%`
+                  return (
+                    <div key={n} className="flex items-center gap-2">
+                      <span className="font-label-md text-caption w-3">{n}</span>
+                      <div className="flex-1 h-1.5 bg-surface-container rounded-full overflow-hidden">
+                        <div className="h-full bg-primary rounded-full" style={{ width: w }} />
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
-              <button className="bg-primary-fixed text-on-primary-fixed-variant px-5 py-2.5 rounded-full font-label-md text-label-md hover:bg-primary hover:text-white transition-colors">
+              <button
+                onClick={() => setShowReviewForm(v => !v)}
+                className="bg-primary-fixed text-on-primary-fixed-variant px-5 py-2.5 rounded-full font-label-md text-label-md hover:bg-primary hover:text-white transition-colors"
+              >
                 Écrire un avis
               </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {REVIEWS.map(r => (
-              <div key={r.name} className="bg-white p-8 rounded-2xl border border-outline-variant/30 flex flex-col">
-                <div className="flex justify-between items-start mb-6">
-                  <div className="flex items-center gap-4">
-                    <div className={`w-12 h-12 rounded-full ${r.bg} flex items-center justify-center font-bold text-on-surface`}>
-                      {r.initials}
-                    </div>
-                    <div>
-                      <h4 className="font-label-md text-label-md">{r.name}</h4>
-                      {r.verified && (
-                        <span className="font-caption text-caption text-on-surface-variant flex items-center gap-1">
-                          <span className="material-symbols-outlined text-status-confirmed" style={{ fontSize: 14, fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                          Achat Vérifié
+          {showReviewForm && (
+            <form onSubmit={submitReview} className="bg-white p-8 rounded-2xl border border-outline-variant/30 mb-10 max-w-2xl">
+              <h3 className="font-headline-sm text-sage-deep mb-4">Votre avis</h3>
+              <div className="space-y-5">
+                <div>
+                  <label className="block font-label-md text-label-md text-on-surface-variant mb-2">Note</label>
+                  <div className="flex items-center gap-2">
+                    {[1, 2, 3, 4, 5].map(n => (
+                      <button
+                        key={n}
+                        type="button"
+                        onClick={() => setReviewForm(f => ({ ...f, note: n }))}
+                        className="p-1"
+                      >
+                        <span
+                          className="material-symbols-outlined text-3xl transition-colors"
+                          style={{ color: n <= reviewForm.note ? '#D4AF37' : '#e0e0e0', fontVariationSettings: `'FILL' ${n <= reviewForm.note ? 1 : 0}` }}
+                        >
+                          star
                         </span>
-                      )}
-                    </div>
+                      </button>
+                    ))}
                   </div>
-                  <Stars rating={r.rating} size="xs" />
                 </div>
-                <h5 className="font-semibold font-body-md mb-3 text-sage-deep">{r.title}</h5>
-                <p className="font-body-md text-body-md text-on-surface-variant flex-grow">{r.body}</p>
-                <div className="mt-6 pt-6 border-t border-outline-variant/20 flex items-center gap-4 font-caption text-caption text-on-surface-variant">
-                  <span>{r.date}</span>
-                  <button className="flex items-center gap-1 hover:text-primary transition-colors">
-                    <span className="material-symbols-outlined" style={{ fontSize: 16 }}>thumb_up</span>
-                    Utile ({r.helpful})
+                <div>
+                  <label className="block font-label-md text-label-md text-on-surface-variant mb-2">Titre</label>
+                  <input
+                    type="text"
+                    required
+                    value={reviewForm.titre}
+                    onChange={e => setReviewForm(f => ({ ...f, titre: e.target.value }))}
+                    className="w-full px-4 py-3 border border-outline-variant rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/30 font-body-md"
+                    placeholder="Ex. Excellent produit !"
+                  />
+                </div>
+                <div>
+                  <label className="block font-label-md text-label-md text-on-surface-variant mb-2">Votre avis</label>
+                  <textarea
+                    rows={4}
+                    required
+                    value={reviewForm.contenu}
+                    onChange={e => setReviewForm(f => ({ ...f, contenu: e.target.value }))}
+                    className="w-full px-4 py-3 border border-outline-variant rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/30 font-body-md resize-none"
+                    placeholder="Partagez votre expérience..."
+                  />
+                </div>
+                <div className="flex gap-3 justify-end">
+                  <button
+                    type="button"
+                    onClick={() => setShowReviewForm(false)}
+                    className="px-6 py-3 rounded-full border border-outline-variant font-label-md hover:bg-surface-container-highest transition-colors"
+                  >
+                    Annuler
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={submittingReview}
+                    className="px-6 py-3 rounded-full bg-primary text-white font-label-md hover:bg-sage-deep transition-colors disabled:opacity-50 flex items-center gap-2"
+                  >
+                    {submittingReview && <Spinner size="sm" />}
+                    Publier
                   </button>
                 </div>
               </div>
-            ))}
-          </div>
+            </form>
+          )}
 
-          <div className="text-center mt-10">
-            <button className="font-label-md text-label-md text-primary border-b-2 border-primary pb-1 hover:text-sage-deep hover:border-sage-deep transition-all">
-              Afficher tous les avis
-            </button>
-          </div>
-        </section>
-
-        {/* ── Produits similaires ── */}
-        <section className="mt-section-gap">
-          <h2 className="font-headline-md text-headline-md text-sage-deep mb-8">Complétez votre rituel</h2>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-gutter">
-            {RELATED.map(p => (
-              <Link key={p.name} to="/products" className="group">
-                <div className="aspect-square rounded-xl overflow-hidden mb-4 bg-sand-light">
-                  <img
-                    src={p.img}
-                    alt={p.name}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
+          {reviews.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {reviews.map((r, idx) => (
+                <div key={r.id} className="bg-white p-8 rounded-2xl border border-outline-variant/30 flex flex-col">
+                  <div className="flex justify-between items-start mb-6">
+                    <div className="flex items-center gap-4">
+                      <div className={`w-12 h-12 rounded-full ${BG_COLORS[idx % BG_COLORS.length]} flex items-center justify-center font-bold text-on-surface`}>
+                        {r.utilisateur.avatar ? (
+                          <img src={r.utilisateur.avatar} alt="" className="w-full h-full object-cover rounded-full" />
+                        ) : getInitials(r.utilisateur.firstName, r.utilisateur.lastName)}
+                      </div>
+                      <div>
+                        <h4 className="font-label-md text-label-md">
+                          {r.utilisateur.firstName} {r.utilisateur.lastName}
+                        </h4>
+                        <span className="font-caption text-caption text-on-surface-variant flex items-center gap-1">
+                          <span className="material-symbols-outlined text-status-confirmed" style={{ fontSize: 14, fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                          Vérifié
+                        </span>
+                      </div>
+                    </div>
+                    <Stars rating={r.note} size="xs" />
+                  </div>
+                  <h5 className="font-semibold font-body-md mb-3 text-sage-deep">{r.titre}</h5>
+                  <p className="font-body-md text-body-md text-on-surface-variant flex-grow">{r.contenu}</p>
+                  <div className="mt-6 pt-6 border-t border-outline-variant/20 flex items-center gap-4 font-caption text-caption text-on-surface-variant">
+                    <span>{formatDate(r.createdAt)}</span>
+                  </div>
                 </div>
-                <h3 className="font-label-md text-label-md text-sage-deep mb-1">{p.name}</h3>
-                <p className="font-body-md text-body-md text-primary font-bold">{p.price}</p>
-              </Link>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16 bg-sand-light/30 rounded-2xl">
+              <span className="material-symbols-outlined text-5xl text-outline-variant mb-3 block">rate_review</span>
+              <p className="font-body-md text-body-md text-on-surface-variant">
+                Aucun avis pour le moment. Soyez le premier !
+              </p>
+            </div>
+          )}
         </section>
+
+        {/* Produits similaires */}
+        {related.length > 0 && (
+          <section className="mt-section-gap">
+            <h2 className="font-headline-md text-headline-md text-sage-deep mb-8">Complétez votre rituel</h2>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-gutter">
+              {related.map(rp => (
+                <Link key={rp.id} to={`/products/${rp.id}`} className="group">
+                  <div className="aspect-square rounded-xl overflow-hidden mb-4 bg-sand-light">
+                    <img
+                      src={rp.images?.[0] || ''}
+                      alt={rp.nom}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                  <h3 className="font-label-md text-label-md text-sage-deep mb-1 line-clamp-2">{rp.nom}</h3>
+                  <p className="font-body-md text-body-md text-primary font-bold">{formatPrice(rp.prix)}</p>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
 
       </main>
     </MainLayout>

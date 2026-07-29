@@ -41,9 +41,11 @@ const router = (0, express_1.Router)();
 // Routes publiques
 router.get('/type-seances', appointment.getTypeSeances);
 router.get('/public', appointment.getPublicAppointments);
+router.get('/config', appointment.getScheduleConfig);
 // Routes utilisateur connecté
 router.post('/', auth_1.requireAuth, appointment.createAppointment);
 router.get('/my', auth_1.requireAuth, appointment.getMyAppointments);
+router.put('/config', auth_1.requireAuth, (0, roleCheck_1.requireRole)('ADMIN', 'SUPER_ADMIN'), appointment.updateScheduleConfig);
 router.patch('/:id/cancel', auth_1.requireAuth, appointment.cancelAppointment);
 router.put('/:id', auth_1.requireAuth, appointment.updateAppointment);
 // Routes admin

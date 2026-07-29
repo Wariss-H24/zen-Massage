@@ -448,7 +448,7 @@ export default function Account() {
                         {appt.statut === 'PENDING' && (
                           <div className="flex gap-3">
                             <button 
-                              className="flex-1 py-2 font-label-md text-label-md text-on-surface-variant hover:bg-surface-variant rounded-lg transition-colors border border-outline-variant/30"
+                              className="flex-1 py-2 font-label-md text-label-md text-on-surface-variant cursor-pointer hover:bg-surface-variant rounded-lg transition-colors border border-outline-variant/30"
                               onClick={() => {
                                 const currentDate = new Date(appt.date_heure)
                                 const currentHours = String(currentDate.getHours()).padStart(2, '0')

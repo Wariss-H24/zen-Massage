@@ -1,6 +1,27 @@
 
 import { api } from './api'
 
+export type DayKey = 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun'
+
+export interface TimeRange {
+  start: string
+  end: string
+}
+
+export interface DaySchedule {
+  active: boolean
+  start: string
+  end: string
+}
+
+export interface AppointmentScheduleConfig {
+  version: 1
+  slotStepMinutes: 30
+  days: Record<DayKey, DaySchedule>
+  pause?: TimeRange
+  blocked?: Partial<Record<DayKey, TimeRange[]>>
+}
+
 // Type pour TypeSeance
 export interface TypeSeance {
   id: string
@@ -102,4 +123,10 @@ export const appointmentService = {
       raison_refus?: string
     }
   ) => api.put<ApiResponse<RendezVousWithUser>>(`/appointments/${id}/status`, body),
+
+  getScheduleConfig: () =>
+    api.get<ApiResponse<AppointmentScheduleConfig>>('/appointments/config'),
+
+  updateScheduleConfig: (body: AppointmentScheduleConfig) =>
+    api.put<ApiResponse<AppointmentScheduleConfig>>('/appointments/config', body),
 }

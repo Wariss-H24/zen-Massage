@@ -1,5 +1,106 @@
 
 import { prisma } from '../prisma'
+import {
+  dayKeyFromDate,
+  getAppointmentScheduleConfig,
+  minutesFromTimeString,
+  rangeOverlaps,
+  type AppointmentScheduleConfig,
+  type DayKey,
+} from './appointmentConfigService'
+
+function addMinutes(d: Date, minutes: number) {
+  return new Date(d.getTime() + minutes * 60_000)
+}
+
+function startOfDay(d: Date) {
+  const x = new Date(d)
+  x.setHours(0, 0, 0, 0)
+  return x
+}
+
+function endOfDay(d: Date) {
+  const x = startOfDay(d)
+  x.setDate(x.getDate() + 1)
+  return x
+}
+
+function assertScheduleAllows(config: AppointmentScheduleConfig, start: Date, durationMinutes: number) {
+  const dayKey: DayKey = dayKeyFromDate(start)
+  const day = config.days[dayKey]
+  if (!day.active) {
+    const err = new Error('Aucun rendez-vous possible ce jour-là') as any
+    err.status = 400
+    throw err
+  }
+
+  const startMin = start.getHours() * 60 + start.getMinutes()
+  const endMin = startMin + durationMinutes
+
+  const openMin = minutesFromTimeString(day.start)
+  const closeMin = minutesFromTimeString(day.end)
+  if (openMin === null || closeMin === null) {
+    const err = new Error('Configuration horaires invalide') as any
+    err.status = 500
+    throw err
+  }
+
+  if (startMin < openMin || endMin > closeMin) {
+    const err = new Error('Créneau en dehors des heures de travail') as any
+    err.status = 400
+    throw err
+  }
+
+  if (config.pause) {
+    const pStart = minutesFromTimeString(config.pause.start)
+    const pEnd = minutesFromTimeString(config.pause.end)
+    if (pStart !== null && pEnd !== null) {
+      if (rangeOverlaps(startMin, endMin, pStart, pEnd)) {
+        const err = new Error('Créneau indisponible (pause)') as any
+        err.status = 400
+        throw err
+      }
+    }
+  }
+
+  const blocked = config.blocked?.[dayKey] ?? []
+  for (const r of blocked) {
+    const bStart = minutesFromTimeString(r.start)
+    const bEnd = minutesFromTimeString(r.end)
+    if (bStart === null || bEnd === null) continue
+    if (rangeOverlaps(startMin, endMin, bStart, bEnd)) {
+      const err = new Error('Créneau indisponible') as any
+      err.status = 400
+      throw err
+    }
+  }
+}
+
+async function assertNoOverlappingAppointment(start: Date, durationMinutes: number, excludeId?: string) {
+  const end = addMinutes(start, durationMinutes)
+
+  const dayStart = startOfDay(start)
+  const dayEnd = endOfDay(start)
+
+  const candidates = await prisma.rendezVous.findMany({
+    where: {
+      id: excludeId ? { not: excludeId } : undefined,
+      statut: { notIn: ['CANCELLED'] },
+      date_heure: { gte: dayStart, lt: dayEnd },
+    },
+    select: { id: true, date_heure: true, duree: true },
+  })
+
+  for (const appt of candidates) {
+    const apptStart = appt.date_heure
+    const apptEnd = addMinutes(apptStart, appt.duree)
+    if (start < apptEnd && apptStart < end) {
+      const err = new Error('Ce créneau est déjà réservé') as any
+      err.status = 409
+      throw err
+    }
+  }
+}
 
 // Récupérer tous les types de séance actifs
 export async function getTypeSeances() {
@@ -39,7 +140,7 @@ export async function getTypeSeanceById(id: string) {
 // Créer un rendez-vous
 export async function createAppointment(data: {
   utilisateur_id: string
-  date_heure: Date
+  date_heure: Date | string
   duree: number
   type_seance_id: string
   notes?: string
@@ -47,21 +148,13 @@ export async function createAppointment(data: {
   // Vérifier que le type de séance existe
   await getTypeSeanceById(data.type_seance_id)
 
-  // Vérifier que le créneau n'est pas déjà pris
-  const existingAppointment = await prisma.rendezVous.findFirst({
-    where: {
-      date_heure: data.date_heure,
-      statut: { notIn: ['CANCELLED'] }
-    }
-  })
-  if (existingAppointment) {
-    const err = new Error('Ce créneau est déjà réservé') as any
-    err.status = 409
-    throw err
-  }
+  const date = data.date_heure instanceof Date ? data.date_heure : new Date(data.date_heure)
+  const config = await getAppointmentScheduleConfig()
+  assertScheduleAllows(config, date, data.duree)
+  await assertNoOverlappingAppointment(date, data.duree)
 
   return await prisma.rendezVous.create({
-    data,
+    data: { ...data, date_heure: date },
     include: {
       type_seance: true,
       utilisateur: { select: { id: true, email: true, firstName: true, lastName: true } }
@@ -138,26 +231,20 @@ export async function updateAppointment(id: string, userId: string, userRole: st
     throw err
   }
   // Seulement les clients ne peuvent pas modifier des rendez-vous non en attente
-  if (userRole === 'CLIENT' && appointment.statut !== 'PENDING') {
+  if (userRole === 'USER' && appointment.statut !== 'PENDING') {
     const err = new Error('Impossible de modifier un rendez-vous non en attente') as any
     err.status = 400
     throw err
   }
   // Si on change la date/heure, vérifier que le créneau est disponible
-  if (data.date_heure) {
-    const existingAppointment = await prisma.rendezVous.findFirst({
-      where: {
-        date_heure: data.date_heure,
-        id: { not: id },
-        statut: { notIn: ['CANCELLED'] }
-      }
-    })
-    if (existingAppointment) {
-      const err = new Error('Ce créneau est déjà réservé') as any
-      err.status = 409
-      throw err
-    }
+  const nextDate = data.date_heure ?? appointment.date_heure
+  const nextDuree = data.duree ?? appointment.duree
+  if (data.date_heure || data.duree) {
+    const config = await getAppointmentScheduleConfig()
+    assertScheduleAllows(config, nextDate, nextDuree)
+    await assertNoOverlappingAppointment(nextDate, nextDuree, id)
   }
+
   return await prisma.rendezVous.update({
     where: { id },
     data,

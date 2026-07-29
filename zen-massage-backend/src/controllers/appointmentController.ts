@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from 'express'
 import * as appointmentService from '../services/appointmentService'
+import { getAppointmentScheduleConfig, updateAppointmentScheduleConfig } from '../services/appointmentConfigService'
 
 export async function getTypeSeances(_req: Request, res: Response, next: NextFunction) {
   try {
@@ -97,6 +98,24 @@ export async function cancelAppointment(req: Request, res: Response, next: NextF
     const { id } = req.params
     const appointment = await appointmentService.cancelAppointment(id as string, res.locals.user.id, res.locals.user.role)
     res.json({ success: true, message: 'Rendez-vous annule', data: appointment })
+  } catch (err) {
+    next(err)
+  }
+}
+
+export async function getScheduleConfig(_req: Request, res: Response, next: NextFunction) {
+  try {
+    const config = await getAppointmentScheduleConfig()
+    res.json({ success: true, data: config })
+  } catch (err) {
+    next(err)
+  }
+}
+
+export async function updateScheduleConfig(req: Request, res: Response, next: NextFunction) {
+  try {
+    const config = await updateAppointmentScheduleConfig(req.body)
+    res.json({ success: true, message: 'Configuration mise à jour', data: config })
   } catch (err) {
     next(err)
   }

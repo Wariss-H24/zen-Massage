@@ -5,10 +5,12 @@ const MONTHS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','A
 
 export default function MiniCalendar({ 
   selectedDate, 
-  onSelect 
+  onSelect,
+  isDayDisabled,
 }: { 
   selectedDate: Date | null; 
-  onSelect: (d: Date) => void 
+  onSelect: (d: Date) => void;
+  isDayDisabled?: (d: Date) => boolean;
 }) {
   const [currentMonth, setCurrentMonth] = useState(() => {
     if (selectedDate) {
@@ -78,6 +80,8 @@ export default function MiniCalendar({
           thisDayDate.setHours(0,0,0,0);
           
           const isPast = thisDayDate < today;
+          const disabledByRule = Boolean(isDayDisabled?.(thisDayDate))
+          const isDisabled = isPast || disabledByRule
           
           let isSelected = false;
           if (selectedDate) {
@@ -90,12 +94,12 @@ export default function MiniCalendar({
           return (
             <button
               key={day}
-              disabled={isPast}
-              onClick={() => !isPast && onSelect(thisDayDate)}
+              disabled={isDisabled}
+              onClick={() => !isDisabled && onSelect(thisDayDate)}
               className={`font-caption text-caption py-2 rounded-lg transition-colors ${
                 isSelected
                   ? 'bg-primary text-white font-bold shadow-md'
-                  : isPast
+                  : isDisabled
                   ? 'text-outline/30 cursor-not-allowed'
                   : 'cursor-pointer hover:bg-sand-light'
               }`}

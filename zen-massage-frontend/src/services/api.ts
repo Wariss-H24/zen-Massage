@@ -3,11 +3,12 @@ import { API_URL } from '../config/env'
 type Method = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 
 async function request<T>(method: Method, path: string, body?: unknown): Promise<T> {
+  const isFormData = typeof FormData !== 'undefined' && body instanceof FormData
   const res = await fetch(`${API_URL}${path}`, {
     method,
     credentials: 'include', // envoie/reçoit les cookies httpOnly
-    headers: body ? { 'Content-Type': 'application/json' } : {},
-    body: body ? JSON.stringify(body) : undefined,
+    headers: body ? (isFormData ? {} : { 'Content-Type': 'application/json' }) : {},
+    body: body ? (isFormData ? (body as any) : JSON.stringify(body)) : undefined,
   })
 
   const json = await res.json()

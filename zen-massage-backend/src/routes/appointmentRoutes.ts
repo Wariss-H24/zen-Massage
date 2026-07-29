@@ -9,10 +9,13 @@ const router = Router()
 // Routes publiques
 router.get('/type-seances', appointment.getTypeSeances)
 router.get('/public', appointment.getPublicAppointments)
+router.get('/config', appointment.getScheduleConfig)
 
 // Routes utilisateur connecté
 router.post('/', requireAuth, appointment.createAppointment)
 router.get('/my', requireAuth, appointment.getMyAppointments)
+
+router.put('/config', requireAuth, requireRole('ADMIN', 'SUPER_ADMIN'), appointment.updateScheduleConfig)
 
 router.patch('/:id/cancel', requireAuth, appointment.cancelAppointment)
 router.put('/:id', requireAuth, appointment.updateAppointment)

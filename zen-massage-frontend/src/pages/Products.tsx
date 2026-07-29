@@ -1,98 +1,11 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import MainLayout from '../components/layout/MainLayout'
-import ProductCard, { type ProductItem } from '../components/products/ProductCard'
+import ProductCard from '../components/products/ProductCard'
 import { useInView } from '../hooks/useInView'
+import { productService } from '../services/product.service'
+import type { Categorie, Produit } from '../types/product'
+import Spinner from '../components/ui/Spinner'
 
-/* ── Data ── */
-const ALL_PRODUCTS: ProductItem[] = [
-  {
-    id: 1,
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBomtvWKlV7PCb8SuMOBO3DbQ8VMGE3fIqGmyI4hznlhGgvs9vtZoXzHdhIt4IvUYMo9Yonr88rASqlPOS179ovpI62rwYdpsWeNAEtNmBnkV4y7AJp7uYI_dwOkGzJNi6Op3CgBqVl02HLG4eRhUdkPvVzdUWj_aMYkdXfAjyOMvll3njP8y6h5X_BJn6CpiCkTL-LOLeFxgqh3FQcbremS9FDLyTFRwQm21kKxsR7Xg6dk7ugcOHNelKTqRzY4GyBGbBTF_xnReIc',
-    badge: 'Nouveau',
-    rating: 5,
-    reviewCount: 48,
-    name: 'Huile Essentielle Lavande Bio',
-    description: 'Apaisement profond et relaxation nocturne.',
-    price: '24.000 FCFA',
-    category: 'Huiles essentielles',
-  },
-  {
-    id: 2,
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDf3Z7dlwjM_CbQgL68naKTTEYeL1mspCJjFnBIidfszYUOnybWAanIvPs2PQfEFTAUJDMq5LSbXGpsoHsKn7eDXf8QvG5BIhF3mNI6yM8Leqzdg_CIzzuZppICzofKQnORuXCVN9SaBLkXcLivawkXGALiCYYI2chRpmjq3NZPYX8gEg9FrCAGxE4lg3xNTuBEAu2e6kUkFuPsIJanLoiOQ_wsgHXUBCnhTxkL-D6tvbE2Wzct7OJEvhcq_yzBrSC0lqgG4g0SZGfW',
-    rating: 4,
-    reviewCount: 124,
-    name: 'Complexe Magnésium Relax',
-    description: 'Soutien musculaire et réduction du stress.',
-    price: '18.500 FCFA',
-    category: 'Compléments',
-  },
-  {
-    id: 3,
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDBQljuO0UfenYR5jmY8JCrhIUrIBMmCyP0bOFQu1x94NZT3Hz9O3XS_O6nvSo6M8scGdFWGmIT7FJJ-NgjCRqU04JbQGEgxagEc0_MPYLoZM9S1iQ5KjN5RLsRwFRliEOYDPU0vDz81tAq9fulpD5OpQuPIfC8PECDuBj-7jQ9hLpZ9pDdRHOIdyeRFqbu9dMhPtohIOQhThudoLMu2laup-KTTznoOnGpXzJaGqvI4s5W1Y1hNJT5ylVgOgk9yuimj9qnNarcUbKz',
-    rating: 5,
-    reviewCount: 32,
-    name: 'Diffuseur Ultrasonique Céramique',
-    description: 'Design épuré pour une brume apaisante.',
-    price: '45.000 FCFA',
-    category: 'Accessoires',
-  },
-  {
-    id: 4,
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDv4b5LKvrWRdgmDDrD6LZB6q9NT93L0den2iDrgj6rV9ktf58xHXWi7lYYFA9puqaq1dAiaO0TBYK-LqrFOubZwreaU1vrakE4EzhZczDRGzP6_0F36ot-xLs6buoRvj8GTnM3oLGOcAAlE1DIhUDDjOJOt6AWfWmIb15_XYTutql4n0cZwkwGGncbIzasghKjyLy5ZL5BVH50I18dAzw3nvjBbGNTTVgHyj1FFzrUm7cdkkX2iEoF_tzwdFecCECtKApHrLnioey7',
-    rating: 4,
-    reviewCount: 89,
-    name: 'Tapis de Yoga Éco-Conscient',
-    description: 'Adhérence supérieure et confort naturel.',
-    price: '35.000 FCFA',
-    category: 'Accessoires',
-  },
-  {
-    id: 5,
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAXs9BnSh60IdJ83PoQgReHv3on4OFGYDkfSs2EdgLY6fh0BB5EuhIUAkxLd8ZsYE9C5g45sBuBJeV0F49fH3pCwV_hJqd4I6BF5cfbPor0PpiZV4jh-eHa-T5ILlgfi788puh6k7h5PzHQrxKZDYoQR_3KwXcTo2XjK1gTlw3G4VMEhIMriHXaVve6ar9E8JePXg24sFOqWRvbwyC97UMToVSwCaI_k-t_mbShckXEoGKOMwxyoXrmVLn7PkOk-CioVxctFHMjGV9r',
-    badge: 'Best Seller',
-    rating: 5,
-    reviewCount: 210,
-    name: 'Huile de Forêt Équatoriale',
-    description: 'Massage profond aux essences gabonaises.',
-    price: '45.000 FCFA',
-    category: 'Huiles essentielles',
-  },
-  {
-    id: 6,
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDdYAZ8A90K5TfL9UsvsFwFn-_B4DxpwC33n3s3WENqdEmAuOtqTL7EgGzGWK4PxQh3yWCBbofumnAq1vhjuwOmuAkCuXeS4FFJ78Jp-b79HEYo3WD9q5ZzV-bAwvXpVP7yAjTUHvRVIRKXE93v0qexww1p9WrYg99dGAUiQhHfExJIJI5_wW3YxUdmj6PelJc2lByu21H9TITKPagwoiTc2ALBp5ySc0aEiUSTdiSirzsMYcy9QA-7kfZIiLwFU0t7Cz7gCZM__Q4q',
-    rating: 4,
-    reviewCount: 67,
-    name: "Infusion 'Nuit au Gabon'",
-    description: 'Tisane relaxante aux plantes tropicales.',
-    price: '12.500 FCFA',
-    category: 'Compléments',
-  },
-  {
-    id: 7,
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBRfYMoKCTk6ip3-OLrFv8pzN_U3piA4j0JTeY1RtcBXEAy8_jTcNOXB4fkcXwgSiHJ69MyGYx7iu4PFvkkCATDyCIRUygVi7Q0q4O0_6w7jw5v3w52wHe3SGPzJIF2Pv9QXtS1IiTMQzqNUpmzzV7vIQU-_EMI-_RkhFQU_0FOzuognyKSvL4dyTKKM9dK88XxcFc4sSoX8unDfmIWXa4rbZmVkMNyNJxA_cty4YW_cusEXvbnU4DqrGYZsmBn1XhT4o2mBwP3sKAu',
-    rating: 5,
-    reviewCount: 44,
-    name: 'Coffret Pierres Chaudes',
-    description: 'Kit complet pour massage aux pierres volcaniques.',
-    price: '65.000 FCFA',
-    category: 'Accessoires',
-  },
-  {
-    id: 8,
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAgtGb5ymu2-5MeKMziYnkK1-OVzt80xvs-DL8Hf6Bs9SBAv53YrlnVEkWzQEswxJLn0MY_N08At42YZwt5Nt2cfMPlCXP_nXvp80ojAWC0-F9O7pwyXOgxbMpixDdnjyX61N4SymTbZHgVW44gnGie-h_m0ePlhlkpRoKmVMYzg02ZxQxXbAJ3bD2OcJO_EWE0f98vB3snK28Gz0SyikJI2tP4fi9-WFvjYJGZbifdppBpGFzeRSBmRJNu-ZDmo4jr_qRk8gmo4vMQ',
-    badge: 'Nouveau',
-    rating: 4,
-    reviewCount: 19,
-    name: "Bougie 'Brise de l'Estuaire'",
-    description: 'Cire naturelle aux fragrances marines gabonaises.',
-    price: '28.000 FCFA',
-    category: 'Accessoires',
-  },
-] satisfies ProductItem[]
-
-const CATEGORIES = ['Tous les produits', 'Huiles essentielles', 'Compléments', 'Accessoires']
-
-/* ── Newsletter section ── */
 function NewsletterSection() {
   const [email, setEmail] = useState('')
   const [ref, isInView] = useInView(0.1)
@@ -136,31 +49,62 @@ function NewsletterSection() {
   )
 }
 
-/* ── Page ── */
 export default function Products() {
-  const [activeCategory, setActiveCategory] = useState('Tous les produits')
+  const [categories, setCategories] = useState<Categorie[]>([])
+  const [produits, setProduits] = useState<Produit[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [activeCatId, setActiveCatId] = useState<string | null>(null)
   const [search, setSearch] = useState('')
+  const [tri, setTri] = useState<'recent' | 'prix_asc' | 'prix_desc' | 'avis_desc'>('recent')
+  const [page, setPage] = useState(1)
+  const [pages, setPages] = useState(1)
+  const [total, setTotal] = useState(0)
 
   useEffect(() => {
     document.title = 'Boutique | Ben Massage & Wellness Gabon'
   }, [])
 
-  const filtered = useMemo(() => {
-    return ALL_PRODUCTS.filter((p) => {
-      const matchCat = activeCategory === 'Tous les produits' || p.category === activeCategory
-      const matchSearch = p.name.toLowerCase().includes(search.toLowerCase())
-      return matchCat && matchSearch
-    })
-  }, [activeCategory, search])
+  const loadCategories = useCallback(async () => {
+    try {
+      const res = await productService.getCategories()
+      setCategories(res.data)
+    } catch (err: any) {
+      console.error('Catégories:', err.message)
+    }
+  }, [])
+
+  const loadProduits = useCallback(async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const res = await productService.listProduits({
+        categorie_id: activeCatId ?? undefined,
+        recherche: search || undefined,
+        tri,
+        page,
+        limite: 12,
+      })
+      setProduits(res.data.produits)
+      setTotal(res.data.total)
+      setPages(res.data.pages)
+    } catch (err: any) {
+      setError(err.message || 'Erreur de chargement')
+    } finally {
+      setLoading(false)
+    }
+  }, [activeCatId, search, tri, page])
+
+  useEffect(() => { loadCategories() }, [loadCategories])
+  useEffect(() => { setPage(1) }, [activeCatId, search, tri])
+  useEffect(() => { loadProduits() }, [loadProduits])
 
   return (
     <MainLayout>
       <main className="min-h-screen">
 
-        {/* ── Hero & Filters ── */}
         <section className="max-w-container-max mx-auto px-6 md:px-margin-desktop py-stack-lg">
 
-          {/* Title + Search */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-gutter border-b border-outline-variant pb-stack-md mb-stack-lg">
             <div className="max-w-2xl">
               <h1 className="font-display-lg text-display-lg-mobile md:text-display-lg text-sage-deep mb-2">
@@ -170,9 +114,13 @@ export default function Products() {
                 Découvrez notre sélection rigoureuse de produits naturels pour prolonger votre
                 expérience thérapeutique à domicile.
               </p>
+              {total > 0 && !loading && (
+                <p className="font-caption text-caption text-outline mt-2">
+                  {total} produit{total > 1 ? 's' : ''} trouvé{total > 1 ? 's' : ''}
+                </p>
+              )}
             </div>
 
-            {/* Search */}
             <div className="relative w-full md:w-80">
               <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">
                 search
@@ -187,45 +135,106 @@ export default function Products() {
             </div>
           </div>
 
-          {/* Category chips */}
-          <div className="flex flex-wrap gap-4 mb-stack-lg">
-            {CATEGORIES.map((cat) => (
+          <div className="flex flex-wrap items-center justify-between gap-4 mb-stack-lg">
+            <div className="flex flex-wrap gap-4">
               <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
+                onClick={() => setActiveCatId(null)}
                 className={`px-6 py-2 rounded-full font-label-md text-label-md transition-all ${
-                  activeCategory === cat
+                  activeCatId === null
                     ? 'bg-primary text-white shadow-sm'
                     : 'bg-sand-light text-on-surface-variant hover:bg-surface-container-highest border border-transparent'
                 }`}
               >
-                {cat}
+                Tous les produits
               </button>
-            ))}
+              {categories.map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => setActiveCatId(cat.id)}
+                  className={`px-6 py-2 rounded-full font-label-md text-label-md transition-all ${
+                    activeCatId === cat.id
+                      ? 'bg-primary text-white shadow-sm'
+                      : 'bg-sand-light text-on-surface-variant hover:bg-surface-container-highest border border-transparent'
+                  }`}
+                >
+                  {cat.nom}
+                </button>
+              ))}
+            </div>
+
+            <select
+              value={tri}
+              onChange={(e) => setTri(e.target.value as any)}
+              className="px-4 py-2 rounded-full bg-sand-light border border-outline-variant font-label-md text-label-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30"
+            >
+              <option value="recent">Plus récents</option>
+              <option value="avis_desc">Mieux notés</option>
+              <option value="prix_asc">Prix : croissant</option>
+              <option value="prix_desc">Prix : décroissant</option>
+            </select>
           </div>
         </section>
 
-        {/* ── Product Grid ── */}
         <section className="max-w-container-max mx-auto px-6 md:px-margin-desktop pb-section-gap">
-          {filtered.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
-              {filtered.map((product, i) => (
-                <ProductCard key={product.id} product={product} delay={i * 80} />
-              ))}
+          {loading ? (
+            <div className="flex justify-center py-24">
+              <Spinner size="lg" />
             </div>
+          ) : error ? (
+            <div className="text-center py-24">
+              <span className="material-symbols-outlined text-5xl text-error mb-4 block">
+                error_outline
+              </span>
+              <p className="font-body-lg text-body-lg text-error mb-4">{error}</p>
+              <button
+                onClick={loadProduits}
+                className="px-6 py-3 rounded-full bg-primary text-white font-label-md hover:bg-sage-deep transition-colors"
+              >
+                Réessayer
+              </button>
+            </div>
+          ) : produits.length > 0 ? (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+                {produits.map((product, i) => (
+                  <ProductCard key={product.id} produit={product} delay={i * 80} />
+                ))}
+              </div>
+
+              {pages > 1 && (
+                <div className="flex justify-center items-center gap-2 mt-stack-lg">
+                  <button
+                    onClick={() => setPage(p => Math.max(1, p - 1))}
+                    disabled={page === 1}
+                    className="px-4 py-2 rounded-full bg-sand-light disabled:opacity-40 font-label-md hover:bg-surface-container-highest transition-colors"
+                  >
+                    ← Précédent
+                  </button>
+                  <span className="font-body-md text-on-surface-variant px-4">
+                    Page {page} / {pages}
+                  </span>
+                  <button
+                    onClick={() => setPage(p => Math.min(pages, p + 1))}
+                    disabled={page === pages}
+                    className="px-4 py-2 rounded-full bg-sand-light disabled:opacity-40 font-label-md hover:bg-surface-container-highest transition-colors"
+                  >
+                    Suivant →
+                  </button>
+                </div>
+              )}
+            </>
           ) : (
             <div className="text-center py-24">
               <span className="material-symbols-outlined text-5xl text-outline-variant mb-4 block">
                 search_off
               </span>
               <p className="font-body-lg text-body-lg text-on-surface-variant">
-                Aucun produit trouvé pour "{search}"
+                {search ? `Aucun produit trouvé pour "${search}"` : 'Aucun produit disponible pour le moment'}
               </p>
             </div>
           )}
         </section>
 
-        {/* ── Newsletter ── */}
         <NewsletterSection />
 
       </main>

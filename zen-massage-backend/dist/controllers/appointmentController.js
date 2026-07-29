@@ -42,7 +42,10 @@ exports.updateAppointmentStatus = updateAppointmentStatus;
 exports.deleteAppointment = deleteAppointment;
 exports.updateAppointment = updateAppointment;
 exports.cancelAppointment = cancelAppointment;
+exports.getScheduleConfig = getScheduleConfig;
+exports.updateScheduleConfig = updateScheduleConfig;
 const appointmentService = __importStar(require("../services/appointmentService"));
+const appointmentConfigService_1 = require("../services/appointmentConfigService");
 async function getTypeSeances(_req, res, next) {
     try {
         const typeSeances = await appointmentService.getTypeSeances();
@@ -121,7 +124,7 @@ async function updateAppointment(req, res, next) {
         const { id } = req.params;
         // Convertir date_heure en Date si elle est présente
         const data = req.body.date_heure ? { ...req.body, date_heure: new Date(req.body.date_heure) } : req.body;
-        const appointment = await appointmentService.updateAppointment(id, res.locals.user.id, data);
+        const appointment = await appointmentService.updateAppointment(id, res.locals.user.id, res.locals.user.role, data);
         res.json({ success: true, message: 'Rendez-vous mis a jour', data: appointment });
     }
     catch (err) {
@@ -131,8 +134,26 @@ async function updateAppointment(req, res, next) {
 async function cancelAppointment(req, res, next) {
     try {
         const { id } = req.params;
-        const appointment = await appointmentService.cancelAppointment(id, res.locals.user.id);
+        const appointment = await appointmentService.cancelAppointment(id, res.locals.user.id, res.locals.user.role);
         res.json({ success: true, message: 'Rendez-vous annule', data: appointment });
+    }
+    catch (err) {
+        next(err);
+    }
+}
+async function getScheduleConfig(_req, res, next) {
+    try {
+        const config = await (0, appointmentConfigService_1.getAppointmentScheduleConfig)();
+        res.json({ success: true, data: config });
+    }
+    catch (err) {
+        next(err);
+    }
+}
+async function updateScheduleConfig(req, res, next) {
+    try {
+        const config = await (0, appointmentConfigService_1.updateAppointmentScheduleConfig)(req.body);
+        res.json({ success: true, message: 'Configuration mise à jour', data: config });
     }
     catch (err) {
         next(err);

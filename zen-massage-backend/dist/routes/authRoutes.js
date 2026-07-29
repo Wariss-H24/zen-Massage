@@ -42,4 +42,5 @@ router.post('/register', (0, validation_1.validateBody)(['firstName', 'lastName'
 router.post('/login', (0, validation_1.validateBody)(['email', 'password']), auth.login);
 router.post('/logout', auth.logout);
 router.get('/me', auth_1.requireAuth, auth.me);
+router.put('/me', auth_1.requireAuth, auth.updateProfile);
 exports.default = router;

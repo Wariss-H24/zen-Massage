@@ -9,6 +9,9 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Account from './pages/Account'
 import AddProduct from './pages/admin/AddProduct'
+import CategoriesManagement from './pages/admin/CategoriesManagement'
+import ProductsManagement from './pages/admin/ProductsManagement'
+import EditProduct from './pages/admin/EditProduct'
 import Settings from './pages/admin/Settings'
 import Dashboard from './pages/admin/Dashboard'
 import OrderHistory from './pages/admin/OrderHistory'
@@ -96,7 +99,10 @@ export default function App() {
       {/* Pages ADMIN + SUPER_ADMIN */}
       <Route path="/admin"              element={<RequireAdmin><Dashboard /></RequireAdmin>} />
       <Route path="/admin/bookings"     element={<RequireAdmin><Bookings /></RequireAdmin>} />
+      <Route path="/admin/categories"   element={<RequireAdmin><CategoriesManagement /></RequireAdmin>} />
+      <Route path="/admin/products"     element={<RequireAdmin><ProductsManagement /></RequireAdmin>} />
       <Route path="/admin/products/add" element={<RequireAdmin><AddProduct /></RequireAdmin>} />
+      <Route path="/admin/products/:id/edit" element={<RequireAdmin><EditProduct /></RequireAdmin>} />
       <Route path="/admin/settings"     element={<RequireAdmin><Settings /></RequireAdmin>} />
       <Route path="/admin/orders"       element={<RequireAdmin><OrderHistory /></RequireAdmin>} />
       <Route path="/admin/analytics"    element={<RequireAdmin><Statistics /></RequireAdmin>} />

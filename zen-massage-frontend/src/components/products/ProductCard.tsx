@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useInView } from '../../hooks/useInView'
+import type { Produit } from '../../types/product'
 
 export interface ProductItem {
   id: number
@@ -13,12 +14,8 @@ export interface ProductItem {
   category?: string
 }
 
-interface Props {
-  product: ProductItem
-  delay?: number
-}
-
 function Stars({ rating }: { rating: number }) {
+  const r = Math.round(rating * 2) / 2
   return (
     <div className="flex items-center gap-1 mb-2 text-[#C5A059]">
       {[1, 2, 3, 4, 5].map((i) => (
@@ -26,7 +23,7 @@ function Stars({ rating }: { rating: number }) {
           key={i}
           className="material-symbols-outlined text-[18px]"
           style={{
-            fontVariationSettings: `'FILL' ${i <= rating ? 1 : i - 0.5 <= rating ? 0.5 : 0}`,
+            fontVariationSettings: `'FILL' ${i <= r ? 1 : i - 0.5 <= r ? 0.5 : 0}`,
           }}
         >
           star
@@ -36,8 +33,22 @@ function Stars({ rating }: { rating: number }) {
   )
 }
 
-export default function ProductCard({ product, delay = 0 }: Props) {
+function formatPrice(prix: number): string {
+  return `${prix.toLocaleString('fr-FR')} FCFA`
+}
+
+interface ProduitCardProps {
+  produit: Produit
+  delay?: number
+  moyenne?: number
+}
+
+export default function ProductCard({ produit, delay = 0, moyenne }: ProduitCardProps) {
   const [ref, isInView] = useInView(0.1)
+  const image = produit.images?.[0] || ''
+  const rating = moyenne ?? 0
+  const reviewCount = produit._count?.avis ?? 0
+  const catNom = produit.categorie?.nom
 
   return (
     <div
@@ -47,40 +58,48 @@ export default function ProductCard({ product, delay = 0 }: Props) {
       }`}
       style={{ transitionDelay: `${delay}ms` }}
     >
-      {/* Image */}
       <div className="aspect-[4/5] relative overflow-hidden bg-surface-container-low">
         <img
-          src={product.image}
-          alt={product.name}
+          src={image}
+          alt={produit.nom}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
-        {product.badge && (
+        {produit.stock > 0 && produit.stock <= 3 && (
           <span className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full font-label-md text-caption uppercase tracking-tighter text-primary">
-            {product.badge}
+            Stock faible
+          </span>
+        )}
+        {produit.stock === 0 && (
+          <span className="absolute top-4 left-4 bg-error/90 text-white backdrop-blur-md px-3 py-1 rounded-full font-label-md text-caption uppercase tracking-tighter">
+            Rupture
           </span>
         )}
       </div>
 
-      {/* Body */}
       <div className="p-stack-md flex flex-col flex-grow">
-        <Stars rating={product.rating} />
+        <Stars rating={rating} />
         <div className="flex items-center gap-1 mb-2">
           <span className="font-caption text-caption text-outline-variant">
-            ({product.reviewCount})
+            ({reviewCount})
           </span>
         </div>
         <h3 className="font-body-md text-body-md font-semibold text-on-surface mb-1">
-          {product.name}
+          {produit.nom}
         </h3>
-        <p className="font-caption text-caption text-on-surface-variant mb-4 flex-grow">
-          {product.description}
+        {catNom && (
+          <p className="font-caption text-caption text-primary/80 mb-1 uppercase tracking-wider">
+            {catNom}
+          </p>
+        )}
+        <p className="font-caption text-caption text-on-surface-variant mb-4 flex-grow line-clamp-2">
+          {produit.description}
         </p>
         <div className="flex items-center justify-between mt-auto">
           <span className="font-headline-sm text-headline-sm text-sage-deep">
-            {product.price}
+            {formatPrice(produit.prix)}
           </span>
           <Link
-            to="/products/1"
+            to={`/products/${produit.id}`}
             className="font-label-md text-label-md text-primary border-b border-primary hover:text-sage-deep hover:border-sage-deep transition-colors"
           >
             Voir détails

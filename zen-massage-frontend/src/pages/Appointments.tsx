@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react'
 import MainLayout from '../components/layout/MainLayout'
 import MiniCalendar from '../components/MiniCalendar'
-import { appointmentService, type PublicRendezVous } from '../services/appointment.service'
+import { appointmentService, type AppointmentScheduleConfig, type DayKey, type PublicRendezVous } from '../services/appointment.service'
 import { useAuth } from '../context/AuthContext'
 
 /* ── Types ── */
@@ -28,6 +28,37 @@ function formatDuration(minutes: number): string {
 function formatPrice(price: number): string {
   // Formater en FCFA avec séparateur de milliers
   return new Intl.NumberFormat('fr-FR').format(price) + ' F'
+}
+
+function parseDurationMinutes(value: string) {
+  const m = /(\d+)/.exec(value)
+  const n = m ? Number(m[1]) : 0
+  return Number.isFinite(n) && n > 0 ? n : 0
+}
+
+function dayKeyFromDate(d: Date): DayKey {
+  const js = d.getDay()
+  if (js === 0) return 'sun'
+  if (js === 1) return 'mon'
+  if (js === 2) return 'tue'
+  if (js === 3) return 'wed'
+  if (js === 4) return 'thu'
+  if (js === 5) return 'fri'
+  return 'sat'
+}
+
+function timeToMinutes(value: string) {
+  const m = /^(\d{2}):(\d{2})$/.exec(value)
+  if (!m) return null
+  const hh = Number(m[1])
+  const mm = Number(m[2])
+  if (!Number.isFinite(hh) || !Number.isFinite(mm)) return null
+  if (hh < 0 || hh > 23 || mm < 0 || mm > 59) return null
+  return hh * 60 + mm
+}
+
+function rangesOverlap(aStart: number, aEnd: number, bStart: number, bEnd: number) {
+  return aStart < bEnd && bStart < aEnd
 }
 
 // Créneaux de base (tous disponibles initialement)
@@ -98,6 +129,7 @@ export default function Appointments() {
   const [loading, setLoading]         = useState(true)
   const [error, setError]             = useState<string | null>(null)
   const [appointments, setAppointments] = useState<PublicRendezVous[]>([])
+  const [schedule, setSchedule] = useState<AppointmentScheduleConfig | null>(null)
   const { user } = useAuth()
 
   // Calculer les créneaux disponibles en fonction des rendez-vous existants et de l'heure actuelle
@@ -109,7 +141,16 @@ export default function Appointments() {
 
     const now = new Date()
 
-    // Pour chaque créneau, vérifier s'il est pris ou passé
+    const duration = selectedService ? parseDurationMinutes(selectedService.duration) : 0
+    const scheduleDayKey = schedule ? dayKeyFromDate(selectedDate) : null
+    const scheduleDay = schedule && scheduleDayKey ? schedule.days[scheduleDayKey] : null
+    const openMin = scheduleDay?.active ? timeToMinutes(scheduleDay.start) : null
+    const closeMin = scheduleDay?.active ? timeToMinutes(scheduleDay.end) : null
+    const pauseStart = schedule?.pause ? timeToMinutes(schedule.pause.start) : null
+    const pauseEnd = schedule?.pause ? timeToMinutes(schedule.pause.end) : null
+    const blocked = scheduleDayKey && schedule?.blocked?.[scheduleDayKey] ? schedule.blocked[scheduleDayKey]! : []
+
+    // Pour chaque créneau, vérifier s'il est pris, passé, ou hors horaires
     return BASE_SLOTS.map(baseSlot => {
       // Construire la date+heure du créneau
       const [hours, minutes] = baseSlot.time.split(':').map(Number)
@@ -124,25 +165,39 @@ export default function Appointments() {
 
       const isPast = isToday && slotDateTime < now
 
-      // Vérifier si ce créneau est déjà pris par un rendez-vous non annulé
-      const isTaken = appointments.some(apt => {
-        const aptDate = new Date(apt.date_heure)
-        return (
-          aptDate.getFullYear() === slotDateTime.getFullYear() &&
-          aptDate.getMonth() === slotDateTime.getMonth() &&
-          aptDate.getDate() === slotDateTime.getDate() &&
-          aptDate.getHours() === slotDateTime.getHours() &&
-          aptDate.getMinutes() === slotDateTime.getMinutes() &&
-          apt.statut !== 'CANCELLED'
-        )
+      const slotStartMin = slotDateTime.getHours() * 60 + slotDateTime.getMinutes()
+      const slotEndMin = duration > 0 ? slotStartMin + duration : slotStartMin + 1
+
+      const isClosedDay = Boolean(schedule && (!scheduleDay || !scheduleDay.active))
+      const isOutsideHours =
+        Boolean(schedule && scheduleDay?.active && (openMin === null || closeMin === null || slotStartMin < openMin || slotEndMin > closeMin))
+
+      const isInPause =
+        Boolean(schedule?.pause && pauseStart !== null && pauseEnd !== null && rangesOverlap(slotStartMin, slotEndMin, pauseStart, pauseEnd))
+
+      const isInBlocked = blocked.some((r) => {
+        const bStart = timeToMinutes(r.start)
+        const bEnd = timeToMinutes(r.end)
+        if (bStart === null || bEnd === null) return false
+        return rangesOverlap(slotStartMin, slotEndMin, bStart, bEnd)
+      })
+
+      const slotStart = slotDateTime
+      const slotEnd = new Date(slotDateTime.getTime() + duration * 60_000)
+
+      const isTaken = appointments.some((apt) => {
+        if (apt.statut === 'CANCELLED') return false
+        const aptStart = new Date(apt.date_heure)
+        const aptEnd = new Date(aptStart.getTime() + apt.duree * 60_000)
+        return slotStart < aptEnd && aptStart < slotEnd
       })
 
       return {
         ...baseSlot,
-        available: !isTaken && !isPast
+        available: !isTaken && !isPast && !isClosedDay && !isOutsideHours && !isInPause && !isInBlocked
       }
     })
-  }, [selectedDate, appointments])
+  }, [appointments, schedule, selectedDate, selectedService])
 
   useEffect(() => {
     document.title = 'Prendre rendez-vous | Ben Massage & Wellness Gabon'
@@ -185,6 +240,18 @@ export default function Appointments() {
       }
     }
     loadAppointments()
+  }, [])
+
+  useEffect(() => {
+    async function loadSchedule() {
+      try {
+        const res = await appointmentService.getScheduleConfig()
+        setSchedule(res.data)
+      } catch {
+        setSchedule(null)
+      }
+    }
+    loadSchedule()
   }, [])
 
   const canGoStep2 = !!selectedService
@@ -349,7 +416,15 @@ export default function Appointments() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter">
                 {/* Calendar */}
-                <MiniCalendar selectedDate={selectedDate} onSelect={(d) => { setSelectedDate(d); setSlot(null) }} />
+                <MiniCalendar
+                  selectedDate={selectedDate}
+                  onSelect={(d) => { setSelectedDate(d); setSlot(null) }}
+                  isDayDisabled={(d) => {
+                    if (!schedule) return false
+                    const key = dayKeyFromDate(d)
+                    return !schedule.days[key]?.active
+                  }}
+                />
 
                 {/* Time slots */}
                 <div className="flex flex-col">

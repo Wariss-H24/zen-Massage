@@ -3,7 +3,10 @@ import { Link } from 'react-router-dom'
 import AdminLayout from '../../components/layout/AdminLayout'
 import MiniCalendar from '../../components/MiniCalendar'
 import { useAuth } from '../../context/AuthContext'
-import { appointmentService, type RendezVousWithUser, type PublicRendezVous } from '../../services/appointment.service'
+import { appointmentService, type AppointmentScheduleConfig, type DayKey, type RendezVousWithUser, type PublicRendezVous } from '../../services/appointment.service'
+import { productService } from '../../services/product.service'
+import type { Produit } from '../../types/product'
+import Toast from '../../components/ui/Toast'
 
 // Fonction pour formater la date en français (ex: "Aujourd'hui, 16h30")
 const formatAppointmentTime = (dateStr: string): string => {
@@ -60,25 +63,40 @@ const BASE_SLOTS = [
 ];
 const MONTHS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre']
 
+function dayKeyFromDate(d: Date): DayKey {
+  const js = d.getDay()
+  if (js === 0) return 'sun'
+  if (js === 1) return 'mon'
+  if (js === 2) return 'tue'
+  if (js === 3) return 'wed'
+  if (js === 4) return 'thu'
+  if (js === 5) return 'fri'
+  return 'sat'
+}
+
+function timeToMinutes(value: string) {
+  const m = /^(\d{2}):(\d{2})$/.exec(value)
+  if (!m) return null
+  const hh = Number(m[1])
+  const mm = Number(m[2])
+  if (!Number.isFinite(hh) || !Number.isFinite(mm)) return null
+  if (hh < 0 || hh > 23 || mm < 0 || mm > 59) return null
+  return hh * 60 + mm
+}
+
+function rangesOverlap(aStart: number, aEnd: number, bStart: number, bEnd: number) {
+  return aStart < bEnd && bStart < aEnd
+}
+
 /* ── Types pour les créneaux ── */
 interface Slot {
   time: string
   available: boolean
 }
 
-const PRODUCTS = [
-  { name: 'Huile Sérénité',      price: '48 000 FCFA', units: 24,  status: 'En stock',     statusColor: 'bg-status-confirmed/90' },
-  { name: 'Kit Sel Himalaya',    price: '32 500 FCFA', units: 3,   status: 'Stock faible', statusColor: 'bg-error/90' },
-  { name: 'Bougie Ben Arôme',    price: '18 000 FCFA', units: 112, status: 'En stock',     statusColor: 'bg-status-confirmed/90' },
-  { name: 'Parure Lin Texturé',  price: '65 000 FCFA', units: 18,  status: 'En stock',     statusColor: 'bg-status-confirmed/90' },
-]
-
-const PRODUCT_IMGS = [
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuDaPeEHe9JfNgQEZ4zDC1dUKd-yHJ0syJS-os0KXVrNcYnfo-0ZjgCVE_RUBLJYjJHEJh4mwnoURE26aIa4o2PyC1fY_-aM2MqbBSq0biaFizVhkwSrH-ENIgVNCvMKfOE0T5RK8uNMNVmQhcGdfK8VxOZ-rxKDe2SaLyo435hLIszJgRWofUPsh7yG8XcgI3ZcsM7UUCjT2p0U6Xj9dIJ6cskHFWv37jipVQjKs0C1ClQyA3q54gZjYTEGDI_MpWclFRZLvx-gUD0D',
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuBS0YQ0nmY-IPQGgHo3VTDIKC1iY7Y1R5gcoKuI6-F401Pb7jl1uxDDptocrZvRmZhf9JdxiTWmmWyFn0A0wCXmUMCW4oWTk20ay0vEqTAaSZI0aN9k3uvKg9GvVlLxRNnOm8iLEh5dZFykZfQObSEgNuJ5FObeYPpfGEs2Vunc6VOUa5kSWuA3T5olJ4bcMImm6On6Fbo8XrtpSQ_lDqhGZMTiumbzLjsOrX435a6awSMtV8hrYvLo8Yi2AkhklM-sHf7oMuxYpgIT',
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuA-ye3xa524TPHZnlvs1s-ul5nO5c3aavleFxcdJyuOZr1aE1F39fsjVPk1lLzJk0oph4JPiackWK9GOKdazmchmEAaz2ZWYQSxpf4i39rksg5q1Uxcfu76pcZe2OxNXiLpEWEb0XJ6ZJnJO5py98xtSNtKAfEvT2bKRZiI5GyzRsOqbzHQqlZpuh75MHe47GgouLkkGOE8S8ptIthmwFsufv--jMKdO9mEE8PPc23ApQCVQMWsu713znu8w0D9h2nk4BC0w6gWRxNT',
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuCsvJb8FFFaCvbGWaVWcFbSmtV971LKHk7u45OFuCBS3DcFnLvK8oMYvtvJf2IHr1P0l9nSTnJGS4cMdlEhY7qpI7Zdbk5_m526JCwoUPrJobpVVx2lBlB7us4vrkoSVVhB5En3Bzl_F-c4ygJc_KFo8pW7mePtJp0vmhCP_cdVPMApaO_gCWeCt0bYXMuttg2bJnpICpTEWZ6W-f9BFMZ5P-bC6ofQNmlFqcmkhuHH-ObgdXEdaO1ERgrHeqeKzHtf5p0Z1D3JsgD6',
-]
+function formatPriceFCFA(value: number) {
+  return `${Math.round(value).toLocaleString('fr-FR')} FCFA`
+}
 
 const SALES = [
   { id: '#ZN-9821', customer: 'Robert Chen',   total: '112 500 FCFA', status: 'Expédié',   statusStyle: 'bg-status-confirmed/10 text-status-confirmed' },
@@ -87,20 +105,27 @@ const SALES = [
   { id: '#ZN-9732', customer: 'Sophia Lane',   total: '32 500 FCFA',  status: 'Retourné',  statusStyle: 'bg-status-cancelled/10 text-status-cancelled' },
 ]
 
-const DAYS_INIT = [
-  { label: 'Lun', start: '09:00', end: '18:00', active: true },
-  { label: 'Mar', start: '09:00', end: '18:00', active: true },
-  { label: 'Mer', start: '',      end: '',       active: false },
-  { label: 'Jeu', start: '09:00', end: '18:00', active: true },
-  { label: 'Ven', start: '09:00', end: '17:00', active: true },
+const DAY_LABELS: { key: DayKey; label: string }[] = [
+  { key: 'mon', label: 'Lun' },
+  { key: 'tue', label: 'Mar' },
+  { key: 'wed', label: 'Mer' },
+  { key: 'thu', label: 'Jeu' },
+  { key: 'fri', label: 'Ven' },
+  { key: 'sat', label: 'Sam' },
+  { key: 'sun', label: 'Dim' },
 ]
 
 export default function Dashboard() {
   const { user } = useAuth()
-  const [days, setDays] = useState(DAYS_INIT)
   const [appointments, setAppointments] = useState<RendezVousWithUser[]>([])
   const [publicAppointments, setPublicAppointments] = useState<PublicRendezVous[]>([])
   const [loading, setLoading] = useState(true)
+  const [products, setProducts] = useState<Produit[]>([])
+  const [loadingProducts, setLoadingProducts] = useState(true)
+  const [schedule, setSchedule] = useState<AppointmentScheduleConfig | null>(null)
+  const [scheduleDraft, setScheduleDraft] = useState<AppointmentScheduleConfig | null>(null)
+  const [savingSchedule, setSavingSchedule] = useState(false)
+  const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info'; msg: string } | null>(null)
   const [statusModalOpen, setStatusModalOpen] = useState(false)
   const [rescheduleModalOpen, setRescheduleModalOpen] = useState(false)
   const [selectedAppt, setSelectedAppt] = useState<RendezVousWithUser | null>(null)
@@ -115,6 +140,45 @@ export default function Dashboard() {
   const lastName = user?.lastName || ''
 
   useEffect(() => { document.title = 'Espace Praticien | Ben Massage' }, [])
+
+  useEffect(() => {
+    let mounted = true
+    async function loadSchedule() {
+      try {
+        const res = await appointmentService.getScheduleConfig()
+        if (!mounted) return
+        setSchedule(res.data)
+        setScheduleDraft(res.data)
+      } catch (err: any) {
+        if (!mounted) return
+        setSchedule(null)
+        setScheduleDraft(null)
+        setToast({ type: 'error', msg: err.message || 'Erreur chargement planning' })
+      }
+    }
+    loadSchedule()
+    return () => {
+      mounted = false
+    }
+  }, [])
+
+  useEffect(() => {
+    let mounted = true
+    async function loadProducts() {
+      setLoadingProducts(true)
+      try {
+        const res = await productService.listProduitsAdmin({ page: 1, limite: 4, tri: 'recent' })
+        if (mounted) setProducts(res.data.produits)
+      } catch {
+        if (mounted) setProducts([])
+      }
+      if (mounted) setLoadingProducts(false)
+    }
+    loadProducts()
+    return () => {
+      mounted = false
+    }
+  }, [])
 
   // Charger les rendez-vous
   useEffect(() => {
@@ -147,8 +211,17 @@ export default function Dashboard() {
     }
 
     const now = new Date()
+    const duration = selectedAppt?.duree ?? 0
 
-    // Pour chaque créneau, vérifier s'il est pris ou passé
+    const scheduleDayKey = schedule ? dayKeyFromDate(selectedDate) : null
+    const scheduleDay = schedule && scheduleDayKey ? schedule.days[scheduleDayKey] : null
+    const openMin = scheduleDay?.active ? timeToMinutes(scheduleDay.start) : null
+    const closeMin = scheduleDay?.active ? timeToMinutes(scheduleDay.end) : null
+    const pauseStart = schedule?.pause ? timeToMinutes(schedule.pause.start) : null
+    const pauseEnd = schedule?.pause ? timeToMinutes(schedule.pause.end) : null
+    const blocked = scheduleDayKey && schedule?.blocked?.[scheduleDayKey] ? schedule.blocked[scheduleDayKey]! : []
+
+    // Pour chaque créneau, vérifier s'il est pris, passé, ou hors horaires
     return BASE_SLOTS.map(baseSlot => {
       // Construire la date+heure du créneau
       const [hours, minutes] = baseSlot.time.split(':').map(Number)
@@ -163,34 +236,83 @@ export default function Dashboard() {
 
       const isPast = isToday && slotDateTime < now
 
-      // Vérifier si ce créneau est déjà pris par un rendez-vous non annulé, et pas le rendez-vous en cours de reprogrammation
-      const isTaken = publicAppointments.some(apt => {
+      const slotStartMin = slotDateTime.getHours() * 60 + slotDateTime.getMinutes()
+      const slotEndMin = (duration > 0 ? slotStartMin + duration : slotStartMin + 1)
+
+      const isClosedDay = Boolean(schedule && (!scheduleDay || !scheduleDay.active))
+      const isOutsideHours =
+        Boolean(schedule && scheduleDay?.active && (openMin === null || closeMin === null || slotStartMin < openMin || slotEndMin > closeMin))
+
+      const isInPause =
+        Boolean(schedule?.pause && pauseStart !== null && pauseEnd !== null && rangesOverlap(slotStartMin, slotEndMin, pauseStart, pauseEnd))
+
+      const isInBlocked = blocked.some((r) => {
+        const bStart = timeToMinutes(r.start)
+        const bEnd = timeToMinutes(r.end)
+        if (bStart === null || bEnd === null) return false
+        return rangesOverlap(slotStartMin, slotEndMin, bStart, bEnd)
+      })
+
+      const slotStart = slotDateTime
+      const slotEnd = new Date(slotDateTime.getTime() + duration * 60_000)
+
+      const isTaken = publicAppointments.some((apt) => {
+        if (apt.statut === 'CANCELLED') return false
         if (selectedAppt && apt.id === selectedAppt.id) return false
-        const aptDate = new Date(apt.date_heure)
-        return (
-          aptDate.getFullYear() === slotDateTime.getFullYear() &&
-          aptDate.getMonth() === slotDateTime.getMonth() &&
-          aptDate.getDate() === slotDateTime.getDate() &&
-          aptDate.getHours() === slotDateTime.getHours() &&
-          aptDate.getMinutes() === slotDateTime.getMinutes() &&
-          apt.statut !== 'CANCELLED'
-        )
+        const aptStart = new Date(apt.date_heure)
+        const aptEnd = new Date(aptStart.getTime() + apt.duree * 60_000)
+        return slotStart < aptEnd && aptStart < slotEnd
       })
 
       return {
         ...baseSlot,
-        available: !isTaken && !isPast
+        available: !isTaken && !isPast && !isClosedDay && !isOutsideHours && !isInPause && !isInBlocked
       }
     })
-  }, [selectedDate, publicAppointments, selectedAppt])
+  }, [publicAppointments, schedule, selectedAppt, selectedDate])
 
   // Filtrer les rendez-vous en attente
   const pendingAppointments = useMemo(() => {
     return appointments.filter(appt => appt.statut === 'PENDING')
   }, [appointments])
 
-  const toggleDay = (i: number) =>
-    setDays(d => d.map((day, idx) => idx === i ? { ...day, active: !day.active } : day))
+  const updateDay = (key: DayKey, patch: Partial<AppointmentScheduleConfig['days'][DayKey]>) => {
+    setScheduleDraft((prev) => {
+      if (!prev) return prev
+      return {
+        ...prev,
+        days: {
+          ...prev.days,
+          [key]: { ...prev.days[key], ...patch },
+        },
+      }
+    })
+  }
+
+  const updatePause = (patch: Partial<NonNullable<AppointmentScheduleConfig['pause']>>) => {
+    setScheduleDraft((prev) => {
+      if (!prev) return prev
+      return {
+        ...prev,
+        pause: { ...(prev.pause ?? { start: '13:00', end: '14:00' }), ...patch },
+      }
+    })
+  }
+
+  const handleUpdateSchedule = async () => {
+    if (!scheduleDraft) return
+    try {
+      setSavingSchedule(true)
+      const res = await appointmentService.updateScheduleConfig(scheduleDraft)
+      setSchedule(res.data)
+      setScheduleDraft(res.data)
+      setToast({ type: 'success', msg: 'Planning mis à jour' })
+    } catch (err: any) {
+      setToast({ type: 'error', msg: err.message || 'Mise à jour impossible' })
+    } finally {
+      setSavingSchedule(false)
+    }
+  }
 
   // Gérer la mise à jour du statut
   const handleUpdateStatus = async () => {
@@ -242,6 +364,7 @@ export default function Dashboard() {
 
   return (
     <AdminLayout title="Espace Praticien">
+      {toast && <Toast type={toast.type} message={toast.msg} onClose={() => setToast(null)} />}
       <div className="px-6 pb-20 pt-8 max-w-[1280px] mx-auto space-y-8">
 
         {/* Page header */}
@@ -340,70 +463,142 @@ export default function Dashboard() {
           {/* Planning hebdomadaire */}
           <section className="col-span-12 lg:col-span-4 bg-sand-light/30 p-6 rounded-xl border border-outline-variant/30">
             <h3 className="font-headline-sm text-headline-sm text-charcoal-muted mb-4">Planning hebdomadaire</h3>
-            <div className="space-y-3">
-              {days.map((day, i) => (
-                <div key={day.label} className={`flex items-center justify-between ${!day.active ? 'opacity-50' : ''}`}>
-                  <span className="font-label-md text-label-md w-10">{day.label}</span>
-                  <div className="flex-1 mx-3 flex gap-2">
-                    {day.active ? (
-                      <>
-                        <input defaultValue={day.start} className="w-full bg-white border-none rounded-lg text-xs py-1 px-2 focus:ring-1 focus:ring-primary" />
-                        <span className="text-on-surface-variant self-center">-</span>
-                        <input defaultValue={day.end} className="w-full bg-white border-none rounded-lg text-xs py-1 px-2 focus:ring-1 focus:ring-primary" />
-                      </>
-                    ) : (
-                      <span className="text-xs text-error italic">Fermé</span>
-                    )}
+            {!scheduleDraft ? (
+              <div className="text-on-surface-variant">Chargement du planning…</div>
+            ) : (
+              <div className="space-y-3">
+                {DAY_LABELS.map(({ key, label }) => {
+                  const day = scheduleDraft.days[key]
+                  const active = Boolean(day?.active)
+                  const start = day?.start ?? '09:00'
+                  const end = day?.end ?? '18:00'
+                  return (
+                    <div key={key} className={`flex items-center justify-between ${!active ? 'opacity-50' : ''}`}>
+                      <span className="font-label-md text-label-md w-10">{label}</span>
+                      <div className="flex-1 mx-3 flex gap-2">
+                        {active ? (
+                          <>
+                            <input
+                              value={start}
+                              onChange={(e) => updateDay(key, { start: e.target.value })}
+                              className="w-full bg-white border-none rounded-lg text-xs py-1 px-2 focus:ring-1 focus:ring-primary"
+                              disabled={savingSchedule}
+                            />
+                            <span className="text-on-surface-variant self-center">-</span>
+                            <input
+                              value={end}
+                              onChange={(e) => updateDay(key, { end: e.target.value })}
+                              className="w-full bg-white border-none rounded-lg text-xs py-1 px-2 focus:ring-1 focus:ring-primary"
+                              disabled={savingSchedule}
+                            />
+                          </>
+                        ) : (
+                          <span className="text-xs text-error italic">Fermé</span>
+                        )}
+                      </div>
+                      <input
+                        type="checkbox"
+                        checked={active}
+                        onChange={() => {
+                          if (!active && (!day.start || !day.end)) {
+                            updateDay(key, { active: true, start: '09:00', end: '18:00' })
+                          } else {
+                            updateDay(key, { active: !active })
+                          }
+                        }}
+                        className="rounded text-primary focus:ring-primary"
+                        disabled={savingSchedule}
+                      />
+                    </div>
+                  )
+                })}
+                <div className="pt-4">
+                  <h4 className="font-label-md text-label-md mb-2">Pause par défaut</h4>
+                  <div className="flex items-center gap-3">
+                    <span className="material-symbols-outlined text-on-surface-variant text-sm">coffee</span>
+                    <input
+                      value={scheduleDraft.pause?.start ?? '13:00'}
+                      onChange={(e) => updatePause({ start: e.target.value })}
+                      className="w-full bg-white border-none rounded-lg text-xs py-1.5 px-3 focus:ring-1 focus:ring-primary"
+                      disabled={savingSchedule}
+                    />
+                    <span className="text-on-surface-variant self-center">-</span>
+                    <input
+                      value={scheduleDraft.pause?.end ?? '14:00'}
+                      onChange={(e) => updatePause({ end: e.target.value })}
+                      className="w-full bg-white border-none rounded-lg text-xs py-1.5 px-3 focus:ring-1 focus:ring-primary"
+                      disabled={savingSchedule}
+                    />
                   </div>
-                  <input type="checkbox" checked={day.active} onChange={() => toggleDay(i)} className="rounded text-primary focus:ring-primary" />
                 </div>
-              ))}
-              <div className="pt-4">
-                <h4 className="font-label-md text-label-md mb-2">Pause par défaut</h4>
-                <div className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-on-surface-variant text-sm">coffee</span>
-                  <input defaultValue="13:00 - 14:00" className="w-full bg-white border-none rounded-lg text-xs py-1.5 px-3 focus:ring-1 focus:ring-primary" />
-                </div>
+                <button
+                  type="button"
+                  onClick={handleUpdateSchedule}
+                  disabled={savingSchedule}
+                  className={`w-full mt-2 py-2 text-white font-label-md text-label-md rounded-lg hover:opacity-90 transition-opacity bg-primary ${
+                    savingSchedule ? 'opacity-60 cursor-not-allowed' : ''
+                  }`}
+                >
+                  {savingSchedule ? 'Mise à jour…' : 'Mettre à jour'}
+                </button>
               </div>
-              <button className="w-full mt-2 py-2 text-white font-label-md text-label-md rounded-lg hover:opacity-90 transition-opacity bg-primary">
-                Mettre à jour
-              </button>
-            </div>
+            )}
           </section>
 
           {/* Inventaire produits */}
           <section className="col-span-12 space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-headline-sm text-headline-sm text-charcoal-muted">Inventaire produits</h3>
-              <Link to="/admin/products/add" className="flex items-center gap-2 bg-surface-container-highest px-4 py-2 rounded-full font-label-md text-label-md hover:bg-secondary-container transition-colors">
-                <span className="material-symbols-outlined text-[20px]">add</span>
-                Ajouter un produit
-              </Link>
+              <div className="flex items-center gap-2">
+                <Link to="/admin/products" className="px-4 py-2 rounded-full font-label-md text-label-md border border-outline-variant/40 hover:bg-surface-variant transition-colors">
+                  Voir tout
+                </Link>
+                <Link to="/admin/products/add" className="flex items-center gap-2 bg-surface-container-highest px-4 py-2 rounded-full font-label-md text-label-md hover:bg-secondary-container transition-colors">
+                  <span className="material-symbols-outlined text-[20px]">add</span>
+                  Ajouter un produit
+                </Link>
+              </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {PRODUCTS.map((p, i) => (
-                <div key={p.name} className="bg-white rounded-xl overflow-hidden border border-outline-variant/30 flex flex-col group">
-                  <div className="h-48 relative overflow-hidden">
-                    <img src={PRODUCT_IMGS[i]} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                    <span className={`absolute top-3 right-3 ${p.statusColor} backdrop-blur-sm text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-tighter`}>
-                      {p.status}
-                    </span>
-                  </div>
-                  <div className="p-4 space-y-2">
-                    <h4 className="font-label-md text-label-md text-primary">{p.name}</h4>
-                    <div className="flex justify-between items-center">
-                      <p className="font-headline-sm text-[18px] text-sage-deep">{p.price}</p>
-                      <span className="font-caption text-on-surface-variant">{p.units} unités</span>
+              {loadingProducts ? (
+                <div className="col-span-12 text-on-surface-variant">Chargement…</div>
+              ) : products.length === 0 ? (
+                <div className="col-span-12 text-on-surface-variant">Aucun produit.</div>
+              ) : (
+                products.map((p) => {
+                  const status =
+                    p.stock <= 0 ? 'Rupture' : p.stock <= 3 ? 'Stock faible' : 'En stock'
+                  const statusColor =
+                    p.stock <= 0 ? 'bg-error/90' : p.stock <= 3 ? 'bg-status-pending/80' : 'bg-status-confirmed/90'
+                  return (
+                    <div key={p.id} className="bg-white rounded-xl overflow-hidden border border-outline-variant/30 flex flex-col group">
+                      <div className="h-48 relative overflow-hidden bg-surface-variant">
+                        {p.images?.[0] ? (
+                          <img src={p.images[0]} alt={p.nom} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        ) : null}
+                        <span className={`absolute top-3 right-3 ${statusColor} backdrop-blur-sm text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-tighter`}>
+                          {status}
+                        </span>
+                      </div>
+                      <div className="p-4 space-y-2">
+                        <h4 className="font-label-md text-label-md text-primary">{p.nom}</h4>
+                        <div className="flex justify-between items-center">
+                          <p className="font-headline-sm text-[18px] text-sage-deep">{formatPriceFCFA(p.prix)}</p>
+                          <span className="font-caption text-on-surface-variant">{p.stock} unité(s)</span>
+                        </div>
+                        <div className="flex gap-2 pt-1">
+                          <Link to={`/admin/products/${p.id}/edit`} className="flex-1 text-center py-1.5 border cursor-pointer border-outline-variant rounded-lg font-caption hover:bg-surface-variant transition-colors">
+                            Modifier
+                          </Link>
+                          <Link to="/admin/products" className="p-1.5 text-on-surface-variant hover:text-primary transition-colors">
+                            <span className="material-symbols-outlined">visibility</span>
+                          </Link>
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex gap-2 pt-1">
-                      <button className="flex-1 py-1.5 border border-outline-variant rounded-lg font-caption hover:bg-surface-variant transition-colors">Modifier</button>
-                      <button className="p-1.5 text-on-surface-variant hover:text-primary transition-colors">
-                        <span className="material-symbols-outlined">visibility</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
+                  )
+                })
+              )}
             </div>
           </section>
 
@@ -577,6 +772,11 @@ export default function Dashboard() {
                   setSelectedDate(date)
                   setSelectedSlot(null)
                 }} 
+                isDayDisabled={(d) => {
+                  if (!schedule) return false
+                  const key = dayKeyFromDate(d)
+                  return !schedule.days[key]?.active
+                }}
               />
 
               {/* Time slots */}

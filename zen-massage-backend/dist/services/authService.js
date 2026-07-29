@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.register = register;
 exports.login = login;
 exports.getMe = getMe;
+exports.updateProfile = updateProfile;
 const prisma_1 = require("../prisma");
 const bcrypt_1 = require("../utils/bcrypt");
 async function register(body) {
@@ -62,5 +63,26 @@ async function getMe(id) {
         err.status = 404;
         throw err;
     }
+    return user;
+}
+async function updateProfile(id, data) {
+    // Préparer les données à mettre à jour
+    const updateData = {};
+    if (data.firstName)
+        updateData.firstName = data.firstName;
+    if (data.lastName)
+        updateData.lastName = data.lastName;
+    if (data.phone !== undefined)
+        updateData.phone = data.phone;
+    if (data.password) {
+        // Hasher le mot de passe
+        updateData.password = await (0, bcrypt_1.hashPassword)(data.password);
+    }
+    // Mettre à jour l'utilisateur
+    const user = await prisma_1.prisma.user.update({
+        where: { id },
+        data: updateData,
+        select: { id: true, email: true, firstName: true, lastName: true, role: true, avatar: true, phone: true },
+    });
     return user;
 }

@@ -47,6 +47,7 @@ model Produit {
   stock        Int
   categorie_id String
   images       String[]
+  sku_number   Int       @unique @default(autoincrement())
   sku          String?   @unique
   publie       Boolean   @default(false)
   createdAt    DateTime  @default(now())
