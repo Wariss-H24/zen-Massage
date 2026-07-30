@@ -11,6 +11,44 @@ export async function getTypeSeances(_req: Request, res: Response, next: NextFun
   }
 }
 
+export async function getAllTypeSeancesAdmin(_req: Request, res: Response, next: NextFunction) {
+  try {
+    const typeSeances = await appointmentService.getAllTypeSeances()
+    res.json({ success: true, data: typeSeances })
+  } catch (err) {
+    next(err)
+  }
+}
+
+export async function createTypeSeance(req: Request, res: Response, next: NextFunction) {
+  try {
+    const typeSeance = await appointmentService.createTypeSeance(req.body)
+    res.status(201).json({ success: true, message: 'Service créé', data: typeSeance })
+  } catch (err) {
+    next(err)
+  }
+}
+
+export async function updateTypeSeance(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { id } = req.params
+    const typeSeance = await appointmentService.updateTypeSeance(id as string, req.body)
+    res.json({ success: true, message: 'Service mis à jour', data: typeSeance })
+  } catch (err) {
+    next(err)
+  }
+}
+
+export async function deleteTypeSeance(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { id } = req.params
+    await appointmentService.deleteTypeSeance(id as string)
+    res.json({ success: true, message: 'Service supprimé' })
+  } catch (err) {
+    next(err)
+  }
+}
+
 export async function getPublicAppointments(_req: Request, res: Response, next: NextFunction) {
   try {
     const appointments = await appointmentService.getAllAppointmentsPublic()

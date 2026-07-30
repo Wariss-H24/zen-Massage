@@ -4,6 +4,7 @@ import MainLayout from '../components/layout/MainLayout'
 import { productService } from '../services/product.service'
 import { reviewService } from '../services/review.service'
 import { useAuth } from '../context/AuthContext'
+import { useCart } from '../context/CartContext'
 import type { ProduitDetail } from '../types/product'
 import type { Review, ReviewStats } from '../types/review'
 import Spinner from '../components/ui/Spinner'
@@ -56,6 +57,7 @@ const BG_COLORS = ['bg-secondary-fixed', 'bg-primary-fixed', 'bg-tertiary-fixed'
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>()
   const { user } = useAuth()
+  const { addItem } = useCart()
   const [activeImg, setActiveImg] = useState(0)
   const [qty, setQty] = useState(1)
   const [liked, setLiked] = useState(false)
@@ -137,6 +139,14 @@ export default function ProductDetail() {
     setOpenAccordion(v => (v === key ? null : key))
 
   const handleAddToCart = () => {
+    if (!data || !data.produit || data.produit.stock <= 0) return
+    addItem({
+      id: data.produit.id,
+      nom: data.produit.nom,
+      prix: data.produit.prix,
+      image: data.produit.images?.[0] || '',
+      stock: data.produit.stock,
+    }, qty)
     setToast({ type: 'success', msg: `${qty} article(s) ajouté(s) au panier !` })
   }
 

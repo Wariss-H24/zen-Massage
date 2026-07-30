@@ -74,9 +74,35 @@ interface ApiResponse<T> {
 }
 
 export const appointmentService = {
-  // Récupérer tous les types de séance
+  // Récupérer tous les types de séance (public — actifs uniquement)
   getTypeSeances: () =>
     api.get<ApiResponse<TypeSeance[]>>('/appointments/type-seances'),
+
+  // Récupérer tous les types de séance (admin — actifs + inactifs)
+  getAllTypeSeancesAdmin: () =>
+    api.get<ApiResponse<TypeSeance[]>>('/appointments/type-seances/all'),
+
+  // Créer un type de séance (admin)
+  createTypeSeance: (body: {
+    nom: string
+    description: string
+    duree: number
+    prix: number
+    actif?: boolean
+  }) => api.post<ApiResponse<TypeSeance>>('/appointments/type-seances', body),
+
+  // Modifier un type de séance (admin)
+  updateTypeSeance: (id: string, body: {
+    nom?: string
+    description?: string
+    duree?: number
+    prix?: number
+    actif?: boolean
+  }) => api.put<ApiResponse<TypeSeance>>(`/appointments/type-seances/${id}`, body),
+
+  // Supprimer un type de séance (admin)
+  deleteTypeSeance: (id: string) =>
+    api.delete<ApiResponse<null>>(`/appointments/type-seances/${id}`),
 
   // Créer un rendez-vous
   createAppointment: (body: {

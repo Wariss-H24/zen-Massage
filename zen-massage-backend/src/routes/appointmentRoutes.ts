@@ -11,6 +11,12 @@ router.get('/type-seances', appointment.getTypeSeances)
 router.get('/public', appointment.getPublicAppointments)
 router.get('/config', appointment.getScheduleConfig)
 
+// Routes admin — gestion des types de séance
+router.get('/type-seances/all',    requireAuth, requireRole('ADMIN', 'SUPER_ADMIN'), appointment.getAllTypeSeancesAdmin)
+router.post('/type-seances',       requireAuth, requireRole('ADMIN', 'SUPER_ADMIN'), appointment.createTypeSeance)
+router.put('/type-seances/:id',    requireAuth, requireRole('ADMIN', 'SUPER_ADMIN'), appointment.updateTypeSeance)
+router.delete('/type-seances/:id', requireAuth, requireRole('ADMIN', 'SUPER_ADMIN'), appointment.deleteTypeSeance)
+
 // Routes utilisateur connecté
 router.post('/', requireAuth, appointment.createAppointment)
 router.get('/my', requireAuth, appointment.getMyAppointments)

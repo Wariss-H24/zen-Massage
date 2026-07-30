@@ -5,7 +5,7 @@ import cors from 'cors'
 const isProd = process.env.NODE_ENV === 'production'
 
 const ALLOWED = [
-  'http://localhost:5174',
+  'http://localhost:5173',
   process.env.FRONTEND_URL,
 ].filter(Boolean) as string[]
 

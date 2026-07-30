@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import { useCart } from '../../context/CartContext'
 
 const navLinks = [
   { to: '/services', label: 'Services' },
@@ -12,6 +13,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const { user, logout } = useAuth()
+  const { totalItems } = useCart()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -71,6 +73,21 @@ export default function Navbar() {
 
         {/* Boutons desktop (md+) selon état */}
         <div className="hidden md:flex items-center gap-3">
+          {/* Icône panier — visible pour tous */}
+          {(!user || user.role === 'USER') && (
+            <Link
+              to="/checkout"
+              className="relative p-2 text-on-surface-variant hover:text-primary transition-colors"
+              title="Mon panier"
+            >
+              <span className="material-symbols-outlined text-[24px]">shopping_cart</span>
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-primary text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 animate-bounce-once">
+                  {totalItems > 99 ? '99+' : totalItems}
+                </span>
+              )}
+            </Link>
+          )}
           {!user ? (
             /* ── Visiteur non connecté ── */
             <>
@@ -142,16 +159,32 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Menu burger mobile */}
-        <button
-          aria-label="Menu"
-          className="md:hidden flex items-center justify-center w-10 h-10 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-lg transition-all duration-200"
-          onClick={() => setMenuOpen((v) => !v)}
-        >
-          <span className="material-symbols-outlined text-2xl">
-            {menuOpen ? 'close' : 'menu'}
-          </span>
-        </button>
+        {/* Icône panier mobile + Menu burger */}
+        <div className="md:hidden flex items-center gap-1">
+          {(!user || user.role === 'USER') && (
+            <Link
+              to="/checkout"
+              className="relative p-2 text-on-surface-variant hover:text-primary transition-colors"
+              title="Mon panier"
+            >
+              <span className="material-symbols-outlined text-[22px]">shopping_cart</span>
+              {totalItems > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-[16px] bg-primary text-white text-[9px] font-bold rounded-full flex items-center justify-center px-0.5">
+                  {totalItems > 99 ? '99+' : totalItems}
+                </span>
+              )}
+            </Link>
+          )}
+          <button
+            aria-label="Menu"
+            className="flex items-center justify-center w-10 h-10 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-lg transition-all duration-200"
+            onClick={() => setMenuOpen((v) => !v)}
+          >
+            <span className="material-symbols-outlined text-2xl">
+              {menuOpen ? 'close' : 'menu'}
+            </span>
+          </button>
+        </div>
       </div>
 
       {/* Menu mobile avec animation */}

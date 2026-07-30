@@ -110,6 +110,72 @@ export async function getTypeSeances() {
   })
 }
 
+// Récupérer TOUS les types de séance (admin — actifs et inactifs)
+export async function getAllTypeSeances() {
+  return await prisma.typeSeance.findMany({
+    orderBy: { createdAt: 'asc' }
+  })
+}
+
+// Créer un type de séance
+export async function createTypeSeance(data: {
+  nom: string
+  description: string
+  duree: number
+  prix: number
+  actif?: boolean
+}) {
+  const existing = await prisma.typeSeance.findUnique({ where: { nom: data.nom } })
+  if (existing) {
+    const err = new Error('Un service avec ce nom existe déjà') as any
+    err.status = 409
+    throw err
+  }
+  return await prisma.typeSeance.create({ data })
+}
+
+// Modifier un type de séance
+export async function updateTypeSeance(id: string, data: {
+  nom?: string
+  description?: string
+  duree?: number
+  prix?: number
+  actif?: boolean
+}) {
+  const existing = await prisma.typeSeance.findUnique({ where: { id } })
+  if (!existing) {
+    const err = new Error('Service introuvable') as any
+    err.status = 404
+    throw err
+  }
+  if (data.nom && data.nom !== existing.nom) {
+    const nameConflict = await prisma.typeSeance.findUnique({ where: { nom: data.nom } })
+    if (nameConflict) {
+      const err = new Error('Un service avec ce nom existe déjà') as any
+      err.status = 409
+      throw err
+    }
+  }
+  return await prisma.typeSeance.update({ where: { id }, data })
+}
+
+// Supprimer un type de séance (vérifie qu'il n'y a pas de RDV liés)
+export async function deleteTypeSeance(id: string) {
+  const existing = await prisma.typeSeance.findUnique({ where: { id } })
+  if (!existing) {
+    const err = new Error('Service introuvable') as any
+    err.status = 404
+    throw err
+  }
+  const rdvCount = await prisma.rendezVous.count({ where: { type_seance_id: id } })
+  if (rdvCount > 0) {
+    const err = new Error(`Impossible de supprimer : ${rdvCount} rendez-vous utilisent ce service`) as any
+    err.status = 409
+    throw err
+  }
+  return await prisma.typeSeance.delete({ where: { id } })
+}
+
 // Récupérer TOUS les rendez-vous (version publique, sans données sensibles)
 export async function getAllAppointmentsPublic() {
   return await prisma.rendezVous.findMany({

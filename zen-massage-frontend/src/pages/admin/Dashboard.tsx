@@ -6,6 +6,7 @@ import { useAuth } from '../../context/AuthContext'
 import { appointmentService, type AppointmentScheduleConfig, type DayKey, type RendezVousWithUser, type PublicRendezVous } from '../../services/appointment.service'
 import { productService } from '../../services/product.service'
 import { reviewService } from '../../services/review.service'
+import { orderService, type Commande, type OrderStatus } from '../../services/order.service'
 import type { Review } from '../../types/review'
 import type { Produit } from '../../types/product'
 import Toast from '../../components/ui/Toast'
@@ -100,12 +101,21 @@ function formatPriceFCFA(value: number) {
   return `${Math.round(value).toLocaleString('fr-FR')} FCFA`
 }
 
-const SALES = [
-  { id: '#ZN-9821', customer: 'Robert Chen',   total: '112 500 FCFA', status: 'Expédié',   statusStyle: 'bg-status-confirmed/10 text-status-confirmed' },
-  { id: '#ZN-9744', customer: 'Elena Rossi',   total: '48 000 FCFA',  status: 'En cours',  statusStyle: 'bg-status-pending/20 text-secondary' },
-  { id: '#ZN-9740', customer: 'Thomas Wright', total: '215 000 FCFA', status: 'Livré',     statusStyle: 'bg-status-completed/10 text-status-completed' },
-  { id: '#ZN-9732', customer: 'Sophia Lane',   total: '32 500 FCFA',  status: 'Retourné',  statusStyle: 'bg-status-cancelled/10 text-status-cancelled' },
-]
+const SALES_STATUS_FR: Record<OrderStatus, string> = {
+  PENDING:   'En attente',
+  CONFIRMED: 'Confirmée',
+  SHIPPED:   'Expédiée',
+  DELIVERED: 'Livrée',
+  CANCELLED: 'Annulée',
+}
+
+const SALES_STATUS_STYLE: Record<OrderStatus, string> = {
+  PENDING:   'bg-amber-50  text-amber-700  border border-amber-200',
+  CONFIRMED: 'bg-sage-deep/10 text-sage-deep border border-sage-deep/20',
+  SHIPPED:   'bg-purple-50 text-purple-700 border border-purple-200',
+  DELIVERED: 'bg-green-50  text-green-700  border border-green-200',
+  CANCELLED: 'bg-red-50    text-red-700    border border-red-200',
+}
 
 /* ── Formate une date en temps relatif ── */
 function timeAgo(dateStr: string): string {
@@ -145,6 +155,8 @@ export default function Dashboard() {
   const [loadingProducts, setLoadingProducts] = useState(true)
   const [reviews, setReviews] = useState<Review[]>([])
   const [loadingReviews, setLoadingReviews] = useState(true)
+  const [orders, setOrders] = useState<Commande[]>([])
+  const [loadingOrders, setLoadingOrders] = useState(true)
   const [schedule, setSchedule] = useState<AppointmentScheduleConfig | null>(null)
   const [scheduleDraft, setScheduleDraft] = useState<AppointmentScheduleConfig | null>(null)
   const [savingSchedule, setSavingSchedule] = useState(false)
@@ -217,7 +229,22 @@ export default function Dashboard() {
     return () => { mounted = false }
   }, [])
 
-  // Charger les rendez-vous
+  // Charger les commandes récentes
+  useEffect(() => {
+    let mounted = true
+    async function loadOrders() {
+      setLoadingOrders(true)
+      try {
+        const res = await orderService.getAllCommandes({ limite: 5 })
+        if (mounted) setOrders(res.data.commandes ?? [])
+      } catch {
+        if (mounted) setOrders([])
+      }
+      if (mounted) setLoadingOrders(false)
+    }
+    loadOrders()
+    return () => { mounted = false }
+  }, [])
   useEffect(() => {
     async function loadAppointments() {
       try {
@@ -726,29 +753,52 @@ export default function Dashboard() {
               <h3 className="font-headline-sm text-headline-sm text-charcoal-muted">Ventes récentes</h3>
               <Link to="/admin/orders" className="text-primary font-label-md text-label-md hover:underline">Voir tout</Link>
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left font-body-md">
-                <thead>
-                  <tr className="border-b border-outline-variant">
-                    {['N° Commande', 'Client', 'Total', 'Statut'].map(h => (
-                      <th key={h} className="pb-3 font-label-md text-label-md text-on-surface-variant">{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-outline-variant/30">
-                  {SALES.map(s => (
-                    <tr key={s.id} className="hover:bg-surface-container-low transition-colors">
-                      <td className="py-4 text-xs font-mono">{s.id}</td>
-                      <td className="py-4 font-semibold">{s.customer}</td>
-                      <td className="py-4">{s.total}</td>
-                      <td className="py-4">
-                        <span className={`${s.statusStyle} text-[10px] px-2 py-0.5 rounded-full font-bold`}>{s.status}</span>
-                      </td>
+
+            {loadingOrders ? (
+              /* Skeletons */
+              <div className="space-y-2">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="h-12 bg-outline-variant/10 rounded-lg animate-pulse" />
+                ))}
+              </div>
+            ) : orders.length === 0 ? (
+              <div className="text-center py-8">
+                <span className="material-symbols-outlined text-4xl text-outline block mb-2">shopping_bag</span>
+                <p className="font-body-md text-body-md text-on-surface-variant">Aucune commande pour le moment</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left font-body-md">
+                  <thead>
+                    <tr className="border-b border-outline-variant">
+                      {['N° Commande', 'Client', 'Total', 'Statut'].map(h => (
+                        <th key={h} className="pb-3 font-label-md text-label-md text-on-surface-variant">{h}</th>
+                      ))}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody className="divide-y divide-outline-variant/30">
+                    {orders.map(o => (
+                      <tr key={o.id} className="hover:bg-surface-container-low transition-colors">
+                        <td className="py-3 text-xs font-mono text-sage-deep font-semibold">{o.numero}</td>
+                        <td className="py-3 font-semibold text-sm truncate max-w-[120px]">
+                          {o.utilisateur
+                            ? `${o.utilisateur.firstName} ${o.utilisateur.lastName}`
+                            : '—'}
+                        </td>
+                        <td className="py-3 text-sm whitespace-nowrap">
+                          {o.total.toLocaleString('fr-FR')} FCFA
+                        </td>
+                        <td className="py-3">
+                          <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${SALES_STATUS_STYLE[o.statut]}`}>
+                            {SALES_STATUS_FR[o.statut]}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </section>
         </div>
 

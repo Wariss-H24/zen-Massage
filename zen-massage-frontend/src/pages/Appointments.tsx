@@ -359,47 +359,89 @@ export default function Appointments() {
               </div>
 
               {loading ? (
-                <div className="flex justify-center py-12">
-                  <span className="text-sage-deep">Chargement des services...</span>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {[1, 2, 3, 4].map(i => (
+                    <div key={i} className="rounded-2xl border border-outline-variant/30 p-5 animate-pulse space-y-3">
+                      <div className="h-5 bg-outline-variant/20 rounded w-2/3" />
+                      <div className="h-3 bg-outline-variant/20 rounded w-full" />
+                      <div className="h-3 bg-outline-variant/20 rounded w-4/5" />
+                      <div className="flex justify-between mt-4">
+                        <div className="h-4 bg-outline-variant/20 rounded w-16" />
+                        <div className="h-5 bg-outline-variant/20 rounded w-24" />
+                      </div>
+                    </div>
+                  ))}
                 </div>
               ) : error ? (
-                <div className="text-center py-12 text-red-500">
-                  <p>{error}</p>
-                  <button 
-                    onClick={() => window.location.reload()} 
-                    className="mt-4 px-4 py-2 bg-primary text-white rounded-lg"
-                  >
+                <div className="text-center py-12">
+                  <span className="material-symbols-outlined text-4xl text-error mb-3 block">error_outline</span>
+                  <p className="text-error font-body-md mb-4">{error}</p>
+                  <button onClick={() => window.location.reload()} className="px-5 py-2.5 bg-primary text-white rounded-full font-label-md text-sm hover:bg-sage-deep transition-colors">
                     Réessayer
                   </button>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {services.map((s) => {
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {services.map((s, idx) => {
                     const isSelected = selectedService?.id === s.id
+                    // Initiales pour l'avatar
+                    const initials = s.name.trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase()
+                    // Couleurs cycliques douces
+                    const palettes = [
+                      { bg: 'bg-sage-deep/10',   text: 'text-sage-deep'   },
+                      { bg: 'bg-amber-100',       text: 'text-amber-800'   },
+                      { bg: 'bg-rose-100',        text: 'text-rose-800'    },
+                      { bg: 'bg-sky-100',         text: 'text-sky-800'     },
+                      { bg: 'bg-violet-100',      text: 'text-violet-800'  },
+                      { bg: 'bg-teal-100',        text: 'text-teal-800'    },
+                    ]
+                    const pal = palettes[idx % palettes.length]
+
                     return (
                       <button
                         key={s.id}
                         onClick={() => { setService(s); setStep(s2 => Math.max(s2, 2)) }}
-                        className={`group text-left border rounded-xl p-4 transition-all relative ${
+                        className={`group text-left rounded-2xl p-5 transition-all duration-300 relative overflow-hidden border-2 ${
                           isSelected
-                            ? 'border-primary bg-primary-container/5'
-                            : 'border-outline-variant bg-white hover:border-primary'
+                            ? 'border-primary bg-primary/5 shadow-md'
+                            : 'border-transparent bg-white hover:border-primary/40 hover:shadow-md shadow-sm'
                         }`}
                       >
-                        {/* Check icon */}
-                        <span className={`absolute top-4 right-4 text-primary transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
-                          <span className="material-symbols-outlined" style={{ fontVariationSettings: isSelected ? "'FILL' 1" : "'FILL' 0" }}>
-                            check_circle
+                        {/* Indicateur sélection */}
+                        <div className={`absolute top-4 right-4 w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200 ${
+                          isSelected ? 'bg-primary scale-100' : 'bg-outline-variant/20 scale-75 group-hover:scale-90'
+                        }`}>
+                          <span className="material-symbols-outlined text-[14px] text-white" style={{ fontVariationSettings: "'FILL' 1" }}>
+                            {isSelected ? 'check' : 'add'}
                           </span>
-                        </span>
-                        <h3 className="font-headline-sm text-base text-on-surface mb-1">{s.name}</h3>
-                        <p className="font-caption text-caption text-on-surface-variant mb-4">{s.description}</p>
-                        <div className="flex justify-between items-center">
-                          <span className="flex items-center gap-1 font-label-md text-label-md text-sage-deep">
-                            <span className="material-symbols-outlined text-[18px]">schedule</span>
+                        </div>
+
+                        {/* Avatar initiales */}
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-base mb-4 ${pal.bg} ${pal.text}`}>
+                          {initials}
+                        </div>
+
+                        {/* Nom */}
+                        <h3 className={`font-semibold text-sm leading-snug mb-1.5 pr-8 transition-colors ${isSelected ? 'text-primary' : 'text-on-surface group-hover:text-primary'}`}>
+                          {s.name}
+                        </h3>
+
+                        {/* Description */}
+                        <p className="text-xs text-on-surface-variant line-clamp-2 mb-4 leading-relaxed">
+                          {s.description}
+                        </p>
+
+                        {/* Footer : durée + prix */}
+                        <div className="flex items-center justify-between pt-3 border-t border-outline-variant/20">
+                          <span className={`inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full ${
+                            isSelected ? 'bg-primary/10 text-primary' : 'bg-surface-container text-on-surface-variant'
+                          }`}>
+                            <span className="material-symbols-outlined text-[13px]">schedule</span>
                             {s.duration}
                           </span>
-                          <span className="font-display-lg text-[20px] text-primary">{s.price}</span>
+                          <span className={`font-bold text-base ${isSelected ? 'text-primary' : 'text-sage-deep'}`}>
+                            {s.price}
+                          </span>
                         </div>
                       </button>
                     )
