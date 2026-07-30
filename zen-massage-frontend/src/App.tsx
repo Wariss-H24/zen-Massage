@@ -1,3 +1,4 @@
+import { Suspense, lazy } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './context/AuthContext'
 import Home from './pages/Home'
@@ -8,21 +9,22 @@ import Appointments from './pages/Appointments'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Account from './pages/Account'
-import AddProduct from './pages/admin/AddProduct'
-import CategoriesManagement from './pages/admin/CategoriesManagement'
-import ProductsManagement from './pages/admin/ProductsManagement'
-import EditProduct from './pages/admin/EditProduct'
-import Settings from './pages/admin/Settings'
-import Dashboard from './pages/admin/Dashboard'
-import OrderHistory from './pages/admin/OrderHistory'
-import Bookings from './pages/admin/Bookings'
-import Statistics from './pages/admin/Statistics'
-import SuperAdminPanel from './pages/admin/SuperAdminPanel'
 import Profile from './pages/Profile'
 import Orders from './pages/Orders'
 import ForgotPassword from './pages/ForgotPassword'
 import ProductDetail from './pages/ProductDetail'
 import Checkout from './pages/Checkout'
+
+const Dashboard = lazy(() => import('./pages/admin/Dashboard'))
+const Bookings = lazy(() => import('./pages/admin/Bookings'))
+const CategoriesManagement = lazy(() => import('./pages/admin/CategoriesManagement'))
+const ProductsManagement = lazy(() => import('./pages/admin/ProductsManagement'))
+const AddProduct = lazy(() => import('./pages/admin/AddProduct'))
+const EditProduct = lazy(() => import('./pages/admin/EditProduct'))
+const Settings = lazy(() => import('./pages/admin/Settings'))
+const OrderHistory = lazy(() => import('./pages/admin/OrderHistory'))
+const Statistics = lazy(() => import('./pages/admin/Statistics'))
+const SuperAdminPanel = lazy(() => import('./pages/admin/SuperAdminPanel'))
 
 // Redirige vers la bonne page d'accueil selon le rôle
 function HomeByRole() {
@@ -71,6 +73,20 @@ function RequireSuperAdmin({ children }: { children: React.ReactNode }) {
   return <>{children}</>
 }
 
+function LazyPage({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center font-body-md text-on-surface-variant">
+          Chargement…
+        </div>
+      }
+    >
+      {children}
+    </Suspense>
+  )
+}
+
 export default function App() {
   return (
     <Routes>
@@ -97,18 +113,18 @@ export default function App() {
       <Route path="/profile"      element={<RequireUser><Profile /></RequireUser>} />
 
       {/* Pages ADMIN + SUPER_ADMIN */}
-      <Route path="/admin"              element={<RequireAdmin><Dashboard /></RequireAdmin>} />
-      <Route path="/admin/bookings"     element={<RequireAdmin><Bookings /></RequireAdmin>} />
-      <Route path="/admin/categories"   element={<RequireAdmin><CategoriesManagement /></RequireAdmin>} />
-      <Route path="/admin/products"     element={<RequireAdmin><ProductsManagement /></RequireAdmin>} />
-      <Route path="/admin/products/add" element={<RequireAdmin><AddProduct /></RequireAdmin>} />
-      <Route path="/admin/products/:id/edit" element={<RequireAdmin><EditProduct /></RequireAdmin>} />
-      <Route path="/admin/settings"     element={<RequireAdmin><Settings /></RequireAdmin>} />
-      <Route path="/admin/orders"       element={<RequireAdmin><OrderHistory /></RequireAdmin>} />
-      <Route path="/admin/analytics"    element={<RequireAdmin><Statistics /></RequireAdmin>} />
+      <Route path="/admin"              element={<RequireAdmin><LazyPage><Dashboard /></LazyPage></RequireAdmin>} />
+      <Route path="/admin/bookings"     element={<RequireAdmin><LazyPage><Bookings /></LazyPage></RequireAdmin>} />
+      <Route path="/admin/categories"   element={<RequireAdmin><LazyPage><CategoriesManagement /></LazyPage></RequireAdmin>} />
+      <Route path="/admin/products"     element={<RequireAdmin><LazyPage><ProductsManagement /></LazyPage></RequireAdmin>} />
+      <Route path="/admin/products/add" element={<RequireAdmin><LazyPage><AddProduct /></LazyPage></RequireAdmin>} />
+      <Route path="/admin/products/:id/edit" element={<RequireAdmin><LazyPage><EditProduct /></LazyPage></RequireAdmin>} />
+      <Route path="/admin/settings"     element={<RequireAdmin><LazyPage><Settings /></LazyPage></RequireAdmin>} />
+      <Route path="/admin/orders"       element={<RequireAdmin><LazyPage><OrderHistory /></LazyPage></RequireAdmin>} />
+      <Route path="/admin/analytics"    element={<RequireAdmin><LazyPage><Statistics /></LazyPage></RequireAdmin>} />
 
       {/* Page SUPER_ADMIN uniquement */}
-      <Route path="/admin/super" element={<RequireSuperAdmin><SuperAdminPanel /></RequireSuperAdmin>} />
+      <Route path="/admin/super" element={<RequireSuperAdmin><LazyPage><SuperAdminPanel /></LazyPage></RequireSuperAdmin>} />
 
       <Route path="*" element={<div className="flex items-center justify-center min-h-screen font-serif text-headline-sm text-sage-deep">Page introuvable</div>} />
     </Routes>
