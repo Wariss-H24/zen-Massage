@@ -1,6 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getTypeSeances = getTypeSeances;
+exports.getAllTypeSeances = getAllTypeSeances;
+exports.createTypeSeance = createTypeSeance;
+exports.updateTypeSeance = updateTypeSeance;
+exports.deleteTypeSeance = deleteTypeSeance;
 exports.getAllAppointmentsPublic = getAllAppointmentsPublic;
 exports.getTypeSeanceById = getTypeSeanceById;
 exports.createAppointment = createAppointment;
@@ -99,6 +103,56 @@ async function getTypeSeances() {
         where: { actif: true },
         orderBy: { createdAt: 'asc' }
     });
+}
+// Récupérer TOUS les types de séance (admin — actifs et inactifs)
+async function getAllTypeSeances() {
+    return await prisma_1.prisma.typeSeance.findMany({
+        orderBy: { createdAt: 'asc' }
+    });
+}
+// Créer un type de séance
+async function createTypeSeance(data) {
+    const existing = await prisma_1.prisma.typeSeance.findUnique({ where: { nom: data.nom } });
+    if (existing) {
+        const err = new Error('Un service avec ce nom existe déjà');
+        err.status = 409;
+        throw err;
+    }
+    return await prisma_1.prisma.typeSeance.create({ data });
+}
+// Modifier un type de séance
+async function updateTypeSeance(id, data) {
+    const existing = await prisma_1.prisma.typeSeance.findUnique({ where: { id } });
+    if (!existing) {
+        const err = new Error('Service introuvable');
+        err.status = 404;
+        throw err;
+    }
+    if (data.nom && data.nom !== existing.nom) {
+        const nameConflict = await prisma_1.prisma.typeSeance.findUnique({ where: { nom: data.nom } });
+        if (nameConflict) {
+            const err = new Error('Un service avec ce nom existe déjà');
+            err.status = 409;
+            throw err;
+        }
+    }
+    return await prisma_1.prisma.typeSeance.update({ where: { id }, data });
+}
+// Supprimer un type de séance (vérifie qu'il n'y a pas de RDV liés)
+async function deleteTypeSeance(id) {
+    const existing = await prisma_1.prisma.typeSeance.findUnique({ where: { id } });
+    if (!existing) {
+        const err = new Error('Service introuvable');
+        err.status = 404;
+        throw err;
+    }
+    const rdvCount = await prisma_1.prisma.rendezVous.count({ where: { type_seance_id: id } });
+    if (rdvCount > 0) {
+        const err = new Error(`Impossible de supprimer : ${rdvCount} rendez-vous utilisent ce service`);
+        err.status = 409;
+        throw err;
+    }
+    return await prisma_1.prisma.typeSeance.delete({ where: { id } });
 }
 // Récupérer TOUS les rendez-vous (version publique, sans données sensibles)
 async function getAllAppointmentsPublic() {

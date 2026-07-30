@@ -34,26 +34,16 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const appointment = __importStar(require("../controllers/appointmentController"));
+const order = __importStar(require("../controllers/orderController"));
 const auth_1 = require("../middlewares/auth");
 const roleCheck_1 = require("../middlewares/roleCheck");
 const router = (0, express_1.Router)();
-// Routes publiques
-router.get('/type-seances', appointment.getTypeSeances);
-router.get('/public', appointment.getPublicAppointments);
-router.get('/config', appointment.getScheduleConfig);
-// Routes admin — gestion des types de séance
-router.get('/type-seances/all', auth_1.requireAuth, (0, roleCheck_1.requireRole)('ADMIN', 'SUPER_ADMIN'), appointment.getAllTypeSeancesAdmin);
-router.post('/type-seances', auth_1.requireAuth, (0, roleCheck_1.requireRole)('ADMIN', 'SUPER_ADMIN'), appointment.createTypeSeance);
-router.put('/type-seances/:id', auth_1.requireAuth, (0, roleCheck_1.requireRole)('ADMIN', 'SUPER_ADMIN'), appointment.updateTypeSeance);
-router.delete('/type-seances/:id', auth_1.requireAuth, (0, roleCheck_1.requireRole)('ADMIN', 'SUPER_ADMIN'), appointment.deleteTypeSeance);
-// Routes utilisateur connecté
-router.post('/', auth_1.requireAuth, appointment.createAppointment);
-router.get('/my', auth_1.requireAuth, appointment.getMyAppointments);
-router.put('/config', auth_1.requireAuth, (0, roleCheck_1.requireRole)('ADMIN', 'SUPER_ADMIN'), appointment.updateScheduleConfig);
-router.patch('/:id/cancel', auth_1.requireAuth, appointment.cancelAppointment);
-router.put('/:id', auth_1.requireAuth, appointment.updateAppointment);
-// Routes admin
-router.get('/all', auth_1.requireAuth, (0, roleCheck_1.requireRole)('ADMIN', 'SUPER_ADMIN'), appointment.getAllAppointments);
-router.put('/:id/status', auth_1.requireAuth, (0, roleCheck_1.requireRole)('ADMIN', 'SUPER_ADMIN'), appointment.updateAppointmentStatus);
+// Utilisateur connecté
+router.post('/', auth_1.requireAuth, order.createCommande);
+router.get('/my', auth_1.requireAuth, order.getMyCommandes);
+router.get('/:id', auth_1.requireAuth, order.getCommande);
+router.patch('/:id/cancel', auth_1.requireAuth, order.cancelCommande);
+// Admin
+router.get('/', auth_1.requireAuth, (0, roleCheck_1.requireRole)('ADMIN', 'SUPER_ADMIN'), order.getAllCommandes);
+router.patch('/:id/status', auth_1.requireAuth, (0, roleCheck_1.requireRole)('ADMIN', 'SUPER_ADMIN'), order.updateStatut);
 exports.default = router;

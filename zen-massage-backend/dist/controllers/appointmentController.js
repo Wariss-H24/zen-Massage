@@ -34,6 +34,10 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getTypeSeances = getTypeSeances;
+exports.getAllTypeSeancesAdmin = getAllTypeSeancesAdmin;
+exports.createTypeSeance = createTypeSeance;
+exports.updateTypeSeance = updateTypeSeance;
+exports.deleteTypeSeance = deleteTypeSeance;
 exports.getPublicAppointments = getPublicAppointments;
 exports.createAppointment = createAppointment;
 exports.getMyAppointments = getMyAppointments;
@@ -50,6 +54,44 @@ async function getTypeSeances(_req, res, next) {
     try {
         const typeSeances = await appointmentService.getTypeSeances();
         res.json({ success: true, data: typeSeances });
+    }
+    catch (err) {
+        next(err);
+    }
+}
+async function getAllTypeSeancesAdmin(_req, res, next) {
+    try {
+        const typeSeances = await appointmentService.getAllTypeSeances();
+        res.json({ success: true, data: typeSeances });
+    }
+    catch (err) {
+        next(err);
+    }
+}
+async function createTypeSeance(req, res, next) {
+    try {
+        const typeSeance = await appointmentService.createTypeSeance(req.body);
+        res.status(201).json({ success: true, message: 'Service créé', data: typeSeance });
+    }
+    catch (err) {
+        next(err);
+    }
+}
+async function updateTypeSeance(req, res, next) {
+    try {
+        const { id } = req.params;
+        const typeSeance = await appointmentService.updateTypeSeance(id, req.body);
+        res.json({ success: true, message: 'Service mis à jour', data: typeSeance });
+    }
+    catch (err) {
+        next(err);
+    }
+}
+async function deleteTypeSeance(req, res, next) {
+    try {
+        const { id } = req.params;
+        await appointmentService.deleteTypeSeance(id);
+        res.json({ success: true, message: 'Service supprimé' });
     }
     catch (err) {
         next(err);

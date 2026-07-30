@@ -23,7 +23,7 @@ export default function Login() {
     setLoading(true)
     try {
       const user = await login(email, password)
-      navigate(user.role === 'CLIENT' ? '/account' : '/admin', { replace: true })
+      navigate(user.role === 'USER' ? '/account' : '/admin', { replace: true })
     } catch (err: any) {
       setError(err.message)
     } finally {

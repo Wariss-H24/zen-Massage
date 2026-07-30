@@ -30,8 +30,10 @@ const STATUS_DOT: Record<OrderStatus, string> = {
   CANCELLED: 'bg-red-400',
 }
 
+type NextStatus = Exclude<OrderStatus, 'PENDING'>
+
 /* Transitions autorisées : PENDING → CONFIRMED → SHIPPED → DELIVERED / CANCELLED */
-const NEXT_STATUSES: Record<OrderStatus, OrderStatus[]> = {
+const NEXT_STATUSES: Record<OrderStatus, NextStatus[]> = {
   PENDING:   ['CONFIRMED', 'CANCELLED'],
   CONFIRMED: ['SHIPPED',   'CANCELLED'],
   SHIPPED:   ['DELIVERED', 'CANCELLED'],
@@ -39,14 +41,14 @@ const NEXT_STATUSES: Record<OrderStatus, OrderStatus[]> = {
   CANCELLED: [],
 }
 
-const NEXT_LABELS: Record<OrderStatus, string> = {
+const NEXT_LABELS: Record<NextStatus, string> = {
   CONFIRMED: 'Confirmer',
   SHIPPED:   'Marquer expédiée',
   DELIVERED: 'Marquer livrée',
   CANCELLED: 'Annuler',
 }
 
-const NEXT_ICON: Record<OrderStatus, string> = {
+const NEXT_ICON: Record<NextStatus, string> = {
   CONFIRMED: 'check_circle',
   SHIPPED:   'local_shipping',
   DELIVERED: 'inventory',
@@ -99,7 +101,7 @@ export default function OrderHistory() {
   const [toast, setToast] = useState<{ type: 'success' | 'error'; msg: string } | null>(null)
   // Modal confirmation changement statut
   const [modalOrder, setModalOrder] = useState<Commande | null>(null)
-  const [modalNextStatus, setModalNextStatus] = useState<OrderStatus | null>(null)
+  const [modalNextStatus, setModalNextStatus] = useState<NextStatus | null>(null)
 
   useEffect(() => { document.title = 'Commandes | Admin Ben Massage' }, [])
 

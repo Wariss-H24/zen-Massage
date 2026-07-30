@@ -9,7 +9,7 @@ const cors_1 = __importDefault(require("cors"));
 // En développement, on se limite à localhost
 const isProd = process.env.NODE_ENV === 'production';
 const ALLOWED = [
-    'http://localhost:5174',
+    'http://localhost:5173',
     process.env.FRONTEND_URL,
 ].filter(Boolean);
 exports.corsMiddleware = (0, cors_1.default)({
