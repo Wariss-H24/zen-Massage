@@ -6,6 +6,9 @@ import * as product from '../controllers/productController'
 import { requireAuth } from '../middlewares/auth'
 import { requireRole } from '../middlewares/roleCheck'
 import { validateBody } from '../middlewares/validation'
+import { prisma } from '../prisma'
+
+
 
 const router = Router()
 
@@ -112,5 +115,8 @@ router.post('/:id/like',
   requireAuth,
   product.toggleLike
 )
-
+router.get("/debug/prisma", async (req: Request, res: Response) => {
+  const produit = await prisma.produit.findFirst();
+  res.json(produit);
+});
 export default router
