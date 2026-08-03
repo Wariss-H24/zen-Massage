@@ -6,8 +6,9 @@
   "scripts": {
     "seed": "tsx seed.ts",
     "dev": "tsx --watch src/server.ts",
-    "build": "prisma generate && tsc",
-    "render-build": "prisma migrate deploy && prisma generate && tsc",
+    "sync-prisma-client": "node scripts/syncPrismaClient.cjs",
+    "build": "prisma generate && tsc && npm run sync-prisma-client",
+    "render-build": "npx prisma migrate deploy && npx prisma generate && tsc && npm run sync-prisma-client",
     "start": "node dist/server.js",
     "postinstall": "prisma generate",
     "test": "echo \"Error: no test specified\" && exit 1"
