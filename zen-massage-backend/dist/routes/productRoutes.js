@@ -37,28 +37,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const fs_1 = __importDefault(require("fs"));
 const multer_1 = __importDefault(require("multer"));
-const path_1 = __importDefault(require("path"));
 const product = __importStar(require("../controllers/productController"));
 const auth_1 = require("../middlewares/auth");
 const roleCheck_1 = require("../middlewares/roleCheck");
 const validation_1 = require("../middlewares/validation");
+const cloudinaryService_1 = require("../services/cloudinaryService");
 const router = (0, express_1.Router)();
-const productsUploadDir = path_1.default.join(process.cwd(), 'public', 'uploads', 'products');
-if (!fs_1.default.existsSync(productsUploadDir))
-    fs_1.default.mkdirSync(productsUploadDir, { recursive: true });
-const storage = multer_1.default.diskStorage({
-    destination: (_req, _file, cb) => cb(null, productsUploadDir),
-    filename: (_req, file, cb) => {
-        const ext = path_1.default.extname(file.originalname || '');
-        const safeExt = ext && ext.length <= 10 ? ext : '';
-        const name = `${Date.now()}-${Math.round(Math.random() * 1e9)}${safeExt}`;
-        cb(null, name);
-    },
-});
 const upload = (0, multer_1.default)({
-    storage,
+    storage: multer_1.default.memoryStorage(),
     limits: { fileSize: 10 * 1024 * 1024, files: 3 },
     fileFilter: (_req, file, cb) => {
         if (!file.mimetype?.startsWith('image/'))
@@ -77,12 +64,19 @@ router.delete('/categories/:id', auth_1.requireAuth, (0, roleCheck_1.requireRole
 /* ============================================================
    PRODUITS
    ============================================================ */
-router.post('/images/upload', auth_1.requireAuth, (0, roleCheck_1.requireRole)('ADMIN', 'SUPER_ADMIN'), upload.array('images', 3), (req, res) => {
-    const files = req.files || [];
-    const host = req.get('host') || '';
-    const protocol = req.protocol;
-    const urls = files.map((f) => `${protocol}://${host}/uploads/products/${f.filename}`);
-    res.json({ success: true, message: 'Images uploadées', data: { urls } });
+router.post('/images/upload', auth_1.requireAuth, (0, roleCheck_1.requireRole)('ADMIN', 'SUPER_ADMIN'), upload.array('images', 3), async (req, res, next) => {
+    try {
+        const files = req.files || [];
+        if (files.length === 0) {
+            res.status(400).json({ success: false, message: 'Aucune image reçue' });
+            return;
+        }
+        const urls = await Promise.all(files.map(cloudinaryService_1.uploadProductImageBuffer));
+        res.json({ success: true, message: 'Images uploadées', data: { urls } });
+    }
+    catch (err) {
+        next(err);
+    }
 });
 // Publiques : voir les produits publiés
 router.get('/', product.listProduits);

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useInView } from '../../hooks/useInView'
 import { useCart } from '../../context/CartContext'
 import type { Produit } from '../../types/product'
+import { resolveImageUrl } from '../../utils/mediaUrl'
 
 function Stars({ rating }: { rating: number }) {
   const r = Math.round(rating * 2) / 2
@@ -36,7 +37,7 @@ export default function ProductCard({ produit, delay = 0, moyenne }: ProduitCard
   const { addItem, items } = useCart()
   const [added, setAdded] = useState(false)
 
-  const image      = produit.images?.[0] || ''
+  const image      = resolveImageUrl(produit.images?.[0])
   const rating     = moyenne ?? 0
   const reviewCount = produit._count?.avis ?? 0
   const catNom     = produit.categorie?.nom

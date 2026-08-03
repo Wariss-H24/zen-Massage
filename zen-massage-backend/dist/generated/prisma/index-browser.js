@@ -151,6 +151,7 @@ exports.Prisma.ProduitScalarFieldEnum = {
   stock: 'stock',
   categorie_id: 'categorie_id',
   images: 'images',
+  sku_number: 'sku_number',
   sku: 'sku',
   publie: 'publie',
   createdAt: 'createdAt',
@@ -207,6 +208,33 @@ exports.Prisma.ConfigurationScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.CommandeScalarFieldEnum = {
+  id: 'id',
+  numero: 'numero',
+  utilisateur_id: 'utilisateur_id',
+  statut: 'statut',
+  total: 'total',
+  frais_livraison: 'frais_livraison',
+  ville: 'ville',
+  adresse: 'adresse',
+  telephone: 'telephone',
+  mode_paiement: 'mode_paiement',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.LigneCommandeScalarFieldEnum = {
+  id: 'id',
+  commande_id: 'commande_id',
+  produit_id: 'produit_id',
+  nom_produit: 'nom_produit',
+  image: 'image',
+  prix_unitaire: 'prix_unitaire',
+  quantite: 'quantite',
+  sous_total: 'sous_total'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -234,6 +262,14 @@ exports.AppointmentStatus = exports.$Enums.AppointmentStatus = {
   CANCELLED: 'CANCELLED'
 };
 
+exports.OrderStatus = exports.$Enums.OrderStatus = {
+  PENDING: 'PENDING',
+  CONFIRMED: 'CONFIRMED',
+  SHIPPED: 'SHIPPED',
+  DELIVERED: 'DELIVERED',
+  CANCELLED: 'CANCELLED'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Categorie: 'Categorie',
@@ -242,7 +278,9 @@ exports.Prisma.ModelName = {
   Like: 'Like',
   TypeSeance: 'TypeSeance',
   RendezVous: 'RendezVous',
-  Configuration: 'Configuration'
+  Configuration: 'Configuration',
+  Commande: 'Commande',
+  LigneCommande: 'LigneCommande'
 };
 
 /**

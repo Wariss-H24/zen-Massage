@@ -22,6 +22,7 @@ model User {
   avis       Avis[]
   likes      Like[]
   rendezVous RendezVous[]
+  commandes  Commande[]
 
   @@index([email])
   @@index([role])
@@ -40,20 +41,22 @@ model Categorie {
 }
 
 model Produit {
-  id           String    @id @default(cuid())
+  id           String          @id @default(cuid())
   nom          String
   description  String
   prix         Float
   stock        Int
   categorie_id String
   images       String[]
-  sku          String?   @unique
-  publie       Boolean   @default(false)
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  sku_number   Int             @unique @default(autoincrement())
+  sku          String?         @unique
+  publie       Boolean         @default(false)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
   avis         Avis[]
   likes        Like[]
-  categorie    Categorie @relation(fields: [categorie_id], references: [id])
+  categorie    Categorie       @relation(fields: [categorie_id], references: [id])
+  lignes       LigneCommande[]
 
   @@index([categorie_id])
   @@index([publie])
@@ -125,6 +128,57 @@ model Configuration {
   valeur      String
   description String?
   updatedAt   DateTime @updatedAt
+}
+
+// ============================================
+// COMMANDES
+// ============================================
+
+model Commande {
+  id              String      @id @default(cuid())
+  numero          String      @unique // BEN-CMD-001
+  utilisateur_id  String
+  statut          OrderStatus @default(PENDING)
+  total           Float
+  frais_livraison Float       @default(0)
+  ville           String
+  adresse         String
+  telephone       String
+  mode_paiement   String
+  notes           String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  utilisateur User            @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
+  lignes      LigneCommande[]
+
+  @@index([utilisateur_id])
+  @@index([statut])
+  @@index([numero])
+}
+
+model LigneCommande {
+  id            String  @id @default(cuid())
+  commande_id   String
+  produit_id    String
+  nom_produit   String // snapshot du nom au moment de la commande
+  image         String? // snapshot de l'image
+  prix_unitaire Float
+  quantite      Int
+  sous_total    Float
+
+  commande Commande @relation(fields: [commande_id], references: [id], onDelete: Cascade)
+  produit  Produit  @relation(fields: [produit_id], references: [id])
+
+  @@index([commande_id])
+}
+
+enum OrderStatus {
+  PENDING // En attente
+  CONFIRMED // Confirmée
+  SHIPPED // Expédiée
+  DELIVERED // Livrée
+  CANCELLED // Annulée
 }
 
 enum UserRole {

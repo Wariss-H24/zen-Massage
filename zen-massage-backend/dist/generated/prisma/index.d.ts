@@ -53,12 +53,33 @@ export type RendezVous = $Result.DefaultSelection<Prisma.$RendezVousPayload>
  * 
  */
 export type Configuration = $Result.DefaultSelection<Prisma.$ConfigurationPayload>
+/**
+ * Model Commande
+ * 
+ */
+export type Commande = $Result.DefaultSelection<Prisma.$CommandePayload>
+/**
+ * Model LigneCommande
+ * 
+ */
+export type LigneCommande = $Result.DefaultSelection<Prisma.$LigneCommandePayload>
 
 /**
  * Enums
  */
 export namespace $Enums {
-  export const UserRole: {
+  export const OrderStatus: {
+  PENDING: 'PENDING',
+  CONFIRMED: 'CONFIRMED',
+  SHIPPED: 'SHIPPED',
+  DELIVERED: 'DELIVERED',
+  CANCELLED: 'CANCELLED'
+};
+
+export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]
+
+
+export const UserRole: {
   SUPER_ADMIN: 'SUPER_ADMIN',
   ADMIN: 'ADMIN',
   USER: 'USER'
@@ -77,6 +98,10 @@ export const AppointmentStatus: {
 export type AppointmentStatus = (typeof AppointmentStatus)[keyof typeof AppointmentStatus]
 
 }
+
+export type OrderStatus = $Enums.OrderStatus
+
+export const OrderStatus: typeof $Enums.OrderStatus
 
 export type UserRole = $Enums.UserRole
 
@@ -286,6 +311,26 @@ export class PrismaClient<
     * ```
     */
   get configuration(): Prisma.ConfigurationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.commande`: Exposes CRUD operations for the **Commande** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Commandes
+    * const commandes = await prisma.commande.findMany()
+    * ```
+    */
+  get commande(): Prisma.CommandeDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.ligneCommande`: Exposes CRUD operations for the **LigneCommande** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more LigneCommandes
+    * const ligneCommandes = await prisma.ligneCommande.findMany()
+    * ```
+    */
+  get ligneCommande(): Prisma.LigneCommandeDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -727,7 +772,9 @@ export namespace Prisma {
     Like: 'Like',
     TypeSeance: 'TypeSeance',
     RendezVous: 'RendezVous',
-    Configuration: 'Configuration'
+    Configuration: 'Configuration',
+    Commande: 'Commande',
+    LigneCommande: 'LigneCommande'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -743,7 +790,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "categorie" | "produit" | "avis" | "like" | "typeSeance" | "rendezVous" | "configuration"
+      modelProps: "user" | "categorie" | "produit" | "avis" | "like" | "typeSeance" | "rendezVous" | "configuration" | "commande" | "ligneCommande"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1339,6 +1386,154 @@ export namespace Prisma {
           }
         }
       }
+      Commande: {
+        payload: Prisma.$CommandePayload<ExtArgs>
+        fields: Prisma.CommandeFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CommandeFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CommandePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CommandeFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CommandePayload>
+          }
+          findFirst: {
+            args: Prisma.CommandeFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CommandePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CommandeFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CommandePayload>
+          }
+          findMany: {
+            args: Prisma.CommandeFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CommandePayload>[]
+          }
+          create: {
+            args: Prisma.CommandeCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CommandePayload>
+          }
+          createMany: {
+            args: Prisma.CommandeCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CommandeCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CommandePayload>[]
+          }
+          delete: {
+            args: Prisma.CommandeDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CommandePayload>
+          }
+          update: {
+            args: Prisma.CommandeUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CommandePayload>
+          }
+          deleteMany: {
+            args: Prisma.CommandeDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CommandeUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CommandeUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CommandePayload>[]
+          }
+          upsert: {
+            args: Prisma.CommandeUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CommandePayload>
+          }
+          aggregate: {
+            args: Prisma.CommandeAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCommande>
+          }
+          groupBy: {
+            args: Prisma.CommandeGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CommandeGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CommandeCountArgs<ExtArgs>
+            result: $Utils.Optional<CommandeCountAggregateOutputType> | number
+          }
+        }
+      }
+      LigneCommande: {
+        payload: Prisma.$LigneCommandePayload<ExtArgs>
+        fields: Prisma.LigneCommandeFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.LigneCommandeFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LigneCommandePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.LigneCommandeFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LigneCommandePayload>
+          }
+          findFirst: {
+            args: Prisma.LigneCommandeFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LigneCommandePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.LigneCommandeFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LigneCommandePayload>
+          }
+          findMany: {
+            args: Prisma.LigneCommandeFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LigneCommandePayload>[]
+          }
+          create: {
+            args: Prisma.LigneCommandeCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LigneCommandePayload>
+          }
+          createMany: {
+            args: Prisma.LigneCommandeCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.LigneCommandeCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LigneCommandePayload>[]
+          }
+          delete: {
+            args: Prisma.LigneCommandeDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LigneCommandePayload>
+          }
+          update: {
+            args: Prisma.LigneCommandeUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LigneCommandePayload>
+          }
+          deleteMany: {
+            args: Prisma.LigneCommandeDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.LigneCommandeUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.LigneCommandeUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LigneCommandePayload>[]
+          }
+          upsert: {
+            args: Prisma.LigneCommandeUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LigneCommandePayload>
+          }
+          aggregate: {
+            args: Prisma.LigneCommandeAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateLigneCommande>
+          }
+          groupBy: {
+            args: Prisma.LigneCommandeGroupByArgs<ExtArgs>
+            result: $Utils.Optional<LigneCommandeGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.LigneCommandeCountArgs<ExtArgs>
+            result: $Utils.Optional<LigneCommandeCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1455,6 +1650,8 @@ export namespace Prisma {
     typeSeance?: TypeSeanceOmit
     rendezVous?: RendezVousOmit
     configuration?: ConfigurationOmit
+    commande?: CommandeOmit
+    ligneCommande?: LigneCommandeOmit
   }
 
   /* Types for Logging */
@@ -1538,12 +1735,14 @@ export namespace Prisma {
     avis: number
     likes: number
     rendezVous: number
+    commandes: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     avis?: boolean | UserCountOutputTypeCountAvisArgs
     likes?: boolean | UserCountOutputTypeCountLikesArgs
     rendezVous?: boolean | UserCountOutputTypeCountRendezVousArgs
+    commandes?: boolean | UserCountOutputTypeCountCommandesArgs
   }
 
   // Custom InputTypes
@@ -1576,6 +1775,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountRendezVousArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: RendezVousWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountCommandesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CommandeWhereInput
   }
 
 
@@ -1617,11 +1823,13 @@ export namespace Prisma {
   export type ProduitCountOutputType = {
     avis: number
     likes: number
+    lignes: number
   }
 
   export type ProduitCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     avis?: boolean | ProduitCountOutputTypeCountAvisArgs
     likes?: boolean | ProduitCountOutputTypeCountLikesArgs
+    lignes?: boolean | ProduitCountOutputTypeCountLignesArgs
   }
 
   // Custom InputTypes
@@ -1647,6 +1855,13 @@ export namespace Prisma {
    */
   export type ProduitCountOutputTypeCountLikesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: LikeWhereInput
+  }
+
+  /**
+   * ProduitCountOutputType without action
+   */
+  export type ProduitCountOutputTypeCountLignesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LigneCommandeWhereInput
   }
 
 
@@ -1678,6 +1893,37 @@ export namespace Prisma {
    */
   export type TypeSeanceCountOutputTypeCountRendezVousArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: RendezVousWhereInput
+  }
+
+
+  /**
+   * Count Type CommandeCountOutputType
+   */
+
+  export type CommandeCountOutputType = {
+    lignes: number
+  }
+
+  export type CommandeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    lignes?: boolean | CommandeCountOutputTypeCountLignesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * CommandeCountOutputType without action
+   */
+  export type CommandeCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CommandeCountOutputType
+     */
+    select?: CommandeCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * CommandeCountOutputType without action
+   */
+  export type CommandeCountOutputTypeCountLignesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LigneCommandeWhereInput
   }
 
 
@@ -1900,6 +2146,7 @@ export namespace Prisma {
     avis?: boolean | User$avisArgs<ExtArgs>
     likes?: boolean | User$likesArgs<ExtArgs>
     rendezVous?: boolean | User$rendezVousArgs<ExtArgs>
+    commandes?: boolean | User$commandesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -1950,6 +2197,7 @@ export namespace Prisma {
     avis?: boolean | User$avisArgs<ExtArgs>
     likes?: boolean | User$likesArgs<ExtArgs>
     rendezVous?: boolean | User$rendezVousArgs<ExtArgs>
+    commandes?: boolean | User$commandesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1961,6 +2209,7 @@ export namespace Prisma {
       avis: Prisma.$AvisPayload<ExtArgs>[]
       likes: Prisma.$LikePayload<ExtArgs>[]
       rendezVous: Prisma.$RendezVousPayload<ExtArgs>[]
+      commandes: Prisma.$CommandePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2371,6 +2620,7 @@ export namespace Prisma {
     avis<T extends User$avisArgs<ExtArgs> = {}>(args?: Subset<T, User$avisArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AvisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     likes<T extends User$likesArgs<ExtArgs> = {}>(args?: Subset<T, User$likesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     rendezVous<T extends User$rendezVousArgs<ExtArgs> = {}>(args?: Subset<T, User$rendezVousArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RendezVousPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    commandes<T extends User$commandesArgs<ExtArgs> = {}>(args?: Subset<T, User$commandesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommandePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2873,6 +3123,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: RendezVousScalarFieldEnum | RendezVousScalarFieldEnum[]
+  }
+
+  /**
+   * User.commandes
+   */
+  export type User$commandesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Commande
+     */
+    select?: CommandeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Commande
+     */
+    omit?: CommandeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CommandeInclude<ExtArgs> | null
+    where?: CommandeWhereInput
+    orderBy?: CommandeOrderByWithRelationInput | CommandeOrderByWithRelationInput[]
+    cursor?: CommandeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CommandeScalarFieldEnum | CommandeScalarFieldEnum[]
   }
 
   /**
@@ -4031,11 +4305,13 @@ export namespace Prisma {
   export type ProduitAvgAggregateOutputType = {
     prix: number | null
     stock: number | null
+    sku_number: number | null
   }
 
   export type ProduitSumAggregateOutputType = {
     prix: number | null
     stock: number | null
+    sku_number: number | null
   }
 
   export type ProduitMinAggregateOutputType = {
@@ -4045,6 +4321,7 @@ export namespace Prisma {
     prix: number | null
     stock: number | null
     categorie_id: string | null
+    sku_number: number | null
     sku: string | null
     publie: boolean | null
     createdAt: Date | null
@@ -4058,6 +4335,7 @@ export namespace Prisma {
     prix: number | null
     stock: number | null
     categorie_id: string | null
+    sku_number: number | null
     sku: string | null
     publie: boolean | null
     createdAt: Date | null
@@ -4072,6 +4350,7 @@ export namespace Prisma {
     stock: number
     categorie_id: number
     images: number
+    sku_number: number
     sku: number
     publie: number
     createdAt: number
@@ -4083,11 +4362,13 @@ export namespace Prisma {
   export type ProduitAvgAggregateInputType = {
     prix?: true
     stock?: true
+    sku_number?: true
   }
 
   export type ProduitSumAggregateInputType = {
     prix?: true
     stock?: true
+    sku_number?: true
   }
 
   export type ProduitMinAggregateInputType = {
@@ -4097,6 +4378,7 @@ export namespace Prisma {
     prix?: true
     stock?: true
     categorie_id?: true
+    sku_number?: true
     sku?: true
     publie?: true
     createdAt?: true
@@ -4110,6 +4392,7 @@ export namespace Prisma {
     prix?: true
     stock?: true
     categorie_id?: true
+    sku_number?: true
     sku?: true
     publie?: true
     createdAt?: true
@@ -4124,6 +4407,7 @@ export namespace Prisma {
     stock?: true
     categorie_id?: true
     images?: true
+    sku_number?: true
     sku?: true
     publie?: true
     createdAt?: true
@@ -4225,6 +4509,7 @@ export namespace Prisma {
     stock: number
     categorie_id: string
     images: string[]
+    sku_number: number
     sku: string | null
     publie: boolean
     createdAt: Date
@@ -4258,6 +4543,7 @@ export namespace Prisma {
     stock?: boolean
     categorie_id?: boolean
     images?: boolean
+    sku_number?: boolean
     sku?: boolean
     publie?: boolean
     createdAt?: boolean
@@ -4265,6 +4551,7 @@ export namespace Prisma {
     avis?: boolean | Produit$avisArgs<ExtArgs>
     likes?: boolean | Produit$likesArgs<ExtArgs>
     categorie?: boolean | CategorieDefaultArgs<ExtArgs>
+    lignes?: boolean | Produit$lignesArgs<ExtArgs>
     _count?: boolean | ProduitCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["produit"]>
 
@@ -4276,6 +4563,7 @@ export namespace Prisma {
     stock?: boolean
     categorie_id?: boolean
     images?: boolean
+    sku_number?: boolean
     sku?: boolean
     publie?: boolean
     createdAt?: boolean
@@ -4291,6 +4579,7 @@ export namespace Prisma {
     stock?: boolean
     categorie_id?: boolean
     images?: boolean
+    sku_number?: boolean
     sku?: boolean
     publie?: boolean
     createdAt?: boolean
@@ -4306,17 +4595,19 @@ export namespace Prisma {
     stock?: boolean
     categorie_id?: boolean
     images?: boolean
+    sku_number?: boolean
     sku?: boolean
     publie?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ProduitOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nom" | "description" | "prix" | "stock" | "categorie_id" | "images" | "sku" | "publie" | "createdAt" | "updatedAt", ExtArgs["result"]["produit"]>
+  export type ProduitOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nom" | "description" | "prix" | "stock" | "categorie_id" | "images" | "sku_number" | "sku" | "publie" | "createdAt" | "updatedAt", ExtArgs["result"]["produit"]>
   export type ProduitInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     avis?: boolean | Produit$avisArgs<ExtArgs>
     likes?: boolean | Produit$likesArgs<ExtArgs>
     categorie?: boolean | CategorieDefaultArgs<ExtArgs>
+    lignes?: boolean | Produit$lignesArgs<ExtArgs>
     _count?: boolean | ProduitCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ProduitIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4332,6 +4623,7 @@ export namespace Prisma {
       avis: Prisma.$AvisPayload<ExtArgs>[]
       likes: Prisma.$LikePayload<ExtArgs>[]
       categorie: Prisma.$CategoriePayload<ExtArgs>
+      lignes: Prisma.$LigneCommandePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -4341,6 +4633,7 @@ export namespace Prisma {
       stock: number
       categorie_id: string
       images: string[]
+      sku_number: number
       sku: string | null
       publie: boolean
       createdAt: Date
@@ -4742,6 +5035,7 @@ export namespace Prisma {
     avis<T extends Produit$avisArgs<ExtArgs> = {}>(args?: Subset<T, Produit$avisArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AvisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     likes<T extends Produit$likesArgs<ExtArgs> = {}>(args?: Subset<T, Produit$likesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     categorie<T extends CategorieDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CategorieDefaultArgs<ExtArgs>>): Prisma__CategorieClient<$Result.GetResult<Prisma.$CategoriePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    lignes<T extends Produit$lignesArgs<ExtArgs> = {}>(args?: Subset<T, Produit$lignesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LigneCommandePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4778,6 +5072,7 @@ export namespace Prisma {
     readonly stock: FieldRef<"Produit", 'Int'>
     readonly categorie_id: FieldRef<"Produit", 'String'>
     readonly images: FieldRef<"Produit", 'String[]'>
+    readonly sku_number: FieldRef<"Produit", 'Int'>
     readonly sku: FieldRef<"Produit", 'String'>
     readonly publie: FieldRef<"Produit", 'Boolean'>
     readonly createdAt: FieldRef<"Produit", 'DateTime'>
@@ -5228,6 +5523,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: LikeScalarFieldEnum | LikeScalarFieldEnum[]
+  }
+
+  /**
+   * Produit.lignes
+   */
+  export type Produit$lignesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LigneCommande
+     */
+    select?: LigneCommandeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LigneCommande
+     */
+    omit?: LigneCommandeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LigneCommandeInclude<ExtArgs> | null
+    where?: LigneCommandeWhereInput
+    orderBy?: LigneCommandeOrderByWithRelationInput | LigneCommandeOrderByWithRelationInput[]
+    cursor?: LigneCommandeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: LigneCommandeScalarFieldEnum | LigneCommandeScalarFieldEnum[]
   }
 
   /**
@@ -10774,6 +11093,2393 @@ export namespace Prisma {
 
 
   /**
+   * Model Commande
+   */
+
+  export type AggregateCommande = {
+    _count: CommandeCountAggregateOutputType | null
+    _avg: CommandeAvgAggregateOutputType | null
+    _sum: CommandeSumAggregateOutputType | null
+    _min: CommandeMinAggregateOutputType | null
+    _max: CommandeMaxAggregateOutputType | null
+  }
+
+  export type CommandeAvgAggregateOutputType = {
+    total: number | null
+    frais_livraison: number | null
+  }
+
+  export type CommandeSumAggregateOutputType = {
+    total: number | null
+    frais_livraison: number | null
+  }
+
+  export type CommandeMinAggregateOutputType = {
+    id: string | null
+    numero: string | null
+    utilisateur_id: string | null
+    statut: $Enums.OrderStatus | null
+    total: number | null
+    frais_livraison: number | null
+    ville: string | null
+    adresse: string | null
+    telephone: string | null
+    mode_paiement: string | null
+    notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CommandeMaxAggregateOutputType = {
+    id: string | null
+    numero: string | null
+    utilisateur_id: string | null
+    statut: $Enums.OrderStatus | null
+    total: number | null
+    frais_livraison: number | null
+    ville: string | null
+    adresse: string | null
+    telephone: string | null
+    mode_paiement: string | null
+    notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CommandeCountAggregateOutputType = {
+    id: number
+    numero: number
+    utilisateur_id: number
+    statut: number
+    total: number
+    frais_livraison: number
+    ville: number
+    adresse: number
+    telephone: number
+    mode_paiement: number
+    notes: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type CommandeAvgAggregateInputType = {
+    total?: true
+    frais_livraison?: true
+  }
+
+  export type CommandeSumAggregateInputType = {
+    total?: true
+    frais_livraison?: true
+  }
+
+  export type CommandeMinAggregateInputType = {
+    id?: true
+    numero?: true
+    utilisateur_id?: true
+    statut?: true
+    total?: true
+    frais_livraison?: true
+    ville?: true
+    adresse?: true
+    telephone?: true
+    mode_paiement?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CommandeMaxAggregateInputType = {
+    id?: true
+    numero?: true
+    utilisateur_id?: true
+    statut?: true
+    total?: true
+    frais_livraison?: true
+    ville?: true
+    adresse?: true
+    telephone?: true
+    mode_paiement?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CommandeCountAggregateInputType = {
+    id?: true
+    numero?: true
+    utilisateur_id?: true
+    statut?: true
+    total?: true
+    frais_livraison?: true
+    ville?: true
+    adresse?: true
+    telephone?: true
+    mode_paiement?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type CommandeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Commande to aggregate.
+     */
+    where?: CommandeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Commandes to fetch.
+     */
+    orderBy?: CommandeOrderByWithRelationInput | CommandeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CommandeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Commandes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Commandes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Commandes
+    **/
+    _count?: true | CommandeCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: CommandeAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CommandeSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CommandeMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CommandeMaxAggregateInputType
+  }
+
+  export type GetCommandeAggregateType<T extends CommandeAggregateArgs> = {
+        [P in keyof T & keyof AggregateCommande]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCommande[P]>
+      : GetScalarType<T[P], AggregateCommande[P]>
+  }
+
+
+
+
+  export type CommandeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CommandeWhereInput
+    orderBy?: CommandeOrderByWithAggregationInput | CommandeOrderByWithAggregationInput[]
+    by: CommandeScalarFieldEnum[] | CommandeScalarFieldEnum
+    having?: CommandeScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CommandeCountAggregateInputType | true
+    _avg?: CommandeAvgAggregateInputType
+    _sum?: CommandeSumAggregateInputType
+    _min?: CommandeMinAggregateInputType
+    _max?: CommandeMaxAggregateInputType
+  }
+
+  export type CommandeGroupByOutputType = {
+    id: string
+    numero: string
+    utilisateur_id: string
+    statut: $Enums.OrderStatus
+    total: number
+    frais_livraison: number
+    ville: string
+    adresse: string
+    telephone: string
+    mode_paiement: string
+    notes: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: CommandeCountAggregateOutputType | null
+    _avg: CommandeAvgAggregateOutputType | null
+    _sum: CommandeSumAggregateOutputType | null
+    _min: CommandeMinAggregateOutputType | null
+    _max: CommandeMaxAggregateOutputType | null
+  }
+
+  type GetCommandeGroupByPayload<T extends CommandeGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CommandeGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CommandeGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CommandeGroupByOutputType[P]>
+            : GetScalarType<T[P], CommandeGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CommandeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    numero?: boolean
+    utilisateur_id?: boolean
+    statut?: boolean
+    total?: boolean
+    frais_livraison?: boolean
+    ville?: boolean
+    adresse?: boolean
+    telephone?: boolean
+    mode_paiement?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    utilisateur?: boolean | UserDefaultArgs<ExtArgs>
+    lignes?: boolean | Commande$lignesArgs<ExtArgs>
+    _count?: boolean | CommandeCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["commande"]>
+
+  export type CommandeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    numero?: boolean
+    utilisateur_id?: boolean
+    statut?: boolean
+    total?: boolean
+    frais_livraison?: boolean
+    ville?: boolean
+    adresse?: boolean
+    telephone?: boolean
+    mode_paiement?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    utilisateur?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["commande"]>
+
+  export type CommandeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    numero?: boolean
+    utilisateur_id?: boolean
+    statut?: boolean
+    total?: boolean
+    frais_livraison?: boolean
+    ville?: boolean
+    adresse?: boolean
+    telephone?: boolean
+    mode_paiement?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    utilisateur?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["commande"]>
+
+  export type CommandeSelectScalar = {
+    id?: boolean
+    numero?: boolean
+    utilisateur_id?: boolean
+    statut?: boolean
+    total?: boolean
+    frais_livraison?: boolean
+    ville?: boolean
+    adresse?: boolean
+    telephone?: boolean
+    mode_paiement?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type CommandeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "numero" | "utilisateur_id" | "statut" | "total" | "frais_livraison" | "ville" | "adresse" | "telephone" | "mode_paiement" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["commande"]>
+  export type CommandeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    utilisateur?: boolean | UserDefaultArgs<ExtArgs>
+    lignes?: boolean | Commande$lignesArgs<ExtArgs>
+    _count?: boolean | CommandeCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type CommandeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    utilisateur?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type CommandeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    utilisateur?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $CommandePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Commande"
+    objects: {
+      utilisateur: Prisma.$UserPayload<ExtArgs>
+      lignes: Prisma.$LigneCommandePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      numero: string
+      utilisateur_id: string
+      statut: $Enums.OrderStatus
+      total: number
+      frais_livraison: number
+      ville: string
+      adresse: string
+      telephone: string
+      mode_paiement: string
+      notes: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["commande"]>
+    composites: {}
+  }
+
+  type CommandeGetPayload<S extends boolean | null | undefined | CommandeDefaultArgs> = $Result.GetResult<Prisma.$CommandePayload, S>
+
+  type CommandeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CommandeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CommandeCountAggregateInputType | true
+    }
+
+  export interface CommandeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Commande'], meta: { name: 'Commande' } }
+    /**
+     * Find zero or one Commande that matches the filter.
+     * @param {CommandeFindUniqueArgs} args - Arguments to find a Commande
+     * @example
+     * // Get one Commande
+     * const commande = await prisma.commande.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CommandeFindUniqueArgs>(args: SelectSubset<T, CommandeFindUniqueArgs<ExtArgs>>): Prisma__CommandeClient<$Result.GetResult<Prisma.$CommandePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Commande that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CommandeFindUniqueOrThrowArgs} args - Arguments to find a Commande
+     * @example
+     * // Get one Commande
+     * const commande = await prisma.commande.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CommandeFindUniqueOrThrowArgs>(args: SelectSubset<T, CommandeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CommandeClient<$Result.GetResult<Prisma.$CommandePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Commande that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CommandeFindFirstArgs} args - Arguments to find a Commande
+     * @example
+     * // Get one Commande
+     * const commande = await prisma.commande.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CommandeFindFirstArgs>(args?: SelectSubset<T, CommandeFindFirstArgs<ExtArgs>>): Prisma__CommandeClient<$Result.GetResult<Prisma.$CommandePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Commande that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CommandeFindFirstOrThrowArgs} args - Arguments to find a Commande
+     * @example
+     * // Get one Commande
+     * const commande = await prisma.commande.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CommandeFindFirstOrThrowArgs>(args?: SelectSubset<T, CommandeFindFirstOrThrowArgs<ExtArgs>>): Prisma__CommandeClient<$Result.GetResult<Prisma.$CommandePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Commandes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CommandeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Commandes
+     * const commandes = await prisma.commande.findMany()
+     * 
+     * // Get first 10 Commandes
+     * const commandes = await prisma.commande.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const commandeWithIdOnly = await prisma.commande.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CommandeFindManyArgs>(args?: SelectSubset<T, CommandeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommandePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Commande.
+     * @param {CommandeCreateArgs} args - Arguments to create a Commande.
+     * @example
+     * // Create one Commande
+     * const Commande = await prisma.commande.create({
+     *   data: {
+     *     // ... data to create a Commande
+     *   }
+     * })
+     * 
+     */
+    create<T extends CommandeCreateArgs>(args: SelectSubset<T, CommandeCreateArgs<ExtArgs>>): Prisma__CommandeClient<$Result.GetResult<Prisma.$CommandePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Commandes.
+     * @param {CommandeCreateManyArgs} args - Arguments to create many Commandes.
+     * @example
+     * // Create many Commandes
+     * const commande = await prisma.commande.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CommandeCreateManyArgs>(args?: SelectSubset<T, CommandeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Commandes and returns the data saved in the database.
+     * @param {CommandeCreateManyAndReturnArgs} args - Arguments to create many Commandes.
+     * @example
+     * // Create many Commandes
+     * const commande = await prisma.commande.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Commandes and only return the `id`
+     * const commandeWithIdOnly = await prisma.commande.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CommandeCreateManyAndReturnArgs>(args?: SelectSubset<T, CommandeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommandePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Commande.
+     * @param {CommandeDeleteArgs} args - Arguments to delete one Commande.
+     * @example
+     * // Delete one Commande
+     * const Commande = await prisma.commande.delete({
+     *   where: {
+     *     // ... filter to delete one Commande
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CommandeDeleteArgs>(args: SelectSubset<T, CommandeDeleteArgs<ExtArgs>>): Prisma__CommandeClient<$Result.GetResult<Prisma.$CommandePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Commande.
+     * @param {CommandeUpdateArgs} args - Arguments to update one Commande.
+     * @example
+     * // Update one Commande
+     * const commande = await prisma.commande.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CommandeUpdateArgs>(args: SelectSubset<T, CommandeUpdateArgs<ExtArgs>>): Prisma__CommandeClient<$Result.GetResult<Prisma.$CommandePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Commandes.
+     * @param {CommandeDeleteManyArgs} args - Arguments to filter Commandes to delete.
+     * @example
+     * // Delete a few Commandes
+     * const { count } = await prisma.commande.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CommandeDeleteManyArgs>(args?: SelectSubset<T, CommandeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Commandes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CommandeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Commandes
+     * const commande = await prisma.commande.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CommandeUpdateManyArgs>(args: SelectSubset<T, CommandeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Commandes and returns the data updated in the database.
+     * @param {CommandeUpdateManyAndReturnArgs} args - Arguments to update many Commandes.
+     * @example
+     * // Update many Commandes
+     * const commande = await prisma.commande.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Commandes and only return the `id`
+     * const commandeWithIdOnly = await prisma.commande.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CommandeUpdateManyAndReturnArgs>(args: SelectSubset<T, CommandeUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommandePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Commande.
+     * @param {CommandeUpsertArgs} args - Arguments to update or create a Commande.
+     * @example
+     * // Update or create a Commande
+     * const commande = await prisma.commande.upsert({
+     *   create: {
+     *     // ... data to create a Commande
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Commande we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CommandeUpsertArgs>(args: SelectSubset<T, CommandeUpsertArgs<ExtArgs>>): Prisma__CommandeClient<$Result.GetResult<Prisma.$CommandePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Commandes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CommandeCountArgs} args - Arguments to filter Commandes to count.
+     * @example
+     * // Count the number of Commandes
+     * const count = await prisma.commande.count({
+     *   where: {
+     *     // ... the filter for the Commandes we want to count
+     *   }
+     * })
+    **/
+    count<T extends CommandeCountArgs>(
+      args?: Subset<T, CommandeCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CommandeCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Commande.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CommandeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CommandeAggregateArgs>(args: Subset<T, CommandeAggregateArgs>): Prisma.PrismaPromise<GetCommandeAggregateType<T>>
+
+    /**
+     * Group by Commande.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CommandeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CommandeGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CommandeGroupByArgs['orderBy'] }
+        : { orderBy?: CommandeGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CommandeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCommandeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Commande model
+   */
+  readonly fields: CommandeFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Commande.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CommandeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    utilisateur<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    lignes<T extends Commande$lignesArgs<ExtArgs> = {}>(args?: Subset<T, Commande$lignesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LigneCommandePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Commande model
+   */
+  interface CommandeFieldRefs {
+    readonly id: FieldRef<"Commande", 'String'>
+    readonly numero: FieldRef<"Commande", 'String'>
+    readonly utilisateur_id: FieldRef<"Commande", 'String'>
+    readonly statut: FieldRef<"Commande", 'OrderStatus'>
+    readonly total: FieldRef<"Commande", 'Float'>
+    readonly frais_livraison: FieldRef<"Commande", 'Float'>
+    readonly ville: FieldRef<"Commande", 'String'>
+    readonly adresse: FieldRef<"Commande", 'String'>
+    readonly telephone: FieldRef<"Commande", 'String'>
+    readonly mode_paiement: FieldRef<"Commande", 'String'>
+    readonly notes: FieldRef<"Commande", 'String'>
+    readonly createdAt: FieldRef<"Commande", 'DateTime'>
+    readonly updatedAt: FieldRef<"Commande", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Commande findUnique
+   */
+  export type CommandeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Commande
+     */
+    select?: CommandeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Commande
+     */
+    omit?: CommandeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CommandeInclude<ExtArgs> | null
+    /**
+     * Filter, which Commande to fetch.
+     */
+    where: CommandeWhereUniqueInput
+  }
+
+  /**
+   * Commande findUniqueOrThrow
+   */
+  export type CommandeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Commande
+     */
+    select?: CommandeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Commande
+     */
+    omit?: CommandeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CommandeInclude<ExtArgs> | null
+    /**
+     * Filter, which Commande to fetch.
+     */
+    where: CommandeWhereUniqueInput
+  }
+
+  /**
+   * Commande findFirst
+   */
+  export type CommandeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Commande
+     */
+    select?: CommandeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Commande
+     */
+    omit?: CommandeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CommandeInclude<ExtArgs> | null
+    /**
+     * Filter, which Commande to fetch.
+     */
+    where?: CommandeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Commandes to fetch.
+     */
+    orderBy?: CommandeOrderByWithRelationInput | CommandeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Commandes.
+     */
+    cursor?: CommandeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Commandes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Commandes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Commandes.
+     */
+    distinct?: CommandeScalarFieldEnum | CommandeScalarFieldEnum[]
+  }
+
+  /**
+   * Commande findFirstOrThrow
+   */
+  export type CommandeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Commande
+     */
+    select?: CommandeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Commande
+     */
+    omit?: CommandeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CommandeInclude<ExtArgs> | null
+    /**
+     * Filter, which Commande to fetch.
+     */
+    where?: CommandeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Commandes to fetch.
+     */
+    orderBy?: CommandeOrderByWithRelationInput | CommandeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Commandes.
+     */
+    cursor?: CommandeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Commandes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Commandes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Commandes.
+     */
+    distinct?: CommandeScalarFieldEnum | CommandeScalarFieldEnum[]
+  }
+
+  /**
+   * Commande findMany
+   */
+  export type CommandeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Commande
+     */
+    select?: CommandeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Commande
+     */
+    omit?: CommandeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CommandeInclude<ExtArgs> | null
+    /**
+     * Filter, which Commandes to fetch.
+     */
+    where?: CommandeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Commandes to fetch.
+     */
+    orderBy?: CommandeOrderByWithRelationInput | CommandeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Commandes.
+     */
+    cursor?: CommandeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Commandes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Commandes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Commandes.
+     */
+    distinct?: CommandeScalarFieldEnum | CommandeScalarFieldEnum[]
+  }
+
+  /**
+   * Commande create
+   */
+  export type CommandeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Commande
+     */
+    select?: CommandeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Commande
+     */
+    omit?: CommandeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CommandeInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Commande.
+     */
+    data: XOR<CommandeCreateInput, CommandeUncheckedCreateInput>
+  }
+
+  /**
+   * Commande createMany
+   */
+  export type CommandeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Commandes.
+     */
+    data: CommandeCreateManyInput | CommandeCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Commande createManyAndReturn
+   */
+  export type CommandeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Commande
+     */
+    select?: CommandeSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Commande
+     */
+    omit?: CommandeOmit<ExtArgs> | null
+    /**
+     * The data used to create many Commandes.
+     */
+    data: CommandeCreateManyInput | CommandeCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CommandeIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Commande update
+   */
+  export type CommandeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Commande
+     */
+    select?: CommandeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Commande
+     */
+    omit?: CommandeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CommandeInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Commande.
+     */
+    data: XOR<CommandeUpdateInput, CommandeUncheckedUpdateInput>
+    /**
+     * Choose, which Commande to update.
+     */
+    where: CommandeWhereUniqueInput
+  }
+
+  /**
+   * Commande updateMany
+   */
+  export type CommandeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Commandes.
+     */
+    data: XOR<CommandeUpdateManyMutationInput, CommandeUncheckedUpdateManyInput>
+    /**
+     * Filter which Commandes to update
+     */
+    where?: CommandeWhereInput
+    /**
+     * Limit how many Commandes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Commande updateManyAndReturn
+   */
+  export type CommandeUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Commande
+     */
+    select?: CommandeSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Commande
+     */
+    omit?: CommandeOmit<ExtArgs> | null
+    /**
+     * The data used to update Commandes.
+     */
+    data: XOR<CommandeUpdateManyMutationInput, CommandeUncheckedUpdateManyInput>
+    /**
+     * Filter which Commandes to update
+     */
+    where?: CommandeWhereInput
+    /**
+     * Limit how many Commandes to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CommandeIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Commande upsert
+   */
+  export type CommandeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Commande
+     */
+    select?: CommandeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Commande
+     */
+    omit?: CommandeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CommandeInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Commande to update in case it exists.
+     */
+    where: CommandeWhereUniqueInput
+    /**
+     * In case the Commande found by the `where` argument doesn't exist, create a new Commande with this data.
+     */
+    create: XOR<CommandeCreateInput, CommandeUncheckedCreateInput>
+    /**
+     * In case the Commande was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CommandeUpdateInput, CommandeUncheckedUpdateInput>
+  }
+
+  /**
+   * Commande delete
+   */
+  export type CommandeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Commande
+     */
+    select?: CommandeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Commande
+     */
+    omit?: CommandeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CommandeInclude<ExtArgs> | null
+    /**
+     * Filter which Commande to delete.
+     */
+    where: CommandeWhereUniqueInput
+  }
+
+  /**
+   * Commande deleteMany
+   */
+  export type CommandeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Commandes to delete
+     */
+    where?: CommandeWhereInput
+    /**
+     * Limit how many Commandes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Commande.lignes
+   */
+  export type Commande$lignesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LigneCommande
+     */
+    select?: LigneCommandeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LigneCommande
+     */
+    omit?: LigneCommandeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LigneCommandeInclude<ExtArgs> | null
+    where?: LigneCommandeWhereInput
+    orderBy?: LigneCommandeOrderByWithRelationInput | LigneCommandeOrderByWithRelationInput[]
+    cursor?: LigneCommandeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: LigneCommandeScalarFieldEnum | LigneCommandeScalarFieldEnum[]
+  }
+
+  /**
+   * Commande without action
+   */
+  export type CommandeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Commande
+     */
+    select?: CommandeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Commande
+     */
+    omit?: CommandeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CommandeInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model LigneCommande
+   */
+
+  export type AggregateLigneCommande = {
+    _count: LigneCommandeCountAggregateOutputType | null
+    _avg: LigneCommandeAvgAggregateOutputType | null
+    _sum: LigneCommandeSumAggregateOutputType | null
+    _min: LigneCommandeMinAggregateOutputType | null
+    _max: LigneCommandeMaxAggregateOutputType | null
+  }
+
+  export type LigneCommandeAvgAggregateOutputType = {
+    prix_unitaire: number | null
+    quantite: number | null
+    sous_total: number | null
+  }
+
+  export type LigneCommandeSumAggregateOutputType = {
+    prix_unitaire: number | null
+    quantite: number | null
+    sous_total: number | null
+  }
+
+  export type LigneCommandeMinAggregateOutputType = {
+    id: string | null
+    commande_id: string | null
+    produit_id: string | null
+    nom_produit: string | null
+    image: string | null
+    prix_unitaire: number | null
+    quantite: number | null
+    sous_total: number | null
+  }
+
+  export type LigneCommandeMaxAggregateOutputType = {
+    id: string | null
+    commande_id: string | null
+    produit_id: string | null
+    nom_produit: string | null
+    image: string | null
+    prix_unitaire: number | null
+    quantite: number | null
+    sous_total: number | null
+  }
+
+  export type LigneCommandeCountAggregateOutputType = {
+    id: number
+    commande_id: number
+    produit_id: number
+    nom_produit: number
+    image: number
+    prix_unitaire: number
+    quantite: number
+    sous_total: number
+    _all: number
+  }
+
+
+  export type LigneCommandeAvgAggregateInputType = {
+    prix_unitaire?: true
+    quantite?: true
+    sous_total?: true
+  }
+
+  export type LigneCommandeSumAggregateInputType = {
+    prix_unitaire?: true
+    quantite?: true
+    sous_total?: true
+  }
+
+  export type LigneCommandeMinAggregateInputType = {
+    id?: true
+    commande_id?: true
+    produit_id?: true
+    nom_produit?: true
+    image?: true
+    prix_unitaire?: true
+    quantite?: true
+    sous_total?: true
+  }
+
+  export type LigneCommandeMaxAggregateInputType = {
+    id?: true
+    commande_id?: true
+    produit_id?: true
+    nom_produit?: true
+    image?: true
+    prix_unitaire?: true
+    quantite?: true
+    sous_total?: true
+  }
+
+  export type LigneCommandeCountAggregateInputType = {
+    id?: true
+    commande_id?: true
+    produit_id?: true
+    nom_produit?: true
+    image?: true
+    prix_unitaire?: true
+    quantite?: true
+    sous_total?: true
+    _all?: true
+  }
+
+  export type LigneCommandeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which LigneCommande to aggregate.
+     */
+    where?: LigneCommandeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LigneCommandes to fetch.
+     */
+    orderBy?: LigneCommandeOrderByWithRelationInput | LigneCommandeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: LigneCommandeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LigneCommandes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LigneCommandes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned LigneCommandes
+    **/
+    _count?: true | LigneCommandeCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: LigneCommandeAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: LigneCommandeSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: LigneCommandeMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: LigneCommandeMaxAggregateInputType
+  }
+
+  export type GetLigneCommandeAggregateType<T extends LigneCommandeAggregateArgs> = {
+        [P in keyof T & keyof AggregateLigneCommande]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateLigneCommande[P]>
+      : GetScalarType<T[P], AggregateLigneCommande[P]>
+  }
+
+
+
+
+  export type LigneCommandeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LigneCommandeWhereInput
+    orderBy?: LigneCommandeOrderByWithAggregationInput | LigneCommandeOrderByWithAggregationInput[]
+    by: LigneCommandeScalarFieldEnum[] | LigneCommandeScalarFieldEnum
+    having?: LigneCommandeScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: LigneCommandeCountAggregateInputType | true
+    _avg?: LigneCommandeAvgAggregateInputType
+    _sum?: LigneCommandeSumAggregateInputType
+    _min?: LigneCommandeMinAggregateInputType
+    _max?: LigneCommandeMaxAggregateInputType
+  }
+
+  export type LigneCommandeGroupByOutputType = {
+    id: string
+    commande_id: string
+    produit_id: string
+    nom_produit: string
+    image: string | null
+    prix_unitaire: number
+    quantite: number
+    sous_total: number
+    _count: LigneCommandeCountAggregateOutputType | null
+    _avg: LigneCommandeAvgAggregateOutputType | null
+    _sum: LigneCommandeSumAggregateOutputType | null
+    _min: LigneCommandeMinAggregateOutputType | null
+    _max: LigneCommandeMaxAggregateOutputType | null
+  }
+
+  type GetLigneCommandeGroupByPayload<T extends LigneCommandeGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<LigneCommandeGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof LigneCommandeGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], LigneCommandeGroupByOutputType[P]>
+            : GetScalarType<T[P], LigneCommandeGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type LigneCommandeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    commande_id?: boolean
+    produit_id?: boolean
+    nom_produit?: boolean
+    image?: boolean
+    prix_unitaire?: boolean
+    quantite?: boolean
+    sous_total?: boolean
+    commande?: boolean | CommandeDefaultArgs<ExtArgs>
+    produit?: boolean | ProduitDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["ligneCommande"]>
+
+  export type LigneCommandeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    commande_id?: boolean
+    produit_id?: boolean
+    nom_produit?: boolean
+    image?: boolean
+    prix_unitaire?: boolean
+    quantite?: boolean
+    sous_total?: boolean
+    commande?: boolean | CommandeDefaultArgs<ExtArgs>
+    produit?: boolean | ProduitDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["ligneCommande"]>
+
+  export type LigneCommandeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    commande_id?: boolean
+    produit_id?: boolean
+    nom_produit?: boolean
+    image?: boolean
+    prix_unitaire?: boolean
+    quantite?: boolean
+    sous_total?: boolean
+    commande?: boolean | CommandeDefaultArgs<ExtArgs>
+    produit?: boolean | ProduitDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["ligneCommande"]>
+
+  export type LigneCommandeSelectScalar = {
+    id?: boolean
+    commande_id?: boolean
+    produit_id?: boolean
+    nom_produit?: boolean
+    image?: boolean
+    prix_unitaire?: boolean
+    quantite?: boolean
+    sous_total?: boolean
+  }
+
+  export type LigneCommandeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "commande_id" | "produit_id" | "nom_produit" | "image" | "prix_unitaire" | "quantite" | "sous_total", ExtArgs["result"]["ligneCommande"]>
+  export type LigneCommandeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    commande?: boolean | CommandeDefaultArgs<ExtArgs>
+    produit?: boolean | ProduitDefaultArgs<ExtArgs>
+  }
+  export type LigneCommandeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    commande?: boolean | CommandeDefaultArgs<ExtArgs>
+    produit?: boolean | ProduitDefaultArgs<ExtArgs>
+  }
+  export type LigneCommandeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    commande?: boolean | CommandeDefaultArgs<ExtArgs>
+    produit?: boolean | ProduitDefaultArgs<ExtArgs>
+  }
+
+  export type $LigneCommandePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "LigneCommande"
+    objects: {
+      commande: Prisma.$CommandePayload<ExtArgs>
+      produit: Prisma.$ProduitPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      commande_id: string
+      produit_id: string
+      nom_produit: string
+      image: string | null
+      prix_unitaire: number
+      quantite: number
+      sous_total: number
+    }, ExtArgs["result"]["ligneCommande"]>
+    composites: {}
+  }
+
+  type LigneCommandeGetPayload<S extends boolean | null | undefined | LigneCommandeDefaultArgs> = $Result.GetResult<Prisma.$LigneCommandePayload, S>
+
+  type LigneCommandeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<LigneCommandeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: LigneCommandeCountAggregateInputType | true
+    }
+
+  export interface LigneCommandeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['LigneCommande'], meta: { name: 'LigneCommande' } }
+    /**
+     * Find zero or one LigneCommande that matches the filter.
+     * @param {LigneCommandeFindUniqueArgs} args - Arguments to find a LigneCommande
+     * @example
+     * // Get one LigneCommande
+     * const ligneCommande = await prisma.ligneCommande.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends LigneCommandeFindUniqueArgs>(args: SelectSubset<T, LigneCommandeFindUniqueArgs<ExtArgs>>): Prisma__LigneCommandeClient<$Result.GetResult<Prisma.$LigneCommandePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one LigneCommande that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {LigneCommandeFindUniqueOrThrowArgs} args - Arguments to find a LigneCommande
+     * @example
+     * // Get one LigneCommande
+     * const ligneCommande = await prisma.ligneCommande.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends LigneCommandeFindUniqueOrThrowArgs>(args: SelectSubset<T, LigneCommandeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__LigneCommandeClient<$Result.GetResult<Prisma.$LigneCommandePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first LigneCommande that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LigneCommandeFindFirstArgs} args - Arguments to find a LigneCommande
+     * @example
+     * // Get one LigneCommande
+     * const ligneCommande = await prisma.ligneCommande.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends LigneCommandeFindFirstArgs>(args?: SelectSubset<T, LigneCommandeFindFirstArgs<ExtArgs>>): Prisma__LigneCommandeClient<$Result.GetResult<Prisma.$LigneCommandePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first LigneCommande that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LigneCommandeFindFirstOrThrowArgs} args - Arguments to find a LigneCommande
+     * @example
+     * // Get one LigneCommande
+     * const ligneCommande = await prisma.ligneCommande.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends LigneCommandeFindFirstOrThrowArgs>(args?: SelectSubset<T, LigneCommandeFindFirstOrThrowArgs<ExtArgs>>): Prisma__LigneCommandeClient<$Result.GetResult<Prisma.$LigneCommandePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more LigneCommandes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LigneCommandeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all LigneCommandes
+     * const ligneCommandes = await prisma.ligneCommande.findMany()
+     * 
+     * // Get first 10 LigneCommandes
+     * const ligneCommandes = await prisma.ligneCommande.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const ligneCommandeWithIdOnly = await prisma.ligneCommande.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends LigneCommandeFindManyArgs>(args?: SelectSubset<T, LigneCommandeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LigneCommandePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a LigneCommande.
+     * @param {LigneCommandeCreateArgs} args - Arguments to create a LigneCommande.
+     * @example
+     * // Create one LigneCommande
+     * const LigneCommande = await prisma.ligneCommande.create({
+     *   data: {
+     *     // ... data to create a LigneCommande
+     *   }
+     * })
+     * 
+     */
+    create<T extends LigneCommandeCreateArgs>(args: SelectSubset<T, LigneCommandeCreateArgs<ExtArgs>>): Prisma__LigneCommandeClient<$Result.GetResult<Prisma.$LigneCommandePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many LigneCommandes.
+     * @param {LigneCommandeCreateManyArgs} args - Arguments to create many LigneCommandes.
+     * @example
+     * // Create many LigneCommandes
+     * const ligneCommande = await prisma.ligneCommande.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends LigneCommandeCreateManyArgs>(args?: SelectSubset<T, LigneCommandeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many LigneCommandes and returns the data saved in the database.
+     * @param {LigneCommandeCreateManyAndReturnArgs} args - Arguments to create many LigneCommandes.
+     * @example
+     * // Create many LigneCommandes
+     * const ligneCommande = await prisma.ligneCommande.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many LigneCommandes and only return the `id`
+     * const ligneCommandeWithIdOnly = await prisma.ligneCommande.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends LigneCommandeCreateManyAndReturnArgs>(args?: SelectSubset<T, LigneCommandeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LigneCommandePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a LigneCommande.
+     * @param {LigneCommandeDeleteArgs} args - Arguments to delete one LigneCommande.
+     * @example
+     * // Delete one LigneCommande
+     * const LigneCommande = await prisma.ligneCommande.delete({
+     *   where: {
+     *     // ... filter to delete one LigneCommande
+     *   }
+     * })
+     * 
+     */
+    delete<T extends LigneCommandeDeleteArgs>(args: SelectSubset<T, LigneCommandeDeleteArgs<ExtArgs>>): Prisma__LigneCommandeClient<$Result.GetResult<Prisma.$LigneCommandePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one LigneCommande.
+     * @param {LigneCommandeUpdateArgs} args - Arguments to update one LigneCommande.
+     * @example
+     * // Update one LigneCommande
+     * const ligneCommande = await prisma.ligneCommande.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends LigneCommandeUpdateArgs>(args: SelectSubset<T, LigneCommandeUpdateArgs<ExtArgs>>): Prisma__LigneCommandeClient<$Result.GetResult<Prisma.$LigneCommandePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more LigneCommandes.
+     * @param {LigneCommandeDeleteManyArgs} args - Arguments to filter LigneCommandes to delete.
+     * @example
+     * // Delete a few LigneCommandes
+     * const { count } = await prisma.ligneCommande.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends LigneCommandeDeleteManyArgs>(args?: SelectSubset<T, LigneCommandeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more LigneCommandes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LigneCommandeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many LigneCommandes
+     * const ligneCommande = await prisma.ligneCommande.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends LigneCommandeUpdateManyArgs>(args: SelectSubset<T, LigneCommandeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more LigneCommandes and returns the data updated in the database.
+     * @param {LigneCommandeUpdateManyAndReturnArgs} args - Arguments to update many LigneCommandes.
+     * @example
+     * // Update many LigneCommandes
+     * const ligneCommande = await prisma.ligneCommande.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more LigneCommandes and only return the `id`
+     * const ligneCommandeWithIdOnly = await prisma.ligneCommande.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends LigneCommandeUpdateManyAndReturnArgs>(args: SelectSubset<T, LigneCommandeUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LigneCommandePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one LigneCommande.
+     * @param {LigneCommandeUpsertArgs} args - Arguments to update or create a LigneCommande.
+     * @example
+     * // Update or create a LigneCommande
+     * const ligneCommande = await prisma.ligneCommande.upsert({
+     *   create: {
+     *     // ... data to create a LigneCommande
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the LigneCommande we want to update
+     *   }
+     * })
+     */
+    upsert<T extends LigneCommandeUpsertArgs>(args: SelectSubset<T, LigneCommandeUpsertArgs<ExtArgs>>): Prisma__LigneCommandeClient<$Result.GetResult<Prisma.$LigneCommandePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of LigneCommandes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LigneCommandeCountArgs} args - Arguments to filter LigneCommandes to count.
+     * @example
+     * // Count the number of LigneCommandes
+     * const count = await prisma.ligneCommande.count({
+     *   where: {
+     *     // ... the filter for the LigneCommandes we want to count
+     *   }
+     * })
+    **/
+    count<T extends LigneCommandeCountArgs>(
+      args?: Subset<T, LigneCommandeCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], LigneCommandeCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a LigneCommande.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LigneCommandeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends LigneCommandeAggregateArgs>(args: Subset<T, LigneCommandeAggregateArgs>): Prisma.PrismaPromise<GetLigneCommandeAggregateType<T>>
+
+    /**
+     * Group by LigneCommande.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LigneCommandeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends LigneCommandeGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: LigneCommandeGroupByArgs['orderBy'] }
+        : { orderBy?: LigneCommandeGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, LigneCommandeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetLigneCommandeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the LigneCommande model
+   */
+  readonly fields: LigneCommandeFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for LigneCommande.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__LigneCommandeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    commande<T extends CommandeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CommandeDefaultArgs<ExtArgs>>): Prisma__CommandeClient<$Result.GetResult<Prisma.$CommandePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    produit<T extends ProduitDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProduitDefaultArgs<ExtArgs>>): Prisma__ProduitClient<$Result.GetResult<Prisma.$ProduitPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the LigneCommande model
+   */
+  interface LigneCommandeFieldRefs {
+    readonly id: FieldRef<"LigneCommande", 'String'>
+    readonly commande_id: FieldRef<"LigneCommande", 'String'>
+    readonly produit_id: FieldRef<"LigneCommande", 'String'>
+    readonly nom_produit: FieldRef<"LigneCommande", 'String'>
+    readonly image: FieldRef<"LigneCommande", 'String'>
+    readonly prix_unitaire: FieldRef<"LigneCommande", 'Float'>
+    readonly quantite: FieldRef<"LigneCommande", 'Int'>
+    readonly sous_total: FieldRef<"LigneCommande", 'Float'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * LigneCommande findUnique
+   */
+  export type LigneCommandeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LigneCommande
+     */
+    select?: LigneCommandeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LigneCommande
+     */
+    omit?: LigneCommandeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LigneCommandeInclude<ExtArgs> | null
+    /**
+     * Filter, which LigneCommande to fetch.
+     */
+    where: LigneCommandeWhereUniqueInput
+  }
+
+  /**
+   * LigneCommande findUniqueOrThrow
+   */
+  export type LigneCommandeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LigneCommande
+     */
+    select?: LigneCommandeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LigneCommande
+     */
+    omit?: LigneCommandeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LigneCommandeInclude<ExtArgs> | null
+    /**
+     * Filter, which LigneCommande to fetch.
+     */
+    where: LigneCommandeWhereUniqueInput
+  }
+
+  /**
+   * LigneCommande findFirst
+   */
+  export type LigneCommandeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LigneCommande
+     */
+    select?: LigneCommandeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LigneCommande
+     */
+    omit?: LigneCommandeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LigneCommandeInclude<ExtArgs> | null
+    /**
+     * Filter, which LigneCommande to fetch.
+     */
+    where?: LigneCommandeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LigneCommandes to fetch.
+     */
+    orderBy?: LigneCommandeOrderByWithRelationInput | LigneCommandeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for LigneCommandes.
+     */
+    cursor?: LigneCommandeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LigneCommandes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LigneCommandes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LigneCommandes.
+     */
+    distinct?: LigneCommandeScalarFieldEnum | LigneCommandeScalarFieldEnum[]
+  }
+
+  /**
+   * LigneCommande findFirstOrThrow
+   */
+  export type LigneCommandeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LigneCommande
+     */
+    select?: LigneCommandeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LigneCommande
+     */
+    omit?: LigneCommandeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LigneCommandeInclude<ExtArgs> | null
+    /**
+     * Filter, which LigneCommande to fetch.
+     */
+    where?: LigneCommandeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LigneCommandes to fetch.
+     */
+    orderBy?: LigneCommandeOrderByWithRelationInput | LigneCommandeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for LigneCommandes.
+     */
+    cursor?: LigneCommandeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LigneCommandes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LigneCommandes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LigneCommandes.
+     */
+    distinct?: LigneCommandeScalarFieldEnum | LigneCommandeScalarFieldEnum[]
+  }
+
+  /**
+   * LigneCommande findMany
+   */
+  export type LigneCommandeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LigneCommande
+     */
+    select?: LigneCommandeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LigneCommande
+     */
+    omit?: LigneCommandeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LigneCommandeInclude<ExtArgs> | null
+    /**
+     * Filter, which LigneCommandes to fetch.
+     */
+    where?: LigneCommandeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LigneCommandes to fetch.
+     */
+    orderBy?: LigneCommandeOrderByWithRelationInput | LigneCommandeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing LigneCommandes.
+     */
+    cursor?: LigneCommandeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LigneCommandes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LigneCommandes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LigneCommandes.
+     */
+    distinct?: LigneCommandeScalarFieldEnum | LigneCommandeScalarFieldEnum[]
+  }
+
+  /**
+   * LigneCommande create
+   */
+  export type LigneCommandeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LigneCommande
+     */
+    select?: LigneCommandeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LigneCommande
+     */
+    omit?: LigneCommandeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LigneCommandeInclude<ExtArgs> | null
+    /**
+     * The data needed to create a LigneCommande.
+     */
+    data: XOR<LigneCommandeCreateInput, LigneCommandeUncheckedCreateInput>
+  }
+
+  /**
+   * LigneCommande createMany
+   */
+  export type LigneCommandeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many LigneCommandes.
+     */
+    data: LigneCommandeCreateManyInput | LigneCommandeCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * LigneCommande createManyAndReturn
+   */
+  export type LigneCommandeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LigneCommande
+     */
+    select?: LigneCommandeSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the LigneCommande
+     */
+    omit?: LigneCommandeOmit<ExtArgs> | null
+    /**
+     * The data used to create many LigneCommandes.
+     */
+    data: LigneCommandeCreateManyInput | LigneCommandeCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LigneCommandeIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * LigneCommande update
+   */
+  export type LigneCommandeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LigneCommande
+     */
+    select?: LigneCommandeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LigneCommande
+     */
+    omit?: LigneCommandeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LigneCommandeInclude<ExtArgs> | null
+    /**
+     * The data needed to update a LigneCommande.
+     */
+    data: XOR<LigneCommandeUpdateInput, LigneCommandeUncheckedUpdateInput>
+    /**
+     * Choose, which LigneCommande to update.
+     */
+    where: LigneCommandeWhereUniqueInput
+  }
+
+  /**
+   * LigneCommande updateMany
+   */
+  export type LigneCommandeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update LigneCommandes.
+     */
+    data: XOR<LigneCommandeUpdateManyMutationInput, LigneCommandeUncheckedUpdateManyInput>
+    /**
+     * Filter which LigneCommandes to update
+     */
+    where?: LigneCommandeWhereInput
+    /**
+     * Limit how many LigneCommandes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * LigneCommande updateManyAndReturn
+   */
+  export type LigneCommandeUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LigneCommande
+     */
+    select?: LigneCommandeSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the LigneCommande
+     */
+    omit?: LigneCommandeOmit<ExtArgs> | null
+    /**
+     * The data used to update LigneCommandes.
+     */
+    data: XOR<LigneCommandeUpdateManyMutationInput, LigneCommandeUncheckedUpdateManyInput>
+    /**
+     * Filter which LigneCommandes to update
+     */
+    where?: LigneCommandeWhereInput
+    /**
+     * Limit how many LigneCommandes to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LigneCommandeIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * LigneCommande upsert
+   */
+  export type LigneCommandeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LigneCommande
+     */
+    select?: LigneCommandeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LigneCommande
+     */
+    omit?: LigneCommandeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LigneCommandeInclude<ExtArgs> | null
+    /**
+     * The filter to search for the LigneCommande to update in case it exists.
+     */
+    where: LigneCommandeWhereUniqueInput
+    /**
+     * In case the LigneCommande found by the `where` argument doesn't exist, create a new LigneCommande with this data.
+     */
+    create: XOR<LigneCommandeCreateInput, LigneCommandeUncheckedCreateInput>
+    /**
+     * In case the LigneCommande was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<LigneCommandeUpdateInput, LigneCommandeUncheckedUpdateInput>
+  }
+
+  /**
+   * LigneCommande delete
+   */
+  export type LigneCommandeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LigneCommande
+     */
+    select?: LigneCommandeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LigneCommande
+     */
+    omit?: LigneCommandeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LigneCommandeInclude<ExtArgs> | null
+    /**
+     * Filter which LigneCommande to delete.
+     */
+    where: LigneCommandeWhereUniqueInput
+  }
+
+  /**
+   * LigneCommande deleteMany
+   */
+  export type LigneCommandeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which LigneCommandes to delete
+     */
+    where?: LigneCommandeWhereInput
+    /**
+     * Limit how many LigneCommandes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * LigneCommande without action
+   */
+  export type LigneCommandeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LigneCommande
+     */
+    select?: LigneCommandeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LigneCommande
+     */
+    omit?: LigneCommandeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LigneCommandeInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -10824,6 +13530,7 @@ export namespace Prisma {
     stock: 'stock',
     categorie_id: 'categorie_id',
     images: 'images',
+    sku_number: 'sku_number',
     sku: 'sku',
     publie: 'publie',
     createdAt: 'createdAt',
@@ -10896,6 +13603,39 @@ export namespace Prisma {
   };
 
   export type ConfigurationScalarFieldEnum = (typeof ConfigurationScalarFieldEnum)[keyof typeof ConfigurationScalarFieldEnum]
+
+
+  export const CommandeScalarFieldEnum: {
+    id: 'id',
+    numero: 'numero',
+    utilisateur_id: 'utilisateur_id',
+    statut: 'statut',
+    total: 'total',
+    frais_livraison: 'frais_livraison',
+    ville: 'ville',
+    adresse: 'adresse',
+    telephone: 'telephone',
+    mode_paiement: 'mode_paiement',
+    notes: 'notes',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type CommandeScalarFieldEnum = (typeof CommandeScalarFieldEnum)[keyof typeof CommandeScalarFieldEnum]
+
+
+  export const LigneCommandeScalarFieldEnum: {
+    id: 'id',
+    commande_id: 'commande_id',
+    produit_id: 'produit_id',
+    nom_produit: 'nom_produit',
+    image: 'image',
+    prix_unitaire: 'prix_unitaire',
+    quantite: 'quantite',
+    sous_total: 'sous_total'
+  };
+
+  export type LigneCommandeScalarFieldEnum = (typeof LigneCommandeScalarFieldEnum)[keyof typeof LigneCommandeScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -11016,6 +13756,20 @@ export namespace Prisma {
    */
   export type ListEnumAppointmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AppointmentStatus[]'>
     
+
+
+  /**
+   * Reference to a field of type 'OrderStatus'
+   */
+  export type EnumOrderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrderStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'OrderStatus[]'
+   */
+  export type ListEnumOrderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrderStatus[]'>
+    
   /**
    * Deep Input Types
    */
@@ -11039,6 +13793,7 @@ export namespace Prisma {
     avis?: AvisListRelationFilter
     likes?: LikeListRelationFilter
     rendezVous?: RendezVousListRelationFilter
+    commandes?: CommandeListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -11056,6 +13811,7 @@ export namespace Prisma {
     avis?: AvisOrderByRelationAggregateInput
     likes?: LikeOrderByRelationAggregateInput
     rendezVous?: RendezVousOrderByRelationAggregateInput
+    commandes?: CommandeOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -11076,6 +13832,7 @@ export namespace Prisma {
     avis?: AvisListRelationFilter
     likes?: LikeListRelationFilter
     rendezVous?: RendezVousListRelationFilter
+    commandes?: CommandeListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -11185,6 +13942,7 @@ export namespace Prisma {
     stock?: IntFilter<"Produit"> | number
     categorie_id?: StringFilter<"Produit"> | string
     images?: StringNullableListFilter<"Produit">
+    sku_number?: IntFilter<"Produit"> | number
     sku?: StringNullableFilter<"Produit"> | string | null
     publie?: BoolFilter<"Produit"> | boolean
     createdAt?: DateTimeFilter<"Produit"> | Date | string
@@ -11192,6 +13950,7 @@ export namespace Prisma {
     avis?: AvisListRelationFilter
     likes?: LikeListRelationFilter
     categorie?: XOR<CategorieScalarRelationFilter, CategorieWhereInput>
+    lignes?: LigneCommandeListRelationFilter
   }
 
   export type ProduitOrderByWithRelationInput = {
@@ -11202,6 +13961,7 @@ export namespace Prisma {
     stock?: SortOrder
     categorie_id?: SortOrder
     images?: SortOrder
+    sku_number?: SortOrder
     sku?: SortOrderInput | SortOrder
     publie?: SortOrder
     createdAt?: SortOrder
@@ -11209,10 +13969,12 @@ export namespace Prisma {
     avis?: AvisOrderByRelationAggregateInput
     likes?: LikeOrderByRelationAggregateInput
     categorie?: CategorieOrderByWithRelationInput
+    lignes?: LigneCommandeOrderByRelationAggregateInput
   }
 
   export type ProduitWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    sku_number?: number
     sku?: string
     AND?: ProduitWhereInput | ProduitWhereInput[]
     OR?: ProduitWhereInput[]
@@ -11229,7 +13991,8 @@ export namespace Prisma {
     avis?: AvisListRelationFilter
     likes?: LikeListRelationFilter
     categorie?: XOR<CategorieScalarRelationFilter, CategorieWhereInput>
-  }, "id" | "sku">
+    lignes?: LigneCommandeListRelationFilter
+  }, "id" | "sku_number" | "sku">
 
   export type ProduitOrderByWithAggregationInput = {
     id?: SortOrder
@@ -11239,6 +14002,7 @@ export namespace Prisma {
     stock?: SortOrder
     categorie_id?: SortOrder
     images?: SortOrder
+    sku_number?: SortOrder
     sku?: SortOrderInput | SortOrder
     publie?: SortOrder
     createdAt?: SortOrder
@@ -11261,6 +14025,7 @@ export namespace Prisma {
     stock?: IntWithAggregatesFilter<"Produit"> | number
     categorie_id?: StringWithAggregatesFilter<"Produit"> | string
     images?: StringNullableListFilter<"Produit">
+    sku_number?: IntWithAggregatesFilter<"Produit"> | number
     sku?: StringNullableWithAggregatesFilter<"Produit"> | string | null
     publie?: BoolWithAggregatesFilter<"Produit"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Produit"> | Date | string
@@ -11606,6 +14371,181 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Configuration"> | Date | string
   }
 
+  export type CommandeWhereInput = {
+    AND?: CommandeWhereInput | CommandeWhereInput[]
+    OR?: CommandeWhereInput[]
+    NOT?: CommandeWhereInput | CommandeWhereInput[]
+    id?: StringFilter<"Commande"> | string
+    numero?: StringFilter<"Commande"> | string
+    utilisateur_id?: StringFilter<"Commande"> | string
+    statut?: EnumOrderStatusFilter<"Commande"> | $Enums.OrderStatus
+    total?: FloatFilter<"Commande"> | number
+    frais_livraison?: FloatFilter<"Commande"> | number
+    ville?: StringFilter<"Commande"> | string
+    adresse?: StringFilter<"Commande"> | string
+    telephone?: StringFilter<"Commande"> | string
+    mode_paiement?: StringFilter<"Commande"> | string
+    notes?: StringNullableFilter<"Commande"> | string | null
+    createdAt?: DateTimeFilter<"Commande"> | Date | string
+    updatedAt?: DateTimeFilter<"Commande"> | Date | string
+    utilisateur?: XOR<UserScalarRelationFilter, UserWhereInput>
+    lignes?: LigneCommandeListRelationFilter
+  }
+
+  export type CommandeOrderByWithRelationInput = {
+    id?: SortOrder
+    numero?: SortOrder
+    utilisateur_id?: SortOrder
+    statut?: SortOrder
+    total?: SortOrder
+    frais_livraison?: SortOrder
+    ville?: SortOrder
+    adresse?: SortOrder
+    telephone?: SortOrder
+    mode_paiement?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    utilisateur?: UserOrderByWithRelationInput
+    lignes?: LigneCommandeOrderByRelationAggregateInput
+  }
+
+  export type CommandeWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    numero?: string
+    AND?: CommandeWhereInput | CommandeWhereInput[]
+    OR?: CommandeWhereInput[]
+    NOT?: CommandeWhereInput | CommandeWhereInput[]
+    utilisateur_id?: StringFilter<"Commande"> | string
+    statut?: EnumOrderStatusFilter<"Commande"> | $Enums.OrderStatus
+    total?: FloatFilter<"Commande"> | number
+    frais_livraison?: FloatFilter<"Commande"> | number
+    ville?: StringFilter<"Commande"> | string
+    adresse?: StringFilter<"Commande"> | string
+    telephone?: StringFilter<"Commande"> | string
+    mode_paiement?: StringFilter<"Commande"> | string
+    notes?: StringNullableFilter<"Commande"> | string | null
+    createdAt?: DateTimeFilter<"Commande"> | Date | string
+    updatedAt?: DateTimeFilter<"Commande"> | Date | string
+    utilisateur?: XOR<UserScalarRelationFilter, UserWhereInput>
+    lignes?: LigneCommandeListRelationFilter
+  }, "id" | "numero">
+
+  export type CommandeOrderByWithAggregationInput = {
+    id?: SortOrder
+    numero?: SortOrder
+    utilisateur_id?: SortOrder
+    statut?: SortOrder
+    total?: SortOrder
+    frais_livraison?: SortOrder
+    ville?: SortOrder
+    adresse?: SortOrder
+    telephone?: SortOrder
+    mode_paiement?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: CommandeCountOrderByAggregateInput
+    _avg?: CommandeAvgOrderByAggregateInput
+    _max?: CommandeMaxOrderByAggregateInput
+    _min?: CommandeMinOrderByAggregateInput
+    _sum?: CommandeSumOrderByAggregateInput
+  }
+
+  export type CommandeScalarWhereWithAggregatesInput = {
+    AND?: CommandeScalarWhereWithAggregatesInput | CommandeScalarWhereWithAggregatesInput[]
+    OR?: CommandeScalarWhereWithAggregatesInput[]
+    NOT?: CommandeScalarWhereWithAggregatesInput | CommandeScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Commande"> | string
+    numero?: StringWithAggregatesFilter<"Commande"> | string
+    utilisateur_id?: StringWithAggregatesFilter<"Commande"> | string
+    statut?: EnumOrderStatusWithAggregatesFilter<"Commande"> | $Enums.OrderStatus
+    total?: FloatWithAggregatesFilter<"Commande"> | number
+    frais_livraison?: FloatWithAggregatesFilter<"Commande"> | number
+    ville?: StringWithAggregatesFilter<"Commande"> | string
+    adresse?: StringWithAggregatesFilter<"Commande"> | string
+    telephone?: StringWithAggregatesFilter<"Commande"> | string
+    mode_paiement?: StringWithAggregatesFilter<"Commande"> | string
+    notes?: StringNullableWithAggregatesFilter<"Commande"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Commande"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Commande"> | Date | string
+  }
+
+  export type LigneCommandeWhereInput = {
+    AND?: LigneCommandeWhereInput | LigneCommandeWhereInput[]
+    OR?: LigneCommandeWhereInput[]
+    NOT?: LigneCommandeWhereInput | LigneCommandeWhereInput[]
+    id?: StringFilter<"LigneCommande"> | string
+    commande_id?: StringFilter<"LigneCommande"> | string
+    produit_id?: StringFilter<"LigneCommande"> | string
+    nom_produit?: StringFilter<"LigneCommande"> | string
+    image?: StringNullableFilter<"LigneCommande"> | string | null
+    prix_unitaire?: FloatFilter<"LigneCommande"> | number
+    quantite?: IntFilter<"LigneCommande"> | number
+    sous_total?: FloatFilter<"LigneCommande"> | number
+    commande?: XOR<CommandeScalarRelationFilter, CommandeWhereInput>
+    produit?: XOR<ProduitScalarRelationFilter, ProduitWhereInput>
+  }
+
+  export type LigneCommandeOrderByWithRelationInput = {
+    id?: SortOrder
+    commande_id?: SortOrder
+    produit_id?: SortOrder
+    nom_produit?: SortOrder
+    image?: SortOrderInput | SortOrder
+    prix_unitaire?: SortOrder
+    quantite?: SortOrder
+    sous_total?: SortOrder
+    commande?: CommandeOrderByWithRelationInput
+    produit?: ProduitOrderByWithRelationInput
+  }
+
+  export type LigneCommandeWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: LigneCommandeWhereInput | LigneCommandeWhereInput[]
+    OR?: LigneCommandeWhereInput[]
+    NOT?: LigneCommandeWhereInput | LigneCommandeWhereInput[]
+    commande_id?: StringFilter<"LigneCommande"> | string
+    produit_id?: StringFilter<"LigneCommande"> | string
+    nom_produit?: StringFilter<"LigneCommande"> | string
+    image?: StringNullableFilter<"LigneCommande"> | string | null
+    prix_unitaire?: FloatFilter<"LigneCommande"> | number
+    quantite?: IntFilter<"LigneCommande"> | number
+    sous_total?: FloatFilter<"LigneCommande"> | number
+    commande?: XOR<CommandeScalarRelationFilter, CommandeWhereInput>
+    produit?: XOR<ProduitScalarRelationFilter, ProduitWhereInput>
+  }, "id">
+
+  export type LigneCommandeOrderByWithAggregationInput = {
+    id?: SortOrder
+    commande_id?: SortOrder
+    produit_id?: SortOrder
+    nom_produit?: SortOrder
+    image?: SortOrderInput | SortOrder
+    prix_unitaire?: SortOrder
+    quantite?: SortOrder
+    sous_total?: SortOrder
+    _count?: LigneCommandeCountOrderByAggregateInput
+    _avg?: LigneCommandeAvgOrderByAggregateInput
+    _max?: LigneCommandeMaxOrderByAggregateInput
+    _min?: LigneCommandeMinOrderByAggregateInput
+    _sum?: LigneCommandeSumOrderByAggregateInput
+  }
+
+  export type LigneCommandeScalarWhereWithAggregatesInput = {
+    AND?: LigneCommandeScalarWhereWithAggregatesInput | LigneCommandeScalarWhereWithAggregatesInput[]
+    OR?: LigneCommandeScalarWhereWithAggregatesInput[]
+    NOT?: LigneCommandeScalarWhereWithAggregatesInput | LigneCommandeScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"LigneCommande"> | string
+    commande_id?: StringWithAggregatesFilter<"LigneCommande"> | string
+    produit_id?: StringWithAggregatesFilter<"LigneCommande"> | string
+    nom_produit?: StringWithAggregatesFilter<"LigneCommande"> | string
+    image?: StringNullableWithAggregatesFilter<"LigneCommande"> | string | null
+    prix_unitaire?: FloatWithAggregatesFilter<"LigneCommande"> | number
+    quantite?: IntWithAggregatesFilter<"LigneCommande"> | number
+    sous_total?: FloatWithAggregatesFilter<"LigneCommande"> | number
+  }
+
   export type UserCreateInput = {
     id?: string
     email: string
@@ -11621,6 +14561,7 @@ export namespace Prisma {
     avis?: AvisCreateNestedManyWithoutUtilisateurInput
     likes?: LikeCreateNestedManyWithoutUtilisateurInput
     rendezVous?: RendezVousCreateNestedManyWithoutUtilisateurInput
+    commandes?: CommandeCreateNestedManyWithoutUtilisateurInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -11638,6 +14579,7 @@ export namespace Prisma {
     avis?: AvisUncheckedCreateNestedManyWithoutUtilisateurInput
     likes?: LikeUncheckedCreateNestedManyWithoutUtilisateurInput
     rendezVous?: RendezVousUncheckedCreateNestedManyWithoutUtilisateurInput
+    commandes?: CommandeUncheckedCreateNestedManyWithoutUtilisateurInput
   }
 
   export type UserUpdateInput = {
@@ -11655,6 +14597,7 @@ export namespace Prisma {
     avis?: AvisUpdateManyWithoutUtilisateurNestedInput
     likes?: LikeUpdateManyWithoutUtilisateurNestedInput
     rendezVous?: RendezVousUpdateManyWithoutUtilisateurNestedInput
+    commandes?: CommandeUpdateManyWithoutUtilisateurNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -11672,6 +14615,7 @@ export namespace Prisma {
     avis?: AvisUncheckedUpdateManyWithoutUtilisateurNestedInput
     likes?: LikeUncheckedUpdateManyWithoutUtilisateurNestedInput
     rendezVous?: RendezVousUncheckedUpdateManyWithoutUtilisateurNestedInput
+    commandes?: CommandeUncheckedUpdateManyWithoutUtilisateurNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -11790,6 +14734,7 @@ export namespace Prisma {
     prix: number
     stock: number
     images?: ProduitCreateimagesInput | string[]
+    sku_number?: number
     sku?: string | null
     publie?: boolean
     createdAt?: Date | string
@@ -11797,6 +14742,7 @@ export namespace Prisma {
     avis?: AvisCreateNestedManyWithoutProduitInput
     likes?: LikeCreateNestedManyWithoutProduitInput
     categorie: CategorieCreateNestedOneWithoutProduitsInput
+    lignes?: LigneCommandeCreateNestedManyWithoutProduitInput
   }
 
   export type ProduitUncheckedCreateInput = {
@@ -11807,12 +14753,14 @@ export namespace Prisma {
     stock: number
     categorie_id: string
     images?: ProduitCreateimagesInput | string[]
+    sku_number?: number
     sku?: string | null
     publie?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     avis?: AvisUncheckedCreateNestedManyWithoutProduitInput
     likes?: LikeUncheckedCreateNestedManyWithoutProduitInput
+    lignes?: LigneCommandeUncheckedCreateNestedManyWithoutProduitInput
   }
 
   export type ProduitUpdateInput = {
@@ -11829,6 +14777,7 @@ export namespace Prisma {
     avis?: AvisUpdateManyWithoutProduitNestedInput
     likes?: LikeUpdateManyWithoutProduitNestedInput
     categorie?: CategorieUpdateOneRequiredWithoutProduitsNestedInput
+    lignes?: LigneCommandeUpdateManyWithoutProduitNestedInput
   }
 
   export type ProduitUncheckedUpdateInput = {
@@ -11839,12 +14788,14 @@ export namespace Prisma {
     stock?: IntFieldUpdateOperationsInput | number
     categorie_id?: StringFieldUpdateOperationsInput | string
     images?: ProduitUpdateimagesInput | string[]
+    sku_number?: IntFieldUpdateOperationsInput | number
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     publie?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     avis?: AvisUncheckedUpdateManyWithoutProduitNestedInput
     likes?: LikeUncheckedUpdateManyWithoutProduitNestedInput
+    lignes?: LigneCommandeUncheckedUpdateManyWithoutProduitNestedInput
   }
 
   export type ProduitCreateManyInput = {
@@ -11855,6 +14806,7 @@ export namespace Prisma {
     stock: number
     categorie_id: string
     images?: ProduitCreateimagesInput | string[]
+    sku_number?: number
     sku?: string | null
     publie?: boolean
     createdAt?: Date | string
@@ -11882,6 +14834,7 @@ export namespace Prisma {
     stock?: IntFieldUpdateOperationsInput | number
     categorie_id?: StringFieldUpdateOperationsInput | string
     images?: ProduitUpdateimagesInput | string[]
+    sku_number?: IntFieldUpdateOperationsInput | number
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     publie?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12236,6 +15189,196 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type CommandeCreateInput = {
+    id?: string
+    numero: string
+    statut?: $Enums.OrderStatus
+    total: number
+    frais_livraison?: number
+    ville: string
+    adresse: string
+    telephone: string
+    mode_paiement: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    utilisateur: UserCreateNestedOneWithoutCommandesInput
+    lignes?: LigneCommandeCreateNestedManyWithoutCommandeInput
+  }
+
+  export type CommandeUncheckedCreateInput = {
+    id?: string
+    numero: string
+    utilisateur_id: string
+    statut?: $Enums.OrderStatus
+    total: number
+    frais_livraison?: number
+    ville: string
+    adresse: string
+    telephone: string
+    mode_paiement: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lignes?: LigneCommandeUncheckedCreateNestedManyWithoutCommandeInput
+  }
+
+  export type CommandeUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    numero?: StringFieldUpdateOperationsInput | string
+    statut?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    total?: FloatFieldUpdateOperationsInput | number
+    frais_livraison?: FloatFieldUpdateOperationsInput | number
+    ville?: StringFieldUpdateOperationsInput | string
+    adresse?: StringFieldUpdateOperationsInput | string
+    telephone?: StringFieldUpdateOperationsInput | string
+    mode_paiement?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    utilisateur?: UserUpdateOneRequiredWithoutCommandesNestedInput
+    lignes?: LigneCommandeUpdateManyWithoutCommandeNestedInput
+  }
+
+  export type CommandeUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    numero?: StringFieldUpdateOperationsInput | string
+    utilisateur_id?: StringFieldUpdateOperationsInput | string
+    statut?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    total?: FloatFieldUpdateOperationsInput | number
+    frais_livraison?: FloatFieldUpdateOperationsInput | number
+    ville?: StringFieldUpdateOperationsInput | string
+    adresse?: StringFieldUpdateOperationsInput | string
+    telephone?: StringFieldUpdateOperationsInput | string
+    mode_paiement?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lignes?: LigneCommandeUncheckedUpdateManyWithoutCommandeNestedInput
+  }
+
+  export type CommandeCreateManyInput = {
+    id?: string
+    numero: string
+    utilisateur_id: string
+    statut?: $Enums.OrderStatus
+    total: number
+    frais_livraison?: number
+    ville: string
+    adresse: string
+    telephone: string
+    mode_paiement: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CommandeUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    numero?: StringFieldUpdateOperationsInput | string
+    statut?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    total?: FloatFieldUpdateOperationsInput | number
+    frais_livraison?: FloatFieldUpdateOperationsInput | number
+    ville?: StringFieldUpdateOperationsInput | string
+    adresse?: StringFieldUpdateOperationsInput | string
+    telephone?: StringFieldUpdateOperationsInput | string
+    mode_paiement?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CommandeUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    numero?: StringFieldUpdateOperationsInput | string
+    utilisateur_id?: StringFieldUpdateOperationsInput | string
+    statut?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    total?: FloatFieldUpdateOperationsInput | number
+    frais_livraison?: FloatFieldUpdateOperationsInput | number
+    ville?: StringFieldUpdateOperationsInput | string
+    adresse?: StringFieldUpdateOperationsInput | string
+    telephone?: StringFieldUpdateOperationsInput | string
+    mode_paiement?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LigneCommandeCreateInput = {
+    id?: string
+    nom_produit: string
+    image?: string | null
+    prix_unitaire: number
+    quantite: number
+    sous_total: number
+    commande: CommandeCreateNestedOneWithoutLignesInput
+    produit: ProduitCreateNestedOneWithoutLignesInput
+  }
+
+  export type LigneCommandeUncheckedCreateInput = {
+    id?: string
+    commande_id: string
+    produit_id: string
+    nom_produit: string
+    image?: string | null
+    prix_unitaire: number
+    quantite: number
+    sous_total: number
+  }
+
+  export type LigneCommandeUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nom_produit?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    prix_unitaire?: FloatFieldUpdateOperationsInput | number
+    quantite?: IntFieldUpdateOperationsInput | number
+    sous_total?: FloatFieldUpdateOperationsInput | number
+    commande?: CommandeUpdateOneRequiredWithoutLignesNestedInput
+    produit?: ProduitUpdateOneRequiredWithoutLignesNestedInput
+  }
+
+  export type LigneCommandeUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    commande_id?: StringFieldUpdateOperationsInput | string
+    produit_id?: StringFieldUpdateOperationsInput | string
+    nom_produit?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    prix_unitaire?: FloatFieldUpdateOperationsInput | number
+    quantite?: IntFieldUpdateOperationsInput | number
+    sous_total?: FloatFieldUpdateOperationsInput | number
+  }
+
+  export type LigneCommandeCreateManyInput = {
+    id?: string
+    commande_id: string
+    produit_id: string
+    nom_produit: string
+    image?: string | null
+    prix_unitaire: number
+    quantite: number
+    sous_total: number
+  }
+
+  export type LigneCommandeUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nom_produit?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    prix_unitaire?: FloatFieldUpdateOperationsInput | number
+    quantite?: IntFieldUpdateOperationsInput | number
+    sous_total?: FloatFieldUpdateOperationsInput | number
+  }
+
+  export type LigneCommandeUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    commande_id?: StringFieldUpdateOperationsInput | string
+    produit_id?: StringFieldUpdateOperationsInput | string
+    nom_produit?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    prix_unitaire?: FloatFieldUpdateOperationsInput | number
+    quantite?: IntFieldUpdateOperationsInput | number
+    sous_total?: FloatFieldUpdateOperationsInput | number
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -12313,6 +15456,12 @@ export namespace Prisma {
     none?: RendezVousWhereInput
   }
 
+  export type CommandeListRelationFilter = {
+    every?: CommandeWhereInput
+    some?: CommandeWhereInput
+    none?: CommandeWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -12327,6 +15476,10 @@ export namespace Prisma {
   }
 
   export type RendezVousOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CommandeOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -12547,6 +15700,16 @@ export namespace Prisma {
     isNot?: CategorieWhereInput
   }
 
+  export type LigneCommandeListRelationFilter = {
+    every?: LigneCommandeWhereInput
+    some?: LigneCommandeWhereInput
+    none?: LigneCommandeWhereInput
+  }
+
+  export type LigneCommandeOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type ProduitCountOrderByAggregateInput = {
     id?: SortOrder
     nom?: SortOrder
@@ -12555,6 +15718,7 @@ export namespace Prisma {
     stock?: SortOrder
     categorie_id?: SortOrder
     images?: SortOrder
+    sku_number?: SortOrder
     sku?: SortOrder
     publie?: SortOrder
     createdAt?: SortOrder
@@ -12564,6 +15728,7 @@ export namespace Prisma {
   export type ProduitAvgOrderByAggregateInput = {
     prix?: SortOrder
     stock?: SortOrder
+    sku_number?: SortOrder
   }
 
   export type ProduitMaxOrderByAggregateInput = {
@@ -12573,6 +15738,7 @@ export namespace Prisma {
     prix?: SortOrder
     stock?: SortOrder
     categorie_id?: SortOrder
+    sku_number?: SortOrder
     sku?: SortOrder
     publie?: SortOrder
     createdAt?: SortOrder
@@ -12586,6 +15752,7 @@ export namespace Prisma {
     prix?: SortOrder
     stock?: SortOrder
     categorie_id?: SortOrder
+    sku_number?: SortOrder
     sku?: SortOrder
     publie?: SortOrder
     createdAt?: SortOrder
@@ -12595,6 +15762,7 @@ export namespace Prisma {
   export type ProduitSumOrderByAggregateInput = {
     prix?: SortOrder
     stock?: SortOrder
+    sku_number?: SortOrder
   }
 
   export type FloatWithAggregatesFilter<$PrismaModel = never> = {
@@ -12839,6 +16007,131 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type EnumOrderStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.OrderStatus | EnumOrderStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OrderStatus[] | ListEnumOrderStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OrderStatus[] | ListEnumOrderStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOrderStatusFilter<$PrismaModel> | $Enums.OrderStatus
+  }
+
+  export type CommandeCountOrderByAggregateInput = {
+    id?: SortOrder
+    numero?: SortOrder
+    utilisateur_id?: SortOrder
+    statut?: SortOrder
+    total?: SortOrder
+    frais_livraison?: SortOrder
+    ville?: SortOrder
+    adresse?: SortOrder
+    telephone?: SortOrder
+    mode_paiement?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CommandeAvgOrderByAggregateInput = {
+    total?: SortOrder
+    frais_livraison?: SortOrder
+  }
+
+  export type CommandeMaxOrderByAggregateInput = {
+    id?: SortOrder
+    numero?: SortOrder
+    utilisateur_id?: SortOrder
+    statut?: SortOrder
+    total?: SortOrder
+    frais_livraison?: SortOrder
+    ville?: SortOrder
+    adresse?: SortOrder
+    telephone?: SortOrder
+    mode_paiement?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CommandeMinOrderByAggregateInput = {
+    id?: SortOrder
+    numero?: SortOrder
+    utilisateur_id?: SortOrder
+    statut?: SortOrder
+    total?: SortOrder
+    frais_livraison?: SortOrder
+    ville?: SortOrder
+    adresse?: SortOrder
+    telephone?: SortOrder
+    mode_paiement?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CommandeSumOrderByAggregateInput = {
+    total?: SortOrder
+    frais_livraison?: SortOrder
+  }
+
+  export type EnumOrderStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.OrderStatus | EnumOrderStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OrderStatus[] | ListEnumOrderStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OrderStatus[] | ListEnumOrderStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOrderStatusWithAggregatesFilter<$PrismaModel> | $Enums.OrderStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumOrderStatusFilter<$PrismaModel>
+    _max?: NestedEnumOrderStatusFilter<$PrismaModel>
+  }
+
+  export type CommandeScalarRelationFilter = {
+    is?: CommandeWhereInput
+    isNot?: CommandeWhereInput
+  }
+
+  export type LigneCommandeCountOrderByAggregateInput = {
+    id?: SortOrder
+    commande_id?: SortOrder
+    produit_id?: SortOrder
+    nom_produit?: SortOrder
+    image?: SortOrder
+    prix_unitaire?: SortOrder
+    quantite?: SortOrder
+    sous_total?: SortOrder
+  }
+
+  export type LigneCommandeAvgOrderByAggregateInput = {
+    prix_unitaire?: SortOrder
+    quantite?: SortOrder
+    sous_total?: SortOrder
+  }
+
+  export type LigneCommandeMaxOrderByAggregateInput = {
+    id?: SortOrder
+    commande_id?: SortOrder
+    produit_id?: SortOrder
+    nom_produit?: SortOrder
+    image?: SortOrder
+    prix_unitaire?: SortOrder
+    quantite?: SortOrder
+    sous_total?: SortOrder
+  }
+
+  export type LigneCommandeMinOrderByAggregateInput = {
+    id?: SortOrder
+    commande_id?: SortOrder
+    produit_id?: SortOrder
+    nom_produit?: SortOrder
+    image?: SortOrder
+    prix_unitaire?: SortOrder
+    quantite?: SortOrder
+    sous_total?: SortOrder
+  }
+
+  export type LigneCommandeSumOrderByAggregateInput = {
+    prix_unitaire?: SortOrder
+    quantite?: SortOrder
+    sous_total?: SortOrder
+  }
+
   export type AvisCreateNestedManyWithoutUtilisateurInput = {
     create?: XOR<AvisCreateWithoutUtilisateurInput, AvisUncheckedCreateWithoutUtilisateurInput> | AvisCreateWithoutUtilisateurInput[] | AvisUncheckedCreateWithoutUtilisateurInput[]
     connectOrCreate?: AvisCreateOrConnectWithoutUtilisateurInput | AvisCreateOrConnectWithoutUtilisateurInput[]
@@ -12860,6 +16153,13 @@ export namespace Prisma {
     connect?: RendezVousWhereUniqueInput | RendezVousWhereUniqueInput[]
   }
 
+  export type CommandeCreateNestedManyWithoutUtilisateurInput = {
+    create?: XOR<CommandeCreateWithoutUtilisateurInput, CommandeUncheckedCreateWithoutUtilisateurInput> | CommandeCreateWithoutUtilisateurInput[] | CommandeUncheckedCreateWithoutUtilisateurInput[]
+    connectOrCreate?: CommandeCreateOrConnectWithoutUtilisateurInput | CommandeCreateOrConnectWithoutUtilisateurInput[]
+    createMany?: CommandeCreateManyUtilisateurInputEnvelope
+    connect?: CommandeWhereUniqueInput | CommandeWhereUniqueInput[]
+  }
+
   export type AvisUncheckedCreateNestedManyWithoutUtilisateurInput = {
     create?: XOR<AvisCreateWithoutUtilisateurInput, AvisUncheckedCreateWithoutUtilisateurInput> | AvisCreateWithoutUtilisateurInput[] | AvisUncheckedCreateWithoutUtilisateurInput[]
     connectOrCreate?: AvisCreateOrConnectWithoutUtilisateurInput | AvisCreateOrConnectWithoutUtilisateurInput[]
@@ -12879,6 +16179,13 @@ export namespace Prisma {
     connectOrCreate?: RendezVousCreateOrConnectWithoutUtilisateurInput | RendezVousCreateOrConnectWithoutUtilisateurInput[]
     createMany?: RendezVousCreateManyUtilisateurInputEnvelope
     connect?: RendezVousWhereUniqueInput | RendezVousWhereUniqueInput[]
+  }
+
+  export type CommandeUncheckedCreateNestedManyWithoutUtilisateurInput = {
+    create?: XOR<CommandeCreateWithoutUtilisateurInput, CommandeUncheckedCreateWithoutUtilisateurInput> | CommandeCreateWithoutUtilisateurInput[] | CommandeUncheckedCreateWithoutUtilisateurInput[]
+    connectOrCreate?: CommandeCreateOrConnectWithoutUtilisateurInput | CommandeCreateOrConnectWithoutUtilisateurInput[]
+    createMany?: CommandeCreateManyUtilisateurInputEnvelope
+    connect?: CommandeWhereUniqueInput | CommandeWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -12943,6 +16250,20 @@ export namespace Prisma {
     deleteMany?: RendezVousScalarWhereInput | RendezVousScalarWhereInput[]
   }
 
+  export type CommandeUpdateManyWithoutUtilisateurNestedInput = {
+    create?: XOR<CommandeCreateWithoutUtilisateurInput, CommandeUncheckedCreateWithoutUtilisateurInput> | CommandeCreateWithoutUtilisateurInput[] | CommandeUncheckedCreateWithoutUtilisateurInput[]
+    connectOrCreate?: CommandeCreateOrConnectWithoutUtilisateurInput | CommandeCreateOrConnectWithoutUtilisateurInput[]
+    upsert?: CommandeUpsertWithWhereUniqueWithoutUtilisateurInput | CommandeUpsertWithWhereUniqueWithoutUtilisateurInput[]
+    createMany?: CommandeCreateManyUtilisateurInputEnvelope
+    set?: CommandeWhereUniqueInput | CommandeWhereUniqueInput[]
+    disconnect?: CommandeWhereUniqueInput | CommandeWhereUniqueInput[]
+    delete?: CommandeWhereUniqueInput | CommandeWhereUniqueInput[]
+    connect?: CommandeWhereUniqueInput | CommandeWhereUniqueInput[]
+    update?: CommandeUpdateWithWhereUniqueWithoutUtilisateurInput | CommandeUpdateWithWhereUniqueWithoutUtilisateurInput[]
+    updateMany?: CommandeUpdateManyWithWhereWithoutUtilisateurInput | CommandeUpdateManyWithWhereWithoutUtilisateurInput[]
+    deleteMany?: CommandeScalarWhereInput | CommandeScalarWhereInput[]
+  }
+
   export type AvisUncheckedUpdateManyWithoutUtilisateurNestedInput = {
     create?: XOR<AvisCreateWithoutUtilisateurInput, AvisUncheckedCreateWithoutUtilisateurInput> | AvisCreateWithoutUtilisateurInput[] | AvisUncheckedCreateWithoutUtilisateurInput[]
     connectOrCreate?: AvisCreateOrConnectWithoutUtilisateurInput | AvisCreateOrConnectWithoutUtilisateurInput[]
@@ -12983,6 +16304,20 @@ export namespace Prisma {
     update?: RendezVousUpdateWithWhereUniqueWithoutUtilisateurInput | RendezVousUpdateWithWhereUniqueWithoutUtilisateurInput[]
     updateMany?: RendezVousUpdateManyWithWhereWithoutUtilisateurInput | RendezVousUpdateManyWithWhereWithoutUtilisateurInput[]
     deleteMany?: RendezVousScalarWhereInput | RendezVousScalarWhereInput[]
+  }
+
+  export type CommandeUncheckedUpdateManyWithoutUtilisateurNestedInput = {
+    create?: XOR<CommandeCreateWithoutUtilisateurInput, CommandeUncheckedCreateWithoutUtilisateurInput> | CommandeCreateWithoutUtilisateurInput[] | CommandeUncheckedCreateWithoutUtilisateurInput[]
+    connectOrCreate?: CommandeCreateOrConnectWithoutUtilisateurInput | CommandeCreateOrConnectWithoutUtilisateurInput[]
+    upsert?: CommandeUpsertWithWhereUniqueWithoutUtilisateurInput | CommandeUpsertWithWhereUniqueWithoutUtilisateurInput[]
+    createMany?: CommandeCreateManyUtilisateurInputEnvelope
+    set?: CommandeWhereUniqueInput | CommandeWhereUniqueInput[]
+    disconnect?: CommandeWhereUniqueInput | CommandeWhereUniqueInput[]
+    delete?: CommandeWhereUniqueInput | CommandeWhereUniqueInput[]
+    connect?: CommandeWhereUniqueInput | CommandeWhereUniqueInput[]
+    update?: CommandeUpdateWithWhereUniqueWithoutUtilisateurInput | CommandeUpdateWithWhereUniqueWithoutUtilisateurInput[]
+    updateMany?: CommandeUpdateManyWithWhereWithoutUtilisateurInput | CommandeUpdateManyWithWhereWithoutUtilisateurInput[]
+    deleteMany?: CommandeScalarWhereInput | CommandeScalarWhereInput[]
   }
 
   export type ProduitCreateNestedManyWithoutCategorieInput = {
@@ -13059,6 +16394,13 @@ export namespace Prisma {
     connect?: CategorieWhereUniqueInput
   }
 
+  export type LigneCommandeCreateNestedManyWithoutProduitInput = {
+    create?: XOR<LigneCommandeCreateWithoutProduitInput, LigneCommandeUncheckedCreateWithoutProduitInput> | LigneCommandeCreateWithoutProduitInput[] | LigneCommandeUncheckedCreateWithoutProduitInput[]
+    connectOrCreate?: LigneCommandeCreateOrConnectWithoutProduitInput | LigneCommandeCreateOrConnectWithoutProduitInput[]
+    createMany?: LigneCommandeCreateManyProduitInputEnvelope
+    connect?: LigneCommandeWhereUniqueInput | LigneCommandeWhereUniqueInput[]
+  }
+
   export type AvisUncheckedCreateNestedManyWithoutProduitInput = {
     create?: XOR<AvisCreateWithoutProduitInput, AvisUncheckedCreateWithoutProduitInput> | AvisCreateWithoutProduitInput[] | AvisUncheckedCreateWithoutProduitInput[]
     connectOrCreate?: AvisCreateOrConnectWithoutProduitInput | AvisCreateOrConnectWithoutProduitInput[]
@@ -13071,6 +16413,13 @@ export namespace Prisma {
     connectOrCreate?: LikeCreateOrConnectWithoutProduitInput | LikeCreateOrConnectWithoutProduitInput[]
     createMany?: LikeCreateManyProduitInputEnvelope
     connect?: LikeWhereUniqueInput | LikeWhereUniqueInput[]
+  }
+
+  export type LigneCommandeUncheckedCreateNestedManyWithoutProduitInput = {
+    create?: XOR<LigneCommandeCreateWithoutProduitInput, LigneCommandeUncheckedCreateWithoutProduitInput> | LigneCommandeCreateWithoutProduitInput[] | LigneCommandeUncheckedCreateWithoutProduitInput[]
+    connectOrCreate?: LigneCommandeCreateOrConnectWithoutProduitInput | LigneCommandeCreateOrConnectWithoutProduitInput[]
+    createMany?: LigneCommandeCreateManyProduitInputEnvelope
+    connect?: LigneCommandeWhereUniqueInput | LigneCommandeWhereUniqueInput[]
   }
 
   export type FloatFieldUpdateOperationsInput = {
@@ -13126,6 +16475,20 @@ export namespace Prisma {
     update?: XOR<XOR<CategorieUpdateToOneWithWhereWithoutProduitsInput, CategorieUpdateWithoutProduitsInput>, CategorieUncheckedUpdateWithoutProduitsInput>
   }
 
+  export type LigneCommandeUpdateManyWithoutProduitNestedInput = {
+    create?: XOR<LigneCommandeCreateWithoutProduitInput, LigneCommandeUncheckedCreateWithoutProduitInput> | LigneCommandeCreateWithoutProduitInput[] | LigneCommandeUncheckedCreateWithoutProduitInput[]
+    connectOrCreate?: LigneCommandeCreateOrConnectWithoutProduitInput | LigneCommandeCreateOrConnectWithoutProduitInput[]
+    upsert?: LigneCommandeUpsertWithWhereUniqueWithoutProduitInput | LigneCommandeUpsertWithWhereUniqueWithoutProduitInput[]
+    createMany?: LigneCommandeCreateManyProduitInputEnvelope
+    set?: LigneCommandeWhereUniqueInput | LigneCommandeWhereUniqueInput[]
+    disconnect?: LigneCommandeWhereUniqueInput | LigneCommandeWhereUniqueInput[]
+    delete?: LigneCommandeWhereUniqueInput | LigneCommandeWhereUniqueInput[]
+    connect?: LigneCommandeWhereUniqueInput | LigneCommandeWhereUniqueInput[]
+    update?: LigneCommandeUpdateWithWhereUniqueWithoutProduitInput | LigneCommandeUpdateWithWhereUniqueWithoutProduitInput[]
+    updateMany?: LigneCommandeUpdateManyWithWhereWithoutProduitInput | LigneCommandeUpdateManyWithWhereWithoutProduitInput[]
+    deleteMany?: LigneCommandeScalarWhereInput | LigneCommandeScalarWhereInput[]
+  }
+
   export type AvisUncheckedUpdateManyWithoutProduitNestedInput = {
     create?: XOR<AvisCreateWithoutProduitInput, AvisUncheckedCreateWithoutProduitInput> | AvisCreateWithoutProduitInput[] | AvisUncheckedCreateWithoutProduitInput[]
     connectOrCreate?: AvisCreateOrConnectWithoutProduitInput | AvisCreateOrConnectWithoutProduitInput[]
@@ -13152,6 +16515,20 @@ export namespace Prisma {
     update?: LikeUpdateWithWhereUniqueWithoutProduitInput | LikeUpdateWithWhereUniqueWithoutProduitInput[]
     updateMany?: LikeUpdateManyWithWhereWithoutProduitInput | LikeUpdateManyWithWhereWithoutProduitInput[]
     deleteMany?: LikeScalarWhereInput | LikeScalarWhereInput[]
+  }
+
+  export type LigneCommandeUncheckedUpdateManyWithoutProduitNestedInput = {
+    create?: XOR<LigneCommandeCreateWithoutProduitInput, LigneCommandeUncheckedCreateWithoutProduitInput> | LigneCommandeCreateWithoutProduitInput[] | LigneCommandeUncheckedCreateWithoutProduitInput[]
+    connectOrCreate?: LigneCommandeCreateOrConnectWithoutProduitInput | LigneCommandeCreateOrConnectWithoutProduitInput[]
+    upsert?: LigneCommandeUpsertWithWhereUniqueWithoutProduitInput | LigneCommandeUpsertWithWhereUniqueWithoutProduitInput[]
+    createMany?: LigneCommandeCreateManyProduitInputEnvelope
+    set?: LigneCommandeWhereUniqueInput | LigneCommandeWhereUniqueInput[]
+    disconnect?: LigneCommandeWhereUniqueInput | LigneCommandeWhereUniqueInput[]
+    delete?: LigneCommandeWhereUniqueInput | LigneCommandeWhereUniqueInput[]
+    connect?: LigneCommandeWhereUniqueInput | LigneCommandeWhereUniqueInput[]
+    update?: LigneCommandeUpdateWithWhereUniqueWithoutProduitInput | LigneCommandeUpdateWithWhereUniqueWithoutProduitInput[]
+    updateMany?: LigneCommandeUpdateManyWithWhereWithoutProduitInput | LigneCommandeUpdateManyWithWhereWithoutProduitInput[]
+    deleteMany?: LigneCommandeScalarWhereInput | LigneCommandeScalarWhereInput[]
   }
 
   export type ProduitCreateNestedOneWithoutAvisInput = {
@@ -13282,6 +16659,94 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutRendezVousInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutRendezVousInput, UserUpdateWithoutRendezVousInput>, UserUncheckedUpdateWithoutRendezVousInput>
+  }
+
+  export type UserCreateNestedOneWithoutCommandesInput = {
+    create?: XOR<UserCreateWithoutCommandesInput, UserUncheckedCreateWithoutCommandesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCommandesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type LigneCommandeCreateNestedManyWithoutCommandeInput = {
+    create?: XOR<LigneCommandeCreateWithoutCommandeInput, LigneCommandeUncheckedCreateWithoutCommandeInput> | LigneCommandeCreateWithoutCommandeInput[] | LigneCommandeUncheckedCreateWithoutCommandeInput[]
+    connectOrCreate?: LigneCommandeCreateOrConnectWithoutCommandeInput | LigneCommandeCreateOrConnectWithoutCommandeInput[]
+    createMany?: LigneCommandeCreateManyCommandeInputEnvelope
+    connect?: LigneCommandeWhereUniqueInput | LigneCommandeWhereUniqueInput[]
+  }
+
+  export type LigneCommandeUncheckedCreateNestedManyWithoutCommandeInput = {
+    create?: XOR<LigneCommandeCreateWithoutCommandeInput, LigneCommandeUncheckedCreateWithoutCommandeInput> | LigneCommandeCreateWithoutCommandeInput[] | LigneCommandeUncheckedCreateWithoutCommandeInput[]
+    connectOrCreate?: LigneCommandeCreateOrConnectWithoutCommandeInput | LigneCommandeCreateOrConnectWithoutCommandeInput[]
+    createMany?: LigneCommandeCreateManyCommandeInputEnvelope
+    connect?: LigneCommandeWhereUniqueInput | LigneCommandeWhereUniqueInput[]
+  }
+
+  export type EnumOrderStatusFieldUpdateOperationsInput = {
+    set?: $Enums.OrderStatus
+  }
+
+  export type UserUpdateOneRequiredWithoutCommandesNestedInput = {
+    create?: XOR<UserCreateWithoutCommandesInput, UserUncheckedCreateWithoutCommandesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCommandesInput
+    upsert?: UserUpsertWithoutCommandesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCommandesInput, UserUpdateWithoutCommandesInput>, UserUncheckedUpdateWithoutCommandesInput>
+  }
+
+  export type LigneCommandeUpdateManyWithoutCommandeNestedInput = {
+    create?: XOR<LigneCommandeCreateWithoutCommandeInput, LigneCommandeUncheckedCreateWithoutCommandeInput> | LigneCommandeCreateWithoutCommandeInput[] | LigneCommandeUncheckedCreateWithoutCommandeInput[]
+    connectOrCreate?: LigneCommandeCreateOrConnectWithoutCommandeInput | LigneCommandeCreateOrConnectWithoutCommandeInput[]
+    upsert?: LigneCommandeUpsertWithWhereUniqueWithoutCommandeInput | LigneCommandeUpsertWithWhereUniqueWithoutCommandeInput[]
+    createMany?: LigneCommandeCreateManyCommandeInputEnvelope
+    set?: LigneCommandeWhereUniqueInput | LigneCommandeWhereUniqueInput[]
+    disconnect?: LigneCommandeWhereUniqueInput | LigneCommandeWhereUniqueInput[]
+    delete?: LigneCommandeWhereUniqueInput | LigneCommandeWhereUniqueInput[]
+    connect?: LigneCommandeWhereUniqueInput | LigneCommandeWhereUniqueInput[]
+    update?: LigneCommandeUpdateWithWhereUniqueWithoutCommandeInput | LigneCommandeUpdateWithWhereUniqueWithoutCommandeInput[]
+    updateMany?: LigneCommandeUpdateManyWithWhereWithoutCommandeInput | LigneCommandeUpdateManyWithWhereWithoutCommandeInput[]
+    deleteMany?: LigneCommandeScalarWhereInput | LigneCommandeScalarWhereInput[]
+  }
+
+  export type LigneCommandeUncheckedUpdateManyWithoutCommandeNestedInput = {
+    create?: XOR<LigneCommandeCreateWithoutCommandeInput, LigneCommandeUncheckedCreateWithoutCommandeInput> | LigneCommandeCreateWithoutCommandeInput[] | LigneCommandeUncheckedCreateWithoutCommandeInput[]
+    connectOrCreate?: LigneCommandeCreateOrConnectWithoutCommandeInput | LigneCommandeCreateOrConnectWithoutCommandeInput[]
+    upsert?: LigneCommandeUpsertWithWhereUniqueWithoutCommandeInput | LigneCommandeUpsertWithWhereUniqueWithoutCommandeInput[]
+    createMany?: LigneCommandeCreateManyCommandeInputEnvelope
+    set?: LigneCommandeWhereUniqueInput | LigneCommandeWhereUniqueInput[]
+    disconnect?: LigneCommandeWhereUniqueInput | LigneCommandeWhereUniqueInput[]
+    delete?: LigneCommandeWhereUniqueInput | LigneCommandeWhereUniqueInput[]
+    connect?: LigneCommandeWhereUniqueInput | LigneCommandeWhereUniqueInput[]
+    update?: LigneCommandeUpdateWithWhereUniqueWithoutCommandeInput | LigneCommandeUpdateWithWhereUniqueWithoutCommandeInput[]
+    updateMany?: LigneCommandeUpdateManyWithWhereWithoutCommandeInput | LigneCommandeUpdateManyWithWhereWithoutCommandeInput[]
+    deleteMany?: LigneCommandeScalarWhereInput | LigneCommandeScalarWhereInput[]
+  }
+
+  export type CommandeCreateNestedOneWithoutLignesInput = {
+    create?: XOR<CommandeCreateWithoutLignesInput, CommandeUncheckedCreateWithoutLignesInput>
+    connectOrCreate?: CommandeCreateOrConnectWithoutLignesInput
+    connect?: CommandeWhereUniqueInput
+  }
+
+  export type ProduitCreateNestedOneWithoutLignesInput = {
+    create?: XOR<ProduitCreateWithoutLignesInput, ProduitUncheckedCreateWithoutLignesInput>
+    connectOrCreate?: ProduitCreateOrConnectWithoutLignesInput
+    connect?: ProduitWhereUniqueInput
+  }
+
+  export type CommandeUpdateOneRequiredWithoutLignesNestedInput = {
+    create?: XOR<CommandeCreateWithoutLignesInput, CommandeUncheckedCreateWithoutLignesInput>
+    connectOrCreate?: CommandeCreateOrConnectWithoutLignesInput
+    upsert?: CommandeUpsertWithoutLignesInput
+    connect?: CommandeWhereUniqueInput
+    update?: XOR<XOR<CommandeUpdateToOneWithWhereWithoutLignesInput, CommandeUpdateWithoutLignesInput>, CommandeUncheckedUpdateWithoutLignesInput>
+  }
+
+  export type ProduitUpdateOneRequiredWithoutLignesNestedInput = {
+    create?: XOR<ProduitCreateWithoutLignesInput, ProduitUncheckedCreateWithoutLignesInput>
+    connectOrCreate?: ProduitCreateOrConnectWithoutLignesInput
+    upsert?: ProduitUpsertWithoutLignesInput
+    connect?: ProduitWhereUniqueInput
+    update?: XOR<XOR<ProduitUpdateToOneWithWhereWithoutLignesInput, ProduitUpdateWithoutLignesInput>, ProduitUncheckedUpdateWithoutLignesInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -13508,6 +16973,23 @@ export namespace Prisma {
     _max?: NestedEnumAppointmentStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumOrderStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.OrderStatus | EnumOrderStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OrderStatus[] | ListEnumOrderStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OrderStatus[] | ListEnumOrderStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOrderStatusFilter<$PrismaModel> | $Enums.OrderStatus
+  }
+
+  export type NestedEnumOrderStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.OrderStatus | EnumOrderStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OrderStatus[] | ListEnumOrderStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OrderStatus[] | ListEnumOrderStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOrderStatusWithAggregatesFilter<$PrismaModel> | $Enums.OrderStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumOrderStatusFilter<$PrismaModel>
+    _max?: NestedEnumOrderStatusFilter<$PrismaModel>
+  }
+
   export type AvisCreateWithoutUtilisateurInput = {
     id?: string
     note: number
@@ -13591,6 +17073,48 @@ export namespace Prisma {
 
   export type RendezVousCreateManyUtilisateurInputEnvelope = {
     data: RendezVousCreateManyUtilisateurInput | RendezVousCreateManyUtilisateurInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CommandeCreateWithoutUtilisateurInput = {
+    id?: string
+    numero: string
+    statut?: $Enums.OrderStatus
+    total: number
+    frais_livraison?: number
+    ville: string
+    adresse: string
+    telephone: string
+    mode_paiement: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lignes?: LigneCommandeCreateNestedManyWithoutCommandeInput
+  }
+
+  export type CommandeUncheckedCreateWithoutUtilisateurInput = {
+    id?: string
+    numero: string
+    statut?: $Enums.OrderStatus
+    total: number
+    frais_livraison?: number
+    ville: string
+    adresse: string
+    telephone: string
+    mode_paiement: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lignes?: LigneCommandeUncheckedCreateNestedManyWithoutCommandeInput
+  }
+
+  export type CommandeCreateOrConnectWithoutUtilisateurInput = {
+    where: CommandeWhereUniqueInput
+    create: XOR<CommandeCreateWithoutUtilisateurInput, CommandeUncheckedCreateWithoutUtilisateurInput>
+  }
+
+  export type CommandeCreateManyUtilisateurInputEnvelope = {
+    data: CommandeCreateManyUtilisateurInput | CommandeCreateManyUtilisateurInput[]
     skipDuplicates?: boolean
   }
 
@@ -13682,6 +17206,41 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"RendezVous"> | Date | string
   }
 
+  export type CommandeUpsertWithWhereUniqueWithoutUtilisateurInput = {
+    where: CommandeWhereUniqueInput
+    update: XOR<CommandeUpdateWithoutUtilisateurInput, CommandeUncheckedUpdateWithoutUtilisateurInput>
+    create: XOR<CommandeCreateWithoutUtilisateurInput, CommandeUncheckedCreateWithoutUtilisateurInput>
+  }
+
+  export type CommandeUpdateWithWhereUniqueWithoutUtilisateurInput = {
+    where: CommandeWhereUniqueInput
+    data: XOR<CommandeUpdateWithoutUtilisateurInput, CommandeUncheckedUpdateWithoutUtilisateurInput>
+  }
+
+  export type CommandeUpdateManyWithWhereWithoutUtilisateurInput = {
+    where: CommandeScalarWhereInput
+    data: XOR<CommandeUpdateManyMutationInput, CommandeUncheckedUpdateManyWithoutUtilisateurInput>
+  }
+
+  export type CommandeScalarWhereInput = {
+    AND?: CommandeScalarWhereInput | CommandeScalarWhereInput[]
+    OR?: CommandeScalarWhereInput[]
+    NOT?: CommandeScalarWhereInput | CommandeScalarWhereInput[]
+    id?: StringFilter<"Commande"> | string
+    numero?: StringFilter<"Commande"> | string
+    utilisateur_id?: StringFilter<"Commande"> | string
+    statut?: EnumOrderStatusFilter<"Commande"> | $Enums.OrderStatus
+    total?: FloatFilter<"Commande"> | number
+    frais_livraison?: FloatFilter<"Commande"> | number
+    ville?: StringFilter<"Commande"> | string
+    adresse?: StringFilter<"Commande"> | string
+    telephone?: StringFilter<"Commande"> | string
+    mode_paiement?: StringFilter<"Commande"> | string
+    notes?: StringNullableFilter<"Commande"> | string | null
+    createdAt?: DateTimeFilter<"Commande"> | Date | string
+    updatedAt?: DateTimeFilter<"Commande"> | Date | string
+  }
+
   export type ProduitCreateWithoutCategorieInput = {
     id?: string
     nom: string
@@ -13689,12 +17248,14 @@ export namespace Prisma {
     prix: number
     stock: number
     images?: ProduitCreateimagesInput | string[]
+    sku_number?: number
     sku?: string | null
     publie?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     avis?: AvisCreateNestedManyWithoutProduitInput
     likes?: LikeCreateNestedManyWithoutProduitInput
+    lignes?: LigneCommandeCreateNestedManyWithoutProduitInput
   }
 
   export type ProduitUncheckedCreateWithoutCategorieInput = {
@@ -13704,12 +17265,14 @@ export namespace Prisma {
     prix: number
     stock: number
     images?: ProduitCreateimagesInput | string[]
+    sku_number?: number
     sku?: string | null
     publie?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     avis?: AvisUncheckedCreateNestedManyWithoutProduitInput
     likes?: LikeUncheckedCreateNestedManyWithoutProduitInput
+    lignes?: LigneCommandeUncheckedCreateNestedManyWithoutProduitInput
   }
 
   export type ProduitCreateOrConnectWithoutCategorieInput = {
@@ -13749,6 +17312,7 @@ export namespace Prisma {
     stock?: IntFilter<"Produit"> | number
     categorie_id?: StringFilter<"Produit"> | string
     images?: StringNullableListFilter<"Produit">
+    sku_number?: IntFilter<"Produit"> | number
     sku?: StringNullableFilter<"Produit"> | string | null
     publie?: BoolFilter<"Produit"> | boolean
     createdAt?: DateTimeFilter<"Produit"> | Date | string
@@ -13830,6 +17394,36 @@ export namespace Prisma {
     create: XOR<CategorieCreateWithoutProduitsInput, CategorieUncheckedCreateWithoutProduitsInput>
   }
 
+  export type LigneCommandeCreateWithoutProduitInput = {
+    id?: string
+    nom_produit: string
+    image?: string | null
+    prix_unitaire: number
+    quantite: number
+    sous_total: number
+    commande: CommandeCreateNestedOneWithoutLignesInput
+  }
+
+  export type LigneCommandeUncheckedCreateWithoutProduitInput = {
+    id?: string
+    commande_id: string
+    nom_produit: string
+    image?: string | null
+    prix_unitaire: number
+    quantite: number
+    sous_total: number
+  }
+
+  export type LigneCommandeCreateOrConnectWithoutProduitInput = {
+    where: LigneCommandeWhereUniqueInput
+    create: XOR<LigneCommandeCreateWithoutProduitInput, LigneCommandeUncheckedCreateWithoutProduitInput>
+  }
+
+  export type LigneCommandeCreateManyProduitInputEnvelope = {
+    data: LigneCommandeCreateManyProduitInput | LigneCommandeCreateManyProduitInput[]
+    skipDuplicates?: boolean
+  }
+
   export type AvisUpsertWithWhereUniqueWithoutProduitInput = {
     where: AvisWhereUniqueInput
     update: XOR<AvisUpdateWithoutProduitInput, AvisUncheckedUpdateWithoutProduitInput>
@@ -13891,6 +17485,36 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type LigneCommandeUpsertWithWhereUniqueWithoutProduitInput = {
+    where: LigneCommandeWhereUniqueInput
+    update: XOR<LigneCommandeUpdateWithoutProduitInput, LigneCommandeUncheckedUpdateWithoutProduitInput>
+    create: XOR<LigneCommandeCreateWithoutProduitInput, LigneCommandeUncheckedCreateWithoutProduitInput>
+  }
+
+  export type LigneCommandeUpdateWithWhereUniqueWithoutProduitInput = {
+    where: LigneCommandeWhereUniqueInput
+    data: XOR<LigneCommandeUpdateWithoutProduitInput, LigneCommandeUncheckedUpdateWithoutProduitInput>
+  }
+
+  export type LigneCommandeUpdateManyWithWhereWithoutProduitInput = {
+    where: LigneCommandeScalarWhereInput
+    data: XOR<LigneCommandeUpdateManyMutationInput, LigneCommandeUncheckedUpdateManyWithoutProduitInput>
+  }
+
+  export type LigneCommandeScalarWhereInput = {
+    AND?: LigneCommandeScalarWhereInput | LigneCommandeScalarWhereInput[]
+    OR?: LigneCommandeScalarWhereInput[]
+    NOT?: LigneCommandeScalarWhereInput | LigneCommandeScalarWhereInput[]
+    id?: StringFilter<"LigneCommande"> | string
+    commande_id?: StringFilter<"LigneCommande"> | string
+    produit_id?: StringFilter<"LigneCommande"> | string
+    nom_produit?: StringFilter<"LigneCommande"> | string
+    image?: StringNullableFilter<"LigneCommande"> | string | null
+    prix_unitaire?: FloatFilter<"LigneCommande"> | number
+    quantite?: IntFilter<"LigneCommande"> | number
+    sous_total?: FloatFilter<"LigneCommande"> | number
+  }
+
   export type ProduitCreateWithoutAvisInput = {
     id?: string
     nom: string
@@ -13898,12 +17522,14 @@ export namespace Prisma {
     prix: number
     stock: number
     images?: ProduitCreateimagesInput | string[]
+    sku_number?: number
     sku?: string | null
     publie?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     likes?: LikeCreateNestedManyWithoutProduitInput
     categorie: CategorieCreateNestedOneWithoutProduitsInput
+    lignes?: LigneCommandeCreateNestedManyWithoutProduitInput
   }
 
   export type ProduitUncheckedCreateWithoutAvisInput = {
@@ -13914,11 +17540,13 @@ export namespace Prisma {
     stock: number
     categorie_id: string
     images?: ProduitCreateimagesInput | string[]
+    sku_number?: number
     sku?: string | null
     publie?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     likes?: LikeUncheckedCreateNestedManyWithoutProduitInput
+    lignes?: LigneCommandeUncheckedCreateNestedManyWithoutProduitInput
   }
 
   export type ProduitCreateOrConnectWithoutAvisInput = {
@@ -13940,6 +17568,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     likes?: LikeCreateNestedManyWithoutUtilisateurInput
     rendezVous?: RendezVousCreateNestedManyWithoutUtilisateurInput
+    commandes?: CommandeCreateNestedManyWithoutUtilisateurInput
   }
 
   export type UserUncheckedCreateWithoutAvisInput = {
@@ -13956,6 +17585,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     likes?: LikeUncheckedCreateNestedManyWithoutUtilisateurInput
     rendezVous?: RendezVousUncheckedCreateNestedManyWithoutUtilisateurInput
+    commandes?: CommandeUncheckedCreateNestedManyWithoutUtilisateurInput
   }
 
   export type UserCreateOrConnectWithoutAvisInput = {
@@ -13987,6 +17617,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     likes?: LikeUpdateManyWithoutProduitNestedInput
     categorie?: CategorieUpdateOneRequiredWithoutProduitsNestedInput
+    lignes?: LigneCommandeUpdateManyWithoutProduitNestedInput
   }
 
   export type ProduitUncheckedUpdateWithoutAvisInput = {
@@ -13997,11 +17628,13 @@ export namespace Prisma {
     stock?: IntFieldUpdateOperationsInput | number
     categorie_id?: StringFieldUpdateOperationsInput | string
     images?: ProduitUpdateimagesInput | string[]
+    sku_number?: IntFieldUpdateOperationsInput | number
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     publie?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     likes?: LikeUncheckedUpdateManyWithoutProduitNestedInput
+    lignes?: LigneCommandeUncheckedUpdateManyWithoutProduitNestedInput
   }
 
   export type UserUpsertWithoutAvisInput = {
@@ -14029,6 +17662,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     likes?: LikeUpdateManyWithoutUtilisateurNestedInput
     rendezVous?: RendezVousUpdateManyWithoutUtilisateurNestedInput
+    commandes?: CommandeUpdateManyWithoutUtilisateurNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAvisInput = {
@@ -14045,6 +17679,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     likes?: LikeUncheckedUpdateManyWithoutUtilisateurNestedInput
     rendezVous?: RendezVousUncheckedUpdateManyWithoutUtilisateurNestedInput
+    commandes?: CommandeUncheckedUpdateManyWithoutUtilisateurNestedInput
   }
 
   export type ProduitCreateWithoutLikesInput = {
@@ -14054,12 +17689,14 @@ export namespace Prisma {
     prix: number
     stock: number
     images?: ProduitCreateimagesInput | string[]
+    sku_number?: number
     sku?: string | null
     publie?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     avis?: AvisCreateNestedManyWithoutProduitInput
     categorie: CategorieCreateNestedOneWithoutProduitsInput
+    lignes?: LigneCommandeCreateNestedManyWithoutProduitInput
   }
 
   export type ProduitUncheckedCreateWithoutLikesInput = {
@@ -14070,11 +17707,13 @@ export namespace Prisma {
     stock: number
     categorie_id: string
     images?: ProduitCreateimagesInput | string[]
+    sku_number?: number
     sku?: string | null
     publie?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     avis?: AvisUncheckedCreateNestedManyWithoutProduitInput
+    lignes?: LigneCommandeUncheckedCreateNestedManyWithoutProduitInput
   }
 
   export type ProduitCreateOrConnectWithoutLikesInput = {
@@ -14096,6 +17735,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     avis?: AvisCreateNestedManyWithoutUtilisateurInput
     rendezVous?: RendezVousCreateNestedManyWithoutUtilisateurInput
+    commandes?: CommandeCreateNestedManyWithoutUtilisateurInput
   }
 
   export type UserUncheckedCreateWithoutLikesInput = {
@@ -14112,6 +17752,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     avis?: AvisUncheckedCreateNestedManyWithoutUtilisateurInput
     rendezVous?: RendezVousUncheckedCreateNestedManyWithoutUtilisateurInput
+    commandes?: CommandeUncheckedCreateNestedManyWithoutUtilisateurInput
   }
 
   export type UserCreateOrConnectWithoutLikesInput = {
@@ -14143,6 +17784,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     avis?: AvisUpdateManyWithoutProduitNestedInput
     categorie?: CategorieUpdateOneRequiredWithoutProduitsNestedInput
+    lignes?: LigneCommandeUpdateManyWithoutProduitNestedInput
   }
 
   export type ProduitUncheckedUpdateWithoutLikesInput = {
@@ -14153,11 +17795,13 @@ export namespace Prisma {
     stock?: IntFieldUpdateOperationsInput | number
     categorie_id?: StringFieldUpdateOperationsInput | string
     images?: ProduitUpdateimagesInput | string[]
+    sku_number?: IntFieldUpdateOperationsInput | number
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     publie?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     avis?: AvisUncheckedUpdateManyWithoutProduitNestedInput
+    lignes?: LigneCommandeUncheckedUpdateManyWithoutProduitNestedInput
   }
 
   export type UserUpsertWithoutLikesInput = {
@@ -14185,6 +17829,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     avis?: AvisUpdateManyWithoutUtilisateurNestedInput
     rendezVous?: RendezVousUpdateManyWithoutUtilisateurNestedInput
+    commandes?: CommandeUpdateManyWithoutUtilisateurNestedInput
   }
 
   export type UserUncheckedUpdateWithoutLikesInput = {
@@ -14201,6 +17846,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     avis?: AvisUncheckedUpdateManyWithoutUtilisateurNestedInput
     rendezVous?: RendezVousUncheckedUpdateManyWithoutUtilisateurNestedInput
+    commandes?: CommandeUncheckedUpdateManyWithoutUtilisateurNestedInput
   }
 
   export type RendezVousCreateWithoutType_seanceInput = {
@@ -14294,6 +17940,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     avis?: AvisCreateNestedManyWithoutUtilisateurInput
     likes?: LikeCreateNestedManyWithoutUtilisateurInput
+    commandes?: CommandeCreateNestedManyWithoutUtilisateurInput
   }
 
   export type UserUncheckedCreateWithoutRendezVousInput = {
@@ -14310,6 +17957,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     avis?: AvisUncheckedCreateNestedManyWithoutUtilisateurInput
     likes?: LikeUncheckedCreateNestedManyWithoutUtilisateurInput
+    commandes?: CommandeUncheckedCreateNestedManyWithoutUtilisateurInput
   }
 
   export type UserCreateOrConnectWithoutRendezVousInput = {
@@ -14375,6 +18023,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     avis?: AvisUpdateManyWithoutUtilisateurNestedInput
     likes?: LikeUpdateManyWithoutUtilisateurNestedInput
+    commandes?: CommandeUpdateManyWithoutUtilisateurNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRendezVousInput = {
@@ -14391,6 +18040,300 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     avis?: AvisUncheckedUpdateManyWithoutUtilisateurNestedInput
     likes?: LikeUncheckedUpdateManyWithoutUtilisateurNestedInput
+    commandes?: CommandeUncheckedUpdateManyWithoutUtilisateurNestedInput
+  }
+
+  export type UserCreateWithoutCommandesInput = {
+    id?: string
+    email: string
+    password: string
+    firstName: string
+    lastName: string
+    phone?: string | null
+    avatar?: string | null
+    role?: $Enums.UserRole
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    avis?: AvisCreateNestedManyWithoutUtilisateurInput
+    likes?: LikeCreateNestedManyWithoutUtilisateurInput
+    rendezVous?: RendezVousCreateNestedManyWithoutUtilisateurInput
+  }
+
+  export type UserUncheckedCreateWithoutCommandesInput = {
+    id?: string
+    email: string
+    password: string
+    firstName: string
+    lastName: string
+    phone?: string | null
+    avatar?: string | null
+    role?: $Enums.UserRole
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    avis?: AvisUncheckedCreateNestedManyWithoutUtilisateurInput
+    likes?: LikeUncheckedCreateNestedManyWithoutUtilisateurInput
+    rendezVous?: RendezVousUncheckedCreateNestedManyWithoutUtilisateurInput
+  }
+
+  export type UserCreateOrConnectWithoutCommandesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCommandesInput, UserUncheckedCreateWithoutCommandesInput>
+  }
+
+  export type LigneCommandeCreateWithoutCommandeInput = {
+    id?: string
+    nom_produit: string
+    image?: string | null
+    prix_unitaire: number
+    quantite: number
+    sous_total: number
+    produit: ProduitCreateNestedOneWithoutLignesInput
+  }
+
+  export type LigneCommandeUncheckedCreateWithoutCommandeInput = {
+    id?: string
+    produit_id: string
+    nom_produit: string
+    image?: string | null
+    prix_unitaire: number
+    quantite: number
+    sous_total: number
+  }
+
+  export type LigneCommandeCreateOrConnectWithoutCommandeInput = {
+    where: LigneCommandeWhereUniqueInput
+    create: XOR<LigneCommandeCreateWithoutCommandeInput, LigneCommandeUncheckedCreateWithoutCommandeInput>
+  }
+
+  export type LigneCommandeCreateManyCommandeInputEnvelope = {
+    data: LigneCommandeCreateManyCommandeInput | LigneCommandeCreateManyCommandeInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithoutCommandesInput = {
+    update: XOR<UserUpdateWithoutCommandesInput, UserUncheckedUpdateWithoutCommandesInput>
+    create: XOR<UserCreateWithoutCommandesInput, UserUncheckedCreateWithoutCommandesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCommandesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCommandesInput, UserUncheckedUpdateWithoutCommandesInput>
+  }
+
+  export type UserUpdateWithoutCommandesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    avis?: AvisUpdateManyWithoutUtilisateurNestedInput
+    likes?: LikeUpdateManyWithoutUtilisateurNestedInput
+    rendezVous?: RendezVousUpdateManyWithoutUtilisateurNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCommandesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    avis?: AvisUncheckedUpdateManyWithoutUtilisateurNestedInput
+    likes?: LikeUncheckedUpdateManyWithoutUtilisateurNestedInput
+    rendezVous?: RendezVousUncheckedUpdateManyWithoutUtilisateurNestedInput
+  }
+
+  export type LigneCommandeUpsertWithWhereUniqueWithoutCommandeInput = {
+    where: LigneCommandeWhereUniqueInput
+    update: XOR<LigneCommandeUpdateWithoutCommandeInput, LigneCommandeUncheckedUpdateWithoutCommandeInput>
+    create: XOR<LigneCommandeCreateWithoutCommandeInput, LigneCommandeUncheckedCreateWithoutCommandeInput>
+  }
+
+  export type LigneCommandeUpdateWithWhereUniqueWithoutCommandeInput = {
+    where: LigneCommandeWhereUniqueInput
+    data: XOR<LigneCommandeUpdateWithoutCommandeInput, LigneCommandeUncheckedUpdateWithoutCommandeInput>
+  }
+
+  export type LigneCommandeUpdateManyWithWhereWithoutCommandeInput = {
+    where: LigneCommandeScalarWhereInput
+    data: XOR<LigneCommandeUpdateManyMutationInput, LigneCommandeUncheckedUpdateManyWithoutCommandeInput>
+  }
+
+  export type CommandeCreateWithoutLignesInput = {
+    id?: string
+    numero: string
+    statut?: $Enums.OrderStatus
+    total: number
+    frais_livraison?: number
+    ville: string
+    adresse: string
+    telephone: string
+    mode_paiement: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    utilisateur: UserCreateNestedOneWithoutCommandesInput
+  }
+
+  export type CommandeUncheckedCreateWithoutLignesInput = {
+    id?: string
+    numero: string
+    utilisateur_id: string
+    statut?: $Enums.OrderStatus
+    total: number
+    frais_livraison?: number
+    ville: string
+    adresse: string
+    telephone: string
+    mode_paiement: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CommandeCreateOrConnectWithoutLignesInput = {
+    where: CommandeWhereUniqueInput
+    create: XOR<CommandeCreateWithoutLignesInput, CommandeUncheckedCreateWithoutLignesInput>
+  }
+
+  export type ProduitCreateWithoutLignesInput = {
+    id?: string
+    nom: string
+    description: string
+    prix: number
+    stock: number
+    images?: ProduitCreateimagesInput | string[]
+    sku_number?: number
+    sku?: string | null
+    publie?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    avis?: AvisCreateNestedManyWithoutProduitInput
+    likes?: LikeCreateNestedManyWithoutProduitInput
+    categorie: CategorieCreateNestedOneWithoutProduitsInput
+  }
+
+  export type ProduitUncheckedCreateWithoutLignesInput = {
+    id?: string
+    nom: string
+    description: string
+    prix: number
+    stock: number
+    categorie_id: string
+    images?: ProduitCreateimagesInput | string[]
+    sku_number?: number
+    sku?: string | null
+    publie?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    avis?: AvisUncheckedCreateNestedManyWithoutProduitInput
+    likes?: LikeUncheckedCreateNestedManyWithoutProduitInput
+  }
+
+  export type ProduitCreateOrConnectWithoutLignesInput = {
+    where: ProduitWhereUniqueInput
+    create: XOR<ProduitCreateWithoutLignesInput, ProduitUncheckedCreateWithoutLignesInput>
+  }
+
+  export type CommandeUpsertWithoutLignesInput = {
+    update: XOR<CommandeUpdateWithoutLignesInput, CommandeUncheckedUpdateWithoutLignesInput>
+    create: XOR<CommandeCreateWithoutLignesInput, CommandeUncheckedCreateWithoutLignesInput>
+    where?: CommandeWhereInput
+  }
+
+  export type CommandeUpdateToOneWithWhereWithoutLignesInput = {
+    where?: CommandeWhereInput
+    data: XOR<CommandeUpdateWithoutLignesInput, CommandeUncheckedUpdateWithoutLignesInput>
+  }
+
+  export type CommandeUpdateWithoutLignesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    numero?: StringFieldUpdateOperationsInput | string
+    statut?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    total?: FloatFieldUpdateOperationsInput | number
+    frais_livraison?: FloatFieldUpdateOperationsInput | number
+    ville?: StringFieldUpdateOperationsInput | string
+    adresse?: StringFieldUpdateOperationsInput | string
+    telephone?: StringFieldUpdateOperationsInput | string
+    mode_paiement?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    utilisateur?: UserUpdateOneRequiredWithoutCommandesNestedInput
+  }
+
+  export type CommandeUncheckedUpdateWithoutLignesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    numero?: StringFieldUpdateOperationsInput | string
+    utilisateur_id?: StringFieldUpdateOperationsInput | string
+    statut?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    total?: FloatFieldUpdateOperationsInput | number
+    frais_livraison?: FloatFieldUpdateOperationsInput | number
+    ville?: StringFieldUpdateOperationsInput | string
+    adresse?: StringFieldUpdateOperationsInput | string
+    telephone?: StringFieldUpdateOperationsInput | string
+    mode_paiement?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProduitUpsertWithoutLignesInput = {
+    update: XOR<ProduitUpdateWithoutLignesInput, ProduitUncheckedUpdateWithoutLignesInput>
+    create: XOR<ProduitCreateWithoutLignesInput, ProduitUncheckedCreateWithoutLignesInput>
+    where?: ProduitWhereInput
+  }
+
+  export type ProduitUpdateToOneWithWhereWithoutLignesInput = {
+    where?: ProduitWhereInput
+    data: XOR<ProduitUpdateWithoutLignesInput, ProduitUncheckedUpdateWithoutLignesInput>
+  }
+
+  export type ProduitUpdateWithoutLignesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nom?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    prix?: FloatFieldUpdateOperationsInput | number
+    stock?: IntFieldUpdateOperationsInput | number
+    images?: ProduitUpdateimagesInput | string[]
+    sku?: NullableStringFieldUpdateOperationsInput | string | null
+    publie?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    avis?: AvisUpdateManyWithoutProduitNestedInput
+    likes?: LikeUpdateManyWithoutProduitNestedInput
+    categorie?: CategorieUpdateOneRequiredWithoutProduitsNestedInput
+  }
+
+  export type ProduitUncheckedUpdateWithoutLignesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nom?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    prix?: FloatFieldUpdateOperationsInput | number
+    stock?: IntFieldUpdateOperationsInput | number
+    categorie_id?: StringFieldUpdateOperationsInput | string
+    images?: ProduitUpdateimagesInput | string[]
+    sku_number?: IntFieldUpdateOperationsInput | number
+    sku?: NullableStringFieldUpdateOperationsInput | string | null
+    publie?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    avis?: AvisUncheckedUpdateManyWithoutProduitNestedInput
+    likes?: LikeUncheckedUpdateManyWithoutProduitNestedInput
   }
 
   export type AvisCreateManyUtilisateurInput = {
@@ -14417,6 +18360,21 @@ export namespace Prisma {
     notes?: string | null
     statut?: $Enums.AppointmentStatus
     raison_refus?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CommandeCreateManyUtilisateurInput = {
+    id?: string
+    numero: string
+    statut?: $Enums.OrderStatus
+    total: number
+    frais_livraison?: number
+    ville: string
+    adresse: string
+    telephone: string
+    mode_paiement: string
+    notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -14505,6 +18463,53 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type CommandeUpdateWithoutUtilisateurInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    numero?: StringFieldUpdateOperationsInput | string
+    statut?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    total?: FloatFieldUpdateOperationsInput | number
+    frais_livraison?: FloatFieldUpdateOperationsInput | number
+    ville?: StringFieldUpdateOperationsInput | string
+    adresse?: StringFieldUpdateOperationsInput | string
+    telephone?: StringFieldUpdateOperationsInput | string
+    mode_paiement?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lignes?: LigneCommandeUpdateManyWithoutCommandeNestedInput
+  }
+
+  export type CommandeUncheckedUpdateWithoutUtilisateurInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    numero?: StringFieldUpdateOperationsInput | string
+    statut?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    total?: FloatFieldUpdateOperationsInput | number
+    frais_livraison?: FloatFieldUpdateOperationsInput | number
+    ville?: StringFieldUpdateOperationsInput | string
+    adresse?: StringFieldUpdateOperationsInput | string
+    telephone?: StringFieldUpdateOperationsInput | string
+    mode_paiement?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lignes?: LigneCommandeUncheckedUpdateManyWithoutCommandeNestedInput
+  }
+
+  export type CommandeUncheckedUpdateManyWithoutUtilisateurInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    numero?: StringFieldUpdateOperationsInput | string
+    statut?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    total?: FloatFieldUpdateOperationsInput | number
+    frais_livraison?: FloatFieldUpdateOperationsInput | number
+    ville?: StringFieldUpdateOperationsInput | string
+    adresse?: StringFieldUpdateOperationsInput | string
+    telephone?: StringFieldUpdateOperationsInput | string
+    mode_paiement?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ProduitCreateManyCategorieInput = {
     id?: string
     nom: string
@@ -14512,6 +18517,7 @@ export namespace Prisma {
     prix: number
     stock: number
     images?: ProduitCreateimagesInput | string[]
+    sku_number?: number
     sku?: string | null
     publie?: boolean
     createdAt?: Date | string
@@ -14531,6 +18537,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     avis?: AvisUpdateManyWithoutProduitNestedInput
     likes?: LikeUpdateManyWithoutProduitNestedInput
+    lignes?: LigneCommandeUpdateManyWithoutProduitNestedInput
   }
 
   export type ProduitUncheckedUpdateWithoutCategorieInput = {
@@ -14540,12 +18547,14 @@ export namespace Prisma {
     prix?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     images?: ProduitUpdateimagesInput | string[]
+    sku_number?: IntFieldUpdateOperationsInput | number
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     publie?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     avis?: AvisUncheckedUpdateManyWithoutProduitNestedInput
     likes?: LikeUncheckedUpdateManyWithoutProduitNestedInput
+    lignes?: LigneCommandeUncheckedUpdateManyWithoutProduitNestedInput
   }
 
   export type ProduitUncheckedUpdateManyWithoutCategorieInput = {
@@ -14555,6 +18564,7 @@ export namespace Prisma {
     prix?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     images?: ProduitUpdateimagesInput | string[]
+    sku_number?: IntFieldUpdateOperationsInput | number
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     publie?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14575,6 +18585,16 @@ export namespace Prisma {
     id?: string
     utilisateur_id: string
     createdAt?: Date | string
+  }
+
+  export type LigneCommandeCreateManyProduitInput = {
+    id?: string
+    commande_id: string
+    nom_produit: string
+    image?: string | null
+    prix_unitaire: number
+    quantite: number
+    sous_total: number
   }
 
   export type AvisUpdateWithoutProduitInput = {
@@ -14625,6 +18645,36 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type LigneCommandeUpdateWithoutProduitInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nom_produit?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    prix_unitaire?: FloatFieldUpdateOperationsInput | number
+    quantite?: IntFieldUpdateOperationsInput | number
+    sous_total?: FloatFieldUpdateOperationsInput | number
+    commande?: CommandeUpdateOneRequiredWithoutLignesNestedInput
+  }
+
+  export type LigneCommandeUncheckedUpdateWithoutProduitInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    commande_id?: StringFieldUpdateOperationsInput | string
+    nom_produit?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    prix_unitaire?: FloatFieldUpdateOperationsInput | number
+    quantite?: IntFieldUpdateOperationsInput | number
+    sous_total?: FloatFieldUpdateOperationsInput | number
+  }
+
+  export type LigneCommandeUncheckedUpdateManyWithoutProduitInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    commande_id?: StringFieldUpdateOperationsInput | string
+    nom_produit?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    prix_unitaire?: FloatFieldUpdateOperationsInput | number
+    quantite?: IntFieldUpdateOperationsInput | number
+    sous_total?: FloatFieldUpdateOperationsInput | number
+  }
+
   export type RendezVousCreateManyType_seanceInput = {
     id?: string
     utilisateur_id: string
@@ -14671,6 +18721,46 @@ export namespace Prisma {
     raison_refus?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LigneCommandeCreateManyCommandeInput = {
+    id?: string
+    produit_id: string
+    nom_produit: string
+    image?: string | null
+    prix_unitaire: number
+    quantite: number
+    sous_total: number
+  }
+
+  export type LigneCommandeUpdateWithoutCommandeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nom_produit?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    prix_unitaire?: FloatFieldUpdateOperationsInput | number
+    quantite?: IntFieldUpdateOperationsInput | number
+    sous_total?: FloatFieldUpdateOperationsInput | number
+    produit?: ProduitUpdateOneRequiredWithoutLignesNestedInput
+  }
+
+  export type LigneCommandeUncheckedUpdateWithoutCommandeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    produit_id?: StringFieldUpdateOperationsInput | string
+    nom_produit?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    prix_unitaire?: FloatFieldUpdateOperationsInput | number
+    quantite?: IntFieldUpdateOperationsInput | number
+    sous_total?: FloatFieldUpdateOperationsInput | number
+  }
+
+  export type LigneCommandeUncheckedUpdateManyWithoutCommandeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    produit_id?: StringFieldUpdateOperationsInput | string
+    nom_produit?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    prix_unitaire?: FloatFieldUpdateOperationsInput | number
+    quantite?: IntFieldUpdateOperationsInput | number
+    sous_total?: FloatFieldUpdateOperationsInput | number
   }
 
 

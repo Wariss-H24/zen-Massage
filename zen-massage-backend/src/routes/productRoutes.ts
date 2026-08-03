@@ -1,29 +1,15 @@
-import { Router, type Request, type Response } from 'express'
-import fs from 'fs'
+import { Router, type Request, type Response, type NextFunction } from 'express'
 import multer from 'multer'
-import path from 'path'
 import * as product from '../controllers/productController'
 import { requireAuth } from '../middlewares/auth'
 import { requireRole } from '../middlewares/roleCheck'
 import { validateBody } from '../middlewares/validation'
+import { uploadProductImageBuffer } from '../services/cloudinaryService'
 
 const router = Router()
 
-const productsUploadDir = path.join(process.cwd(), 'public', 'uploads', 'products')
-if (!fs.existsSync(productsUploadDir)) fs.mkdirSync(productsUploadDir, { recursive: true })
-
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, productsUploadDir),
-  filename: (_req, file, cb) => {
-    const ext = path.extname(file.originalname || '')
-    const safeExt = ext && ext.length <= 10 ? ext : ''
-    const name = `${Date.now()}-${Math.round(Math.random() * 1e9)}${safeExt}`
-    cb(null, name)
-  },
-})
-
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024, files: 3 },
   fileFilter: (_req, file, cb) => {
     if (!file.mimetype?.startsWith('image/')) return cb(new Error('Fichier invalide (image uniquement)'))
@@ -63,12 +49,18 @@ router.post('/images/upload',
   requireAuth,
   requireRole('ADMIN', 'SUPER_ADMIN'),
   upload.array('images', 3),
-  (req: Request, res: Response) => {
-    const files = (req.files as Express.Multer.File[]) || []
-    const host = req.get('host') || ''
-    const protocol = req.protocol
-    const urls = files.map((f) => `${protocol}://${host}/uploads/products/${f.filename}`)
-    res.json({ success: true, message: 'Images uploadées', data: { urls } })
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const files = (req.files as Express.Multer.File[]) || []
+      if (files.length === 0) {
+        res.status(400).json({ success: false, message: 'Aucune image reçue' })
+        return
+      }
+      const urls = await Promise.all(files.map(uploadProductImageBuffer))
+      res.json({ success: true, message: 'Images uploadées', data: { urls } })
+    } catch (err) {
+      next(err)
+    }
   }
 )
 
