@@ -7,6 +7,7 @@
     "seed": "tsx seed.ts",
     "dev": "tsx --watch src/server.ts",
     "build": "prisma generate && tsc",
+    "render-build": "prisma migrate deploy && prisma generate && tsc",
     "start": "node dist/server.js",
     "postinstall": "prisma generate",
     "test": "echo \"Error: no test specified\" && exit 1"

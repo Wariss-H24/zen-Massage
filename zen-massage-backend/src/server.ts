@@ -6,9 +6,6 @@ import cookieParser from 'cookie-parser'
 import { corsMiddleware } from './middlewares/cors'
 import { errorHandler } from './middlewares/errorHandler'
 import routes from './routes'
-import { prisma } from './prisma'
-
-
 
 const app = express()
 const PORT = process.env.PORT || 4000
@@ -28,9 +25,3 @@ app.get('/health', (_req, res) => res.json({ status: 'ok' }))
 app.use(errorHandler)
 
 app.listen(PORT, () => console.log(`🌿 Ben API running on port ${PORT}`))
-async function testPrisma() {
-  const produit = await prisma.produit.findFirst();
-  console.log("Produit test :", produit);
-}
-
-testPrisma();
