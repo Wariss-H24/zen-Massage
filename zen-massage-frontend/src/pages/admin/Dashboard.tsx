@@ -176,6 +176,11 @@ export default function Dashboard() {
   const [selectedReview, setSelectedReview] = useState<Review | null>(null)
   const [replyText, setReplyText] = useState('')
   const [processingReply, setProcessingReply] = useState(false)
+  // États pour les notes admin RDV
+  const [notesModalOpen, setNotesModalOpen] = useState(false)
+  const [notesAppt, setNotesAppt] = useState<RendezVousWithUser | null>(null)
+  const [notesText, setNotesText] = useState('')
+  const [processingNotes, setProcessingNotes] = useState(false)
   const firstName = user?.firstName || ''
   const lastName = user?.lastName || ''
 
@@ -403,6 +408,21 @@ export default function Dashboard() {
   }
 
   // Gérer la reprogrammation
+  const handleNotes = async () => {
+    if (!notesAppt) return
+    setProcessingNotes(true)
+    try {
+      const updated = await appointmentService.updateNotesAdmin(notesAppt.id, notesText.trim() || null)
+      setAppointments(prev => prev.map(a => a.id === notesAppt.id ? { ...a, notes_admin: updated.data.notes_admin } : a))
+      setNotesModalOpen(false)
+      setToast({ type: 'success', msg: 'Notes enregistrées' })
+    } catch (err: any) {
+      setToast({ type: 'error', msg: err.message || 'Erreur' })
+    } finally {
+      setProcessingNotes(false)
+    }
+  }
+
   const handleReply = async () => {
     if (!selectedReview) return
     setProcessingReply(true)
@@ -514,6 +534,17 @@ export default function Dashboard() {
                         }}
                       >
                         <span className="material-symbols-outlined">check_circle</span>
+                      </button>
+                      <button 
+                        className="p-2 text-on-surface-variant hover:bg-surface-variant rounded-full transition-colors" 
+                        title="Notes privées"
+                        onClick={() => {
+                          setNotesAppt(apt)
+                          setNotesText(apt.notes_admin ?? '')
+                          setNotesModalOpen(true)
+                        }}
+                      >
+                        <span className="material-symbols-outlined">sticky_note_2</span>
                       </button>
                       <button 
                         className="p-2 text-on-surface-variant hover:bg-surface-variant rounded-full transition-colors" 
@@ -758,15 +789,8 @@ export default function Dashboard() {
                       </span>
                     </div>
 
-                    {/* Réponse admin existante */}
-                    {r.reponse_admin && (
-                      <div className="mt-3 bg-sage-deep/5 border-l-4 border-primary p-3 rounded-r-lg">
-                        <p className="text-xs text-primary font-semibold mb-1">Votre réponse :</p>
-                        <p className="text-xs text-on-surface-variant line-clamp-2">{r.reponse_admin}</p>
-                      </div>
-                    )}
-                    {/* Bouton répondre */}
-                    <div className="pl-4 border-l border-outline-variant pt-2 mt-3">
+                    {/* Bouton répondre + masquer */}
+                    <div className="pl-4 border-l border-outline-variant pt-2 mt-3 flex items-center gap-4">
                       <button
                         onClick={() => {
                           setSelectedReview(r)
@@ -777,6 +801,21 @@ export default function Dashboard() {
                       >
                         <span className="material-symbols-outlined text-sm">reply</span>
                         {r.reponse_admin ? 'Modifier la réponse' : 'Répondre au client'}
+                      </button>
+                      <button
+                        onClick={async () => {
+                          try {
+                            const res = await reviewService.toggleMasque(r.id)
+                            setReviews(prev => prev.map(x => x.id === r.id ? { ...x, masque: res.data.masque } : x))
+                            setToast({ type: 'info', msg: res.data.masque ? 'Avis masqué' : 'Avis visible' })
+                          } catch (err: any) {
+                            setToast({ type: 'error', msg: err.message })
+                          }
+                        }}
+                        className="text-xs text-on-surface-variant font-semibold flex items-center gap-1 hover:underline"
+                      >
+                        <span className="material-symbols-outlined text-sm">{r.masque ? 'visibility' : 'visibility_off'}</span>
+                        {r.masque ? 'Réafficher' : 'Masquer'}
                       </button>
                     </div>
                   </div>
@@ -1000,6 +1039,46 @@ export default function Dashboard() {
           </div>
         </div>
       )}
+      {/* Modal notes admin RDV */}
+      {notesModalOpen && notesAppt && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <span className="material-symbols-outlined text-primary text-2xl">sticky_note_2</span>
+                <h3 className="font-headline-sm text-sage-deep">Notes privées</h3>
+              </div>
+              <button onClick={() => setNotesModalOpen(false)} className="p-1 hover:bg-sand-light rounded-full">
+                <span className="material-symbols-outlined text-on-surface-variant">close</span>
+              </button>
+            </div>
+            <div className="bg-surface-container-low rounded-lg p-3 mb-4 text-sm">
+              <p className="font-semibold text-sage-deep">{notesAppt.utilisateur.firstName} {notesAppt.utilisateur.lastName}</p>
+              <p className="text-on-surface-variant">{notesAppt.type_seance.nom} · {notesAppt.duree} min · {formatAppointmentTime(notesAppt.date_heure)}</p>
+            </div>
+            <textarea
+              value={notesText}
+              onChange={e => setNotesText(e.target.value)}
+              rows={4}
+              maxLength={500}
+              className="w-full p-3 rounded-lg border border-outline-variant/30 bg-surface-container-lowest resize-none text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+              placeholder="Notes internes (non visibles par le client)…"
+            />
+            <p className="text-xs text-on-surface-variant text-right mb-4">{notesText.length}/500</p>
+            <div className="flex gap-3">
+              <button onClick={() => setNotesModalOpen(false)} disabled={processingNotes}
+                className="flex-1 py-2 font-label-md text-on-surface-variant border border-outline-variant/30 rounded-lg hover:bg-surface-variant transition-colors">
+                Annuler
+              </button>
+              <button onClick={handleNotes} disabled={processingNotes}
+                className="flex-1 py-2 font-label-md bg-primary text-white rounded-lg hover:bg-sage-deep transition-colors disabled:opacity-50">
+                {processingNotes ? 'Enregistrement…' : 'Enregistrer'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Modal réponse admin à un avis */}
       {replyModalOpen && selectedReview && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">

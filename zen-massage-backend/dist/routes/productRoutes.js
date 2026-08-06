@@ -80,6 +80,7 @@ router.post('/images/upload', auth_1.requireAuth, (0, roleCheck_1.requireRole)('
 });
 // Publiques : voir les produits publiés
 router.get('/', product.listProduits);
+router.post('/batch-stocks', product.batchStocks); // Récupérer stocks pour une liste d'IDs (panier)
 router.get('/admin', auth_1.requireAuth, (0, roleCheck_1.requireRole)('ADMIN', 'SUPER_ADMIN'), product.listProduitsAdmin);
 router.get('/:id', product.getProduit);
 // Admin : gestion complète

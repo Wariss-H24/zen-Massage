@@ -19,6 +19,7 @@ export interface Review {
   reponse_admin?: string | null
   reponse_admin_at?: string | null
   admin_repondant?: ReviewUser | null
+  masque?: boolean
   utiles: number
   mon_vote: boolean | null
 }

@@ -166,13 +166,25 @@ exports.Prisma.AvisScalarFieldEnum = {
   produit_id: 'produit_id',
   utilisateur_id: 'utilisateur_id',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  reponse_admin: 'reponse_admin',
+  reponse_admin_at: 'reponse_admin_at',
+  reponse_admin_id: 'reponse_admin_id',
+  masque: 'masque'
 };
 
 exports.Prisma.LikeScalarFieldEnum = {
   id: 'id',
   utilisateur_id: 'utilisateur_id',
   produit_id: 'produit_id',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.AvisUtileScalarFieldEnum = {
+  id: 'id',
+  avis_id: 'avis_id',
+  utilisateur_id: 'utilisateur_id',
+  utile: 'utile',
   createdAt: 'createdAt'
 };
 
@@ -196,6 +208,7 @@ exports.Prisma.RendezVousScalarFieldEnum = {
   notes: 'notes',
   statut: 'statut',
   raison_refus: 'raison_refus',
+  notes_admin: 'notes_admin',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -276,6 +289,7 @@ exports.Prisma.ModelName = {
   Produit: 'Produit',
   Avis: 'Avis',
   Like: 'Like',
+  AvisUtile: 'AvisUtile',
   TypeSeance: 'TypeSeance',
   RendezVous: 'RendezVous',
   Configuration: 'Configuration',

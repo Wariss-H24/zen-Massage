@@ -51,6 +51,7 @@ export interface RendezVous {
 
 // Type pour RendezVous avec utilisateur (admin view)
 export interface RendezVousWithUser extends RendezVous {
+  notes_admin?: string | null
   utilisateur: {
     id: string
     email: string
@@ -149,6 +150,10 @@ export const appointmentService = {
       raison_refus?: string
     }
   ) => api.put<ApiResponse<RendezVousWithUser>>(`/appointments/${id}/status`, body),
+
+  // Mettre à jour les notes admin privées d'un rendez-vous
+  updateNotesAdmin: (id: string, notes_admin: string | null) =>
+    api.patch<ApiResponse<RendezVousWithUser>>(`/appointments/${id}/notes-admin`, { notes_admin }),
 
   getScheduleConfig: () =>
     api.get<ApiResponse<AppointmentScheduleConfig>>('/appointments/config'),

@@ -47,6 +47,7 @@ exports.getProduit = getProduit;
 exports.toggleLike = toggleLike;
 exports.getLikesCount = getLikesCount;
 exports.getLikeStatus = getLikeStatus;
+exports.batchStocks = batchStocks;
 const productService = __importStar(require("../services/productService"));
 /* ============================================================
    CATÉGORIES
@@ -212,6 +213,23 @@ async function getLikeStatus(req, res, next) {
         const userId = res.locals.user.id;
         const liked = await productService.getLikeStatus(id, userId);
         res.json({ success: true, data: { liked } });
+    }
+    catch (err) {
+        next(err);
+    }
+}
+/* ── Récupérer les stocks d'une liste de produits (panier) ── */
+async function batchStocks(req, res, next) {
+    try {
+        const ids = Array.isArray(req.body?.ids)
+            ? req.body.ids.map((x) => String(x)).filter(Boolean)
+            : [];
+        if (ids.length === 0) {
+            res.json({ success: true, data: [] });
+            return;
+        }
+        const result = await productService.getBatchStocks(ids);
+        res.json({ success: true, data: result });
     }
     catch (err) {
         next(err);

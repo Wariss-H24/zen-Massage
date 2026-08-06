@@ -1,10 +1,10 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import MainLayout from '../components/layout/MainLayout'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
 import { orderService } from '../services/order.service'
-import { productService, type BatchStockItem } from '../services/product.service'
+import { productService } from '../services/product.service'
 
 /* ══════════════════════════════════════════
    CONSTANTES
@@ -74,12 +74,7 @@ export default function Checkout() {
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [stockErrors, setStockErrors] = useState<Record<string, { type: 'out' | 'low' | 'missing'; current?: number; message: string }>>({})
   const [verifyingStock, setVerifyingStock] = useState(false)
-  const stockMap = useMemo(() => {
-    const m = new Map<string, BatchStockItem>()
-    return m
-  }, [])
-
-  // Pré-remplissage depuis le compte connecté
+  const hasBlockingStockErrors = Object.values(stockErrors).some(e => e.type === 'out' || e.type === 'missing' || e.type === 'low')
   const [form, setForm] = useState({
     name:    user ? `${user.firstName} ${user.lastName}` : '',
     email:   user?.email    ?? '',
@@ -144,10 +139,6 @@ export default function Checkout() {
       })
     return () => { mounted = false }
   }, [items])
-
-  /* ── Mettre à jour item.stock si batch renvoie un stock plus bas ── */
-  const stockErrorsCount = Object.keys(stockErrors).length
-  const hasBlockingStockErrors = Object.values(stockErrors).some(e => e.type === 'out' || e.type === 'missing' || e.type === 'low')
 
   const set = (k: keyof typeof form, v: string) => setForm(f => ({ ...f, [k]: v }))
 

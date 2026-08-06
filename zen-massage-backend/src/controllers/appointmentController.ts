@@ -104,6 +104,18 @@ export async function updateAppointmentStatus(req: Request, res: Response, next:
   }
 }
 
+export async function updateNotesAdmin(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { id } = req.params
+    const { notes_admin } = req.body
+    const rdv = await appointmentService.updateNotesAdmin(
+      id as string,
+      typeof notes_admin === 'string' ? notes_admin.trim() || null : null
+    )
+    res.json({ success: true, message: 'Notes mises à jour', data: rdv })
+  } catch (err) { next(err) }
+}
+
 export async function deleteAppointment(req: Request, res: Response, next: NextFunction) {
   try {
     const { id } = req.params

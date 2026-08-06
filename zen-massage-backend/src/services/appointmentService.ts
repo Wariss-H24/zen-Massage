@@ -260,6 +260,22 @@ export async function updateAppointmentStatus(id: string, statut: string, raison
   })
 }
 
+// Ajouter / modifier les notes privées admin sur un rendez-vous
+export async function updateNotesAdmin(id: string, notes_admin: string | null) {
+  const rdv = await prisma.rendezVous.findUnique({ where: { id } })
+  if (!rdv) {
+    const err = new Error('Rendez-vous introuvable') as any; err.status = 404; throw err
+  }
+  return prisma.rendezVous.update({
+    where: { id },
+    data: { notes_admin },
+    include: {
+      type_seance: true,
+      utilisateur: { select: { id: true, email: true, firstName: true, lastName: true } }
+    }
+  })
+}
+
 // Supprimer un rendez-vous
 export async function deleteAppointment(id: string, userId: string) {
   const appointment = await prisma.rendezVous.findUnique({ where: { id } })

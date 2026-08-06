@@ -36,6 +36,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const review = __importStar(require("../controllers/reviewController"));
 const auth_1 = require("../middlewares/auth");
+const roleCheck_1 = require("../middlewares/roleCheck");
 const validation_1 = require("../middlewares/validation");
 const router = (0, express_1.Router)();
 // Publiques
@@ -47,5 +48,10 @@ router.get('/product/:productId/stats', review.getProductStats);
 router.post('/', auth_1.requireAuth, (0, validation_1.validateBody)(['note', 'titre', 'contenu', 'produit_id']), review.createReview);
 router.put('/:id', auth_1.requireAuth, review.updateReview);
 router.delete('/:id', auth_1.requireAuth, review.deleteReview);
+router.post('/:id/vote-utile', auth_1.requireAuth, review.voteUtile);
+// Admin : répondre / modifier réponse avis
+router.patch('/:id/reponse-admin', auth_1.requireAuth, (0, roleCheck_1.requireRole)('ADMIN', 'SUPER_ADMIN'), review.repondreAvis);
+// Admin : masquer / démasquer un avis
+router.patch('/:id/masque', auth_1.requireAuth, (0, roleCheck_1.requireRole)('ADMIN', 'SUPER_ADMIN'), review.toggleMasque);
 // Admin : peut utiliser DELETE ci-dessus (grâce au roleCheck dans le service)
 exports.default = router;

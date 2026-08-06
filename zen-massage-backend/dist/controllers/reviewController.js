@@ -39,6 +39,9 @@ exports.deleteReview = deleteReview;
 exports.listReviews = listReviews;
 exports.getReview = getReview;
 exports.listProductReviews = listProductReviews;
+exports.voteUtile = voteUtile;
+exports.repondreAvis = repondreAvis;
+exports.toggleMasque = toggleMasque;
 exports.getProductStats = getProductStats;
 const reviewService = __importStar(require("../services/reviewService"));
 function parseFilters(query) {
@@ -93,7 +96,8 @@ async function deleteReview(req, res, next) {
 async function listReviews(req, res, next) {
     try {
         const filters = parseFilters(req.query);
-        const result = await reviewService.listReviews(filters);
+        const userId = res.locals.user?.id;
+        const result = await reviewService.listReviewsEnhanced(filters, userId);
         res.json({ success: true, data: result });
     }
     catch (err) {
@@ -103,7 +107,8 @@ async function listReviews(req, res, next) {
 async function getReview(req, res, next) {
     try {
         const id = req.params.id;
-        const avis = await reviewService.getReviewById(id);
+        const userId = res.locals.user?.id;
+        const avis = await reviewService.getReviewByIdEnhanced(id, userId);
         res.json({ success: true, data: avis });
     }
     catch (err) {
@@ -115,8 +120,66 @@ async function listProductReviews(req, res, next) {
         const produit_id = req.params.productId;
         const filters = parseFilters(req.query);
         filters.produit_id = produit_id;
-        const result = await reviewService.listReviews(filters);
+        const userId = res.locals.user?.id;
+        const result = await reviewService.listReviewsEnhanced(filters, userId);
         res.json({ success: true, data: result });
+    }
+    catch (err) {
+        next(err);
+    }
+}
+/* ── Voter Utile / Pas utile sur un avis ── */
+async function voteUtile(req, res, next) {
+    try {
+        const avis_id = req.params.id;
+        const utilisateur_id = res.locals.user.id;
+        const { utile } = req.body;
+        if (typeof utile !== 'boolean') {
+            const err = new Error('Paramètre "utile" booléen attendu');
+            err.status = 400;
+            throw err;
+        }
+        const result = await reviewService.toggleVoteUtile(avis_id, utilisateur_id, utile);
+        res.json({ success: true, message: 'Vote enregistré', data: result });
+    }
+    catch (err) {
+        next(err);
+    }
+}
+/* ── Répondre à un avis (ADMIN uniquement) ── */
+async function repondreAvis(req, res, next) {
+    try {
+        const avis_id = req.params.id;
+        const admin_id = res.locals.user.id;
+        const { reponse } = req.body;
+        const reponseClean = typeof reponse === 'string' ? reponse.trim() : null;
+        const finalReponse = reponseClean && reponseClean.length > 0 ? reponseClean : null;
+        if (finalReponse && finalReponse.length > 1000) {
+            const err = new Error('La réponse admin est trop longue (max 1000 caractères)');
+            err.status = 400;
+            throw err;
+        }
+        const result = await reviewService.repondreAvis(avis_id, admin_id, finalReponse);
+        res.json({
+            success: true,
+            message: finalReponse ? 'Réponse publiée' : 'Réponse supprimée',
+            data: result,
+        });
+    }
+    catch (err) {
+        next(err);
+    }
+}
+/* ── Masquer / Démasquer un avis (ADMIN) ── */
+async function toggleMasque(req, res, next) {
+    try {
+        const avis_id = req.params.id;
+        const result = await reviewService.toggleMasqueAvis(avis_id);
+        res.json({
+            success: true,
+            message: result.masque ? 'Avis masqué' : 'Avis visible',
+            data: result,
+        });
     }
     catch (err) {
         next(err);

@@ -11,6 +11,7 @@ exports.createAppointment = createAppointment;
 exports.getUserAppointments = getUserAppointments;
 exports.getAllAppointments = getAllAppointments;
 exports.updateAppointmentStatus = updateAppointmentStatus;
+exports.updateNotesAdmin = updateNotesAdmin;
 exports.deleteAppointment = deleteAppointment;
 exports.updateAppointment = updateAppointment;
 exports.cancelAppointment = cancelAppointment;
@@ -218,6 +219,23 @@ async function updateAppointmentStatus(id, statut, raison_refus) {
     return await prisma_1.prisma.rendezVous.update({
         where: { id },
         data: { statut: statut, raison_refus },
+        include: {
+            type_seance: true,
+            utilisateur: { select: { id: true, email: true, firstName: true, lastName: true } }
+        }
+    });
+}
+// Ajouter / modifier les notes privées admin sur un rendez-vous
+async function updateNotesAdmin(id, notes_admin) {
+    const rdv = await prisma_1.prisma.rendezVous.findUnique({ where: { id } });
+    if (!rdv) {
+        const err = new Error('Rendez-vous introuvable');
+        err.status = 404;
+        throw err;
+    }
+    return prisma_1.prisma.rendezVous.update({
+        where: { id },
+        data: { notes_admin },
         include: {
             type_seance: true,
             utilisateur: { select: { id: true, email: true, firstName: true, lastName: true } }

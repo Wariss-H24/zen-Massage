@@ -13,6 +13,7 @@ exports.getProduitById = getProduitById;
 exports.toggleLike = toggleLike;
 exports.getLikesCount = getLikesCount;
 exports.getLikeStatus = getLikeStatus;
+exports.getBatchStocks = getBatchStocks;
 const prisma_1 = require("../prisma");
 /* ============================================================
    CATÉGORIES
@@ -202,13 +203,6 @@ async function getProduitById(id) {
         where: { id },
         include: {
             categorie: true,
-            avis: {
-                include: {
-                    utilisateur: { select: { id: true, firstName: true, lastName: true, avatar: true } },
-                },
-                orderBy: { createdAt: 'desc' },
-                take: 10,
-            },
             _count: { select: { avis: true, likes: true } },
         },
     });
@@ -221,7 +215,9 @@ async function getProduitById(id) {
         where: { produit_id: id },
         _avg: { note: true },
     });
-    return { produit: prod, moyenne: avg._avg.note ?? 0 };
+    const produit = prod;
+    delete produit.avis;
+    return { produit, moyenne: avg._avg.note ?? 0 };
 }
 /* ============================================================
    LIKES
@@ -250,4 +246,27 @@ async function getLikeStatus(produit_id, utilisateur_id) {
         where: { utilisateur_id_produit_id: { utilisateur_id, produit_id } },
     });
     return !!like;
+}
+/* ============================================================
+   STOCK PAR LOT (vérification panier)
+   ============================================================ */
+async function getBatchStocks(ids) {
+    const unique = Array.from(new Set(ids));
+    const produits = await prisma_1.prisma.produit.findMany({
+        where: { id: { in: unique } },
+        select: { id: true, stock: true, nom: true, publie: true },
+    });
+    const map = new Map();
+    for (const p of produits)
+        map.set(p.id, p);
+    return unique.map(id => {
+        const p = map.get(id);
+        return {
+            id,
+            exists: !!p,
+            publie: p?.publie ?? false,
+            nom: p?.nom ?? null,
+            stock: p?.stock ?? 0,
+        };
+    });
 }

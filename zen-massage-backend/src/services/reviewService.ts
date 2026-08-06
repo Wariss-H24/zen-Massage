@@ -199,9 +199,10 @@ function mapAvis(avis: any, userId?: string) {
   return { ...rest, utiles, mon_vote: monVote ?? null }
 }
 
-export async function listReviewsEnhanced(filters: ReviewFilters = {}, userId?: string) {
+export async function listReviewsEnhanced(filters: ReviewFilters = {}, userId?: string, isAdmin = false) {
   const where: any = {}
   if (filters.produit_id) where.produit_id = filters.produit_id
+  if (!isAdmin) where.masque = false  // les non-admins ne voient pas les avis masqués
 
   let orderBy: any = { createdAt: 'desc' as const }
   switch (filters.tri) {
@@ -277,6 +278,22 @@ export async function toggleVoteUtile(avis_id: string, utilisateur_id: string, u
     result = { utiles, mon_vote: utile }
   }
   return result
+}
+
+/* ============================================================
+   MASQUER / DÉMASQUER UN AVIS (Admin)
+   ============================================================ */
+
+export async function toggleMasqueAvis(avis_id: string) {
+  const avis = await prisma.avis.findUnique({ where: { id: avis_id } })
+  if (!avis) {
+    const err = new Error('Avis introuvable') as any; err.status = 404; throw err
+  }
+  return prisma.avis.update({
+    where: { id: avis_id },
+    data: { masque: !avis.masque },
+    include: reviewInclude(),
+  })
 }
 
 /* ============================================================

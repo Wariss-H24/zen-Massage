@@ -43,6 +43,7 @@ exports.createAppointment = createAppointment;
 exports.getMyAppointments = getMyAppointments;
 exports.getAllAppointments = getAllAppointments;
 exports.updateAppointmentStatus = updateAppointmentStatus;
+exports.updateNotesAdmin = updateNotesAdmin;
 exports.deleteAppointment = deleteAppointment;
 exports.updateAppointment = updateAppointment;
 exports.cancelAppointment = cancelAppointment;
@@ -146,6 +147,17 @@ async function updateAppointmentStatus(req, res, next) {
         const { statut, raison_refus } = req.body;
         const appointment = await appointmentService.updateAppointmentStatus(id, statut, raison_refus);
         res.json({ success: true, message: 'Statut mis a jour', data: appointment });
+    }
+    catch (err) {
+        next(err);
+    }
+}
+async function updateNotesAdmin(req, res, next) {
+    try {
+        const { id } = req.params;
+        const { notes_admin } = req.body;
+        const rdv = await appointmentService.updateNotesAdmin(id, typeof notes_admin === 'string' ? notes_admin.trim() || null : null);
+        res.json({ success: true, message: 'Notes mises à jour', data: rdv });
     }
     catch (err) {
         next(err);

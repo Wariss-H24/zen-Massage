@@ -135,13 +135,22 @@ export default function ProductsManagement() {
     <AdminLayout
       title="Produits"
       topbarRight={
-        <Link
-          to="/admin/products/add"
-          className="flex items-center gap-2 bg-surface-container-highest px-4 py-2 rounded-full font-label-md text-label-md hover:bg-secondary-container transition-colors"
-        >
-          <span className="material-symbols-outlined text-[20px]">add</span>
-          Ajouter un produit
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            to="/products"
+            className="flex items-center gap-2 px-4 py-2 rounded-full font-label-md text-label-md border border-outline-variant/40 hover:bg-surface-variant transition-colors"
+          >
+            <span className="material-symbols-outlined text-[20px]">storefront</span>
+            Voir la boutique
+          </Link>
+          <Link
+            to="/admin/products/add"
+            className="flex items-center gap-2 bg-surface-container-highest px-4 py-2 rounded-full font-label-md text-label-md hover:bg-secondary-container transition-colors"
+          >
+            <span className="material-symbols-outlined text-[20px]">add</span>
+            Ajouter un produit
+          </Link>
+        </div>
       }
     >
       {toast && <Toast type={toast.type} message={toast.msg} onClose={() => setToast(null)} />}

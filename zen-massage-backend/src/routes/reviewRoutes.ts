@@ -38,6 +38,13 @@ router.patch('/:id/reponse-admin',
   review.repondreAvis
 )
 
+// Admin : masquer / démasquer un avis
+router.patch('/:id/masque',
+  requireAuth,
+  requireRole('ADMIN', 'SUPER_ADMIN'),
+  review.toggleMasque
+)
+
 // Admin : peut utiliser DELETE ci-dessus (grâce au roleCheck dans le service)
 
 export default router

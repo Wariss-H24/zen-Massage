@@ -39,6 +39,11 @@ export type Avis = $Result.DefaultSelection<Prisma.$AvisPayload>
  */
 export type Like = $Result.DefaultSelection<Prisma.$LikePayload>
 /**
+ * Model AvisUtile
+ * 
+ */
+export type AvisUtile = $Result.DefaultSelection<Prisma.$AvisUtilePayload>
+/**
  * Model TypeSeance
  * 
  */
@@ -281,6 +286,16 @@ export class PrismaClient<
     * ```
     */
   get like(): Prisma.LikeDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.avisUtile`: Exposes CRUD operations for the **AvisUtile** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AvisUtiles
+    * const avisUtiles = await prisma.avisUtile.findMany()
+    * ```
+    */
+  get avisUtile(): Prisma.AvisUtileDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.typeSeance`: Exposes CRUD operations for the **TypeSeance** model.
@@ -770,6 +785,7 @@ export namespace Prisma {
     Produit: 'Produit',
     Avis: 'Avis',
     Like: 'Like',
+    AvisUtile: 'AvisUtile',
     TypeSeance: 'TypeSeance',
     RendezVous: 'RendezVous',
     Configuration: 'Configuration',
@@ -790,7 +806,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "categorie" | "produit" | "avis" | "like" | "typeSeance" | "rendezVous" | "configuration" | "commande" | "ligneCommande"
+      modelProps: "user" | "categorie" | "produit" | "avis" | "like" | "avisUtile" | "typeSeance" | "rendezVous" | "configuration" | "commande" | "ligneCommande"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1161,6 +1177,80 @@ export namespace Prisma {
           count: {
             args: Prisma.LikeCountArgs<ExtArgs>
             result: $Utils.Optional<LikeCountAggregateOutputType> | number
+          }
+        }
+      }
+      AvisUtile: {
+        payload: Prisma.$AvisUtilePayload<ExtArgs>
+        fields: Prisma.AvisUtileFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AvisUtileFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvisUtilePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AvisUtileFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvisUtilePayload>
+          }
+          findFirst: {
+            args: Prisma.AvisUtileFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvisUtilePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AvisUtileFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvisUtilePayload>
+          }
+          findMany: {
+            args: Prisma.AvisUtileFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvisUtilePayload>[]
+          }
+          create: {
+            args: Prisma.AvisUtileCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvisUtilePayload>
+          }
+          createMany: {
+            args: Prisma.AvisUtileCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AvisUtileCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvisUtilePayload>[]
+          }
+          delete: {
+            args: Prisma.AvisUtileDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvisUtilePayload>
+          }
+          update: {
+            args: Prisma.AvisUtileUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvisUtilePayload>
+          }
+          deleteMany: {
+            args: Prisma.AvisUtileDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AvisUtileUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AvisUtileUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvisUtilePayload>[]
+          }
+          upsert: {
+            args: Prisma.AvisUtileUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvisUtilePayload>
+          }
+          aggregate: {
+            args: Prisma.AvisUtileAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAvisUtile>
+          }
+          groupBy: {
+            args: Prisma.AvisUtileGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AvisUtileGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AvisUtileCountArgs<ExtArgs>
+            result: $Utils.Optional<AvisUtileCountAggregateOutputType> | number
           }
         }
       }
@@ -1647,6 +1737,7 @@ export namespace Prisma {
     produit?: ProduitOmit
     avis?: AvisOmit
     like?: LikeOmit
+    avisUtile?: AvisUtileOmit
     typeSeance?: TypeSeanceOmit
     rendezVous?: RendezVousOmit
     configuration?: ConfigurationOmit
@@ -1736,6 +1827,8 @@ export namespace Prisma {
     likes: number
     rendezVous: number
     commandes: number
+    avis_repondus: number
+    votes_utiles: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1743,6 +1836,8 @@ export namespace Prisma {
     likes?: boolean | UserCountOutputTypeCountLikesArgs
     rendezVous?: boolean | UserCountOutputTypeCountRendezVousArgs
     commandes?: boolean | UserCountOutputTypeCountCommandesArgs
+    avis_repondus?: boolean | UserCountOutputTypeCountAvis_repondusArgs
+    votes_utiles?: boolean | UserCountOutputTypeCountVotes_utilesArgs
   }
 
   // Custom InputTypes
@@ -1782,6 +1877,20 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountCommandesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: CommandeWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountAvis_repondusArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AvisWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountVotes_utilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AvisUtileWhereInput
   }
 
 
@@ -1862,6 +1971,37 @@ export namespace Prisma {
    */
   export type ProduitCountOutputTypeCountLignesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: LigneCommandeWhereInput
+  }
+
+
+  /**
+   * Count Type AvisCountOutputType
+   */
+
+  export type AvisCountOutputType = {
+    votes_utiles: number
+  }
+
+  export type AvisCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    votes_utiles?: boolean | AvisCountOutputTypeCountVotes_utilesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * AvisCountOutputType without action
+   */
+  export type AvisCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AvisCountOutputType
+     */
+    select?: AvisCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * AvisCountOutputType without action
+   */
+  export type AvisCountOutputTypeCountVotes_utilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AvisUtileWhereInput
   }
 
 
@@ -2147,6 +2287,8 @@ export namespace Prisma {
     likes?: boolean | User$likesArgs<ExtArgs>
     rendezVous?: boolean | User$rendezVousArgs<ExtArgs>
     commandes?: boolean | User$commandesArgs<ExtArgs>
+    avis_repondus?: boolean | User$avis_repondusArgs<ExtArgs>
+    votes_utiles?: boolean | User$votes_utilesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2198,6 +2340,8 @@ export namespace Prisma {
     likes?: boolean | User$likesArgs<ExtArgs>
     rendezVous?: boolean | User$rendezVousArgs<ExtArgs>
     commandes?: boolean | User$commandesArgs<ExtArgs>
+    avis_repondus?: boolean | User$avis_repondusArgs<ExtArgs>
+    votes_utiles?: boolean | User$votes_utilesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2210,6 +2354,8 @@ export namespace Prisma {
       likes: Prisma.$LikePayload<ExtArgs>[]
       rendezVous: Prisma.$RendezVousPayload<ExtArgs>[]
       commandes: Prisma.$CommandePayload<ExtArgs>[]
+      avis_repondus: Prisma.$AvisPayload<ExtArgs>[]
+      votes_utiles: Prisma.$AvisUtilePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2621,6 +2767,8 @@ export namespace Prisma {
     likes<T extends User$likesArgs<ExtArgs> = {}>(args?: Subset<T, User$likesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     rendezVous<T extends User$rendezVousArgs<ExtArgs> = {}>(args?: Subset<T, User$rendezVousArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RendezVousPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     commandes<T extends User$commandesArgs<ExtArgs> = {}>(args?: Subset<T, User$commandesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommandePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    avis_repondus<T extends User$avis_repondusArgs<ExtArgs> = {}>(args?: Subset<T, User$avis_repondusArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AvisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    votes_utiles<T extends User$votes_utilesArgs<ExtArgs> = {}>(args?: Subset<T, User$votes_utilesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AvisUtilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3147,6 +3295,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: CommandeScalarFieldEnum | CommandeScalarFieldEnum[]
+  }
+
+  /**
+   * User.avis_repondus
+   */
+  export type User$avis_repondusArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Avis
+     */
+    select?: AvisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Avis
+     */
+    omit?: AvisOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvisInclude<ExtArgs> | null
+    where?: AvisWhereInput
+    orderBy?: AvisOrderByWithRelationInput | AvisOrderByWithRelationInput[]
+    cursor?: AvisWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AvisScalarFieldEnum | AvisScalarFieldEnum[]
+  }
+
+  /**
+   * User.votes_utiles
+   */
+  export type User$votes_utilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AvisUtile
+     */
+    select?: AvisUtileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AvisUtile
+     */
+    omit?: AvisUtileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvisUtileInclude<ExtArgs> | null
+    where?: AvisUtileWhereInput
+    orderBy?: AvisUtileOrderByWithRelationInput | AvisUtileOrderByWithRelationInput[]
+    cursor?: AvisUtileWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AvisUtileScalarFieldEnum | AvisUtileScalarFieldEnum[]
   }
 
   /**
@@ -5597,6 +5793,10 @@ export namespace Prisma {
     utilisateur_id: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    reponse_admin: string | null
+    reponse_admin_at: Date | null
+    reponse_admin_id: string | null
+    masque: boolean | null
   }
 
   export type AvisMaxAggregateOutputType = {
@@ -5608,6 +5808,10 @@ export namespace Prisma {
     utilisateur_id: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    reponse_admin: string | null
+    reponse_admin_at: Date | null
+    reponse_admin_id: string | null
+    masque: boolean | null
   }
 
   export type AvisCountAggregateOutputType = {
@@ -5619,6 +5823,10 @@ export namespace Prisma {
     utilisateur_id: number
     createdAt: number
     updatedAt: number
+    reponse_admin: number
+    reponse_admin_at: number
+    reponse_admin_id: number
+    masque: number
     _all: number
   }
 
@@ -5640,6 +5848,10 @@ export namespace Prisma {
     utilisateur_id?: true
     createdAt?: true
     updatedAt?: true
+    reponse_admin?: true
+    reponse_admin_at?: true
+    reponse_admin_id?: true
+    masque?: true
   }
 
   export type AvisMaxAggregateInputType = {
@@ -5651,6 +5863,10 @@ export namespace Prisma {
     utilisateur_id?: true
     createdAt?: true
     updatedAt?: true
+    reponse_admin?: true
+    reponse_admin_at?: true
+    reponse_admin_id?: true
+    masque?: true
   }
 
   export type AvisCountAggregateInputType = {
@@ -5662,6 +5878,10 @@ export namespace Prisma {
     utilisateur_id?: true
     createdAt?: true
     updatedAt?: true
+    reponse_admin?: true
+    reponse_admin_at?: true
+    reponse_admin_id?: true
+    masque?: true
     _all?: true
   }
 
@@ -5760,6 +5980,10 @@ export namespace Prisma {
     utilisateur_id: string
     createdAt: Date
     updatedAt: Date
+    reponse_admin: string | null
+    reponse_admin_at: Date | null
+    reponse_admin_id: string | null
+    masque: boolean
     _count: AvisCountAggregateOutputType | null
     _avg: AvisAvgAggregateOutputType | null
     _sum: AvisSumAggregateOutputType | null
@@ -5790,8 +6014,15 @@ export namespace Prisma {
     utilisateur_id?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    reponse_admin?: boolean
+    reponse_admin_at?: boolean
+    reponse_admin_id?: boolean
+    masque?: boolean
     produit?: boolean | ProduitDefaultArgs<ExtArgs>
     utilisateur?: boolean | UserDefaultArgs<ExtArgs>
+    admin_repondant?: boolean | Avis$admin_repondantArgs<ExtArgs>
+    votes_utiles?: boolean | Avis$votes_utilesArgs<ExtArgs>
+    _count?: boolean | AvisCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["avis"]>
 
   export type AvisSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -5803,8 +6034,13 @@ export namespace Prisma {
     utilisateur_id?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    reponse_admin?: boolean
+    reponse_admin_at?: boolean
+    reponse_admin_id?: boolean
+    masque?: boolean
     produit?: boolean | ProduitDefaultArgs<ExtArgs>
     utilisateur?: boolean | UserDefaultArgs<ExtArgs>
+    admin_repondant?: boolean | Avis$admin_repondantArgs<ExtArgs>
   }, ExtArgs["result"]["avis"]>
 
   export type AvisSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -5816,8 +6052,13 @@ export namespace Prisma {
     utilisateur_id?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    reponse_admin?: boolean
+    reponse_admin_at?: boolean
+    reponse_admin_id?: boolean
+    masque?: boolean
     produit?: boolean | ProduitDefaultArgs<ExtArgs>
     utilisateur?: boolean | UserDefaultArgs<ExtArgs>
+    admin_repondant?: boolean | Avis$admin_repondantArgs<ExtArgs>
   }, ExtArgs["result"]["avis"]>
 
   export type AvisSelectScalar = {
@@ -5829,20 +6070,29 @@ export namespace Prisma {
     utilisateur_id?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    reponse_admin?: boolean
+    reponse_admin_at?: boolean
+    reponse_admin_id?: boolean
+    masque?: boolean
   }
 
-  export type AvisOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "note" | "titre" | "contenu" | "produit_id" | "utilisateur_id" | "createdAt" | "updatedAt", ExtArgs["result"]["avis"]>
+  export type AvisOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "note" | "titre" | "contenu" | "produit_id" | "utilisateur_id" | "createdAt" | "updatedAt" | "reponse_admin" | "reponse_admin_at" | "reponse_admin_id" | "masque", ExtArgs["result"]["avis"]>
   export type AvisInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     produit?: boolean | ProduitDefaultArgs<ExtArgs>
     utilisateur?: boolean | UserDefaultArgs<ExtArgs>
+    admin_repondant?: boolean | Avis$admin_repondantArgs<ExtArgs>
+    votes_utiles?: boolean | Avis$votes_utilesArgs<ExtArgs>
+    _count?: boolean | AvisCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AvisIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     produit?: boolean | ProduitDefaultArgs<ExtArgs>
     utilisateur?: boolean | UserDefaultArgs<ExtArgs>
+    admin_repondant?: boolean | Avis$admin_repondantArgs<ExtArgs>
   }
   export type AvisIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     produit?: boolean | ProduitDefaultArgs<ExtArgs>
     utilisateur?: boolean | UserDefaultArgs<ExtArgs>
+    admin_repondant?: boolean | Avis$admin_repondantArgs<ExtArgs>
   }
 
   export type $AvisPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5850,6 +6100,8 @@ export namespace Prisma {
     objects: {
       produit: Prisma.$ProduitPayload<ExtArgs>
       utilisateur: Prisma.$UserPayload<ExtArgs>
+      admin_repondant: Prisma.$UserPayload<ExtArgs> | null
+      votes_utiles: Prisma.$AvisUtilePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5860,6 +6112,10 @@ export namespace Prisma {
       utilisateur_id: string
       createdAt: Date
       updatedAt: Date
+      reponse_admin: string | null
+      reponse_admin_at: Date | null
+      reponse_admin_id: string | null
+      masque: boolean
     }, ExtArgs["result"]["avis"]>
     composites: {}
   }
@@ -6256,6 +6512,8 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     produit<T extends ProduitDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProduitDefaultArgs<ExtArgs>>): Prisma__ProduitClient<$Result.GetResult<Prisma.$ProduitPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     utilisateur<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    admin_repondant<T extends Avis$admin_repondantArgs<ExtArgs> = {}>(args?: Subset<T, Avis$admin_repondantArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    votes_utiles<T extends Avis$votes_utilesArgs<ExtArgs> = {}>(args?: Subset<T, Avis$votes_utilesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AvisUtilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6293,6 +6551,10 @@ export namespace Prisma {
     readonly utilisateur_id: FieldRef<"Avis", 'String'>
     readonly createdAt: FieldRef<"Avis", 'DateTime'>
     readonly updatedAt: FieldRef<"Avis", 'DateTime'>
+    readonly reponse_admin: FieldRef<"Avis", 'String'>
+    readonly reponse_admin_at: FieldRef<"Avis", 'DateTime'>
+    readonly reponse_admin_id: FieldRef<"Avis", 'String'>
+    readonly masque: FieldRef<"Avis", 'Boolean'>
   }
     
 
@@ -6691,6 +6953,49 @@ export namespace Prisma {
      * Limit how many Avis to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Avis.admin_repondant
+   */
+  export type Avis$admin_repondantArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * Avis.votes_utiles
+   */
+  export type Avis$votes_utilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AvisUtile
+     */
+    select?: AvisUtileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AvisUtile
+     */
+    omit?: AvisUtileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvisUtileInclude<ExtArgs> | null
+    where?: AvisUtileWhereInput
+    orderBy?: AvisUtileOrderByWithRelationInput | AvisUtileOrderByWithRelationInput[]
+    cursor?: AvisUtileWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AvisUtileScalarFieldEnum | AvisUtileScalarFieldEnum[]
   }
 
   /**
@@ -7767,6 +8072,1077 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: LikeInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model AvisUtile
+   */
+
+  export type AggregateAvisUtile = {
+    _count: AvisUtileCountAggregateOutputType | null
+    _min: AvisUtileMinAggregateOutputType | null
+    _max: AvisUtileMaxAggregateOutputType | null
+  }
+
+  export type AvisUtileMinAggregateOutputType = {
+    id: string | null
+    avis_id: string | null
+    utilisateur_id: string | null
+    utile: boolean | null
+    createdAt: Date | null
+  }
+
+  export type AvisUtileMaxAggregateOutputType = {
+    id: string | null
+    avis_id: string | null
+    utilisateur_id: string | null
+    utile: boolean | null
+    createdAt: Date | null
+  }
+
+  export type AvisUtileCountAggregateOutputType = {
+    id: number
+    avis_id: number
+    utilisateur_id: number
+    utile: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type AvisUtileMinAggregateInputType = {
+    id?: true
+    avis_id?: true
+    utilisateur_id?: true
+    utile?: true
+    createdAt?: true
+  }
+
+  export type AvisUtileMaxAggregateInputType = {
+    id?: true
+    avis_id?: true
+    utilisateur_id?: true
+    utile?: true
+    createdAt?: true
+  }
+
+  export type AvisUtileCountAggregateInputType = {
+    id?: true
+    avis_id?: true
+    utilisateur_id?: true
+    utile?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type AvisUtileAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AvisUtile to aggregate.
+     */
+    where?: AvisUtileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AvisUtiles to fetch.
+     */
+    orderBy?: AvisUtileOrderByWithRelationInput | AvisUtileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AvisUtileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AvisUtiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AvisUtiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AvisUtiles
+    **/
+    _count?: true | AvisUtileCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AvisUtileMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AvisUtileMaxAggregateInputType
+  }
+
+  export type GetAvisUtileAggregateType<T extends AvisUtileAggregateArgs> = {
+        [P in keyof T & keyof AggregateAvisUtile]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAvisUtile[P]>
+      : GetScalarType<T[P], AggregateAvisUtile[P]>
+  }
+
+
+
+
+  export type AvisUtileGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AvisUtileWhereInput
+    orderBy?: AvisUtileOrderByWithAggregationInput | AvisUtileOrderByWithAggregationInput[]
+    by: AvisUtileScalarFieldEnum[] | AvisUtileScalarFieldEnum
+    having?: AvisUtileScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AvisUtileCountAggregateInputType | true
+    _min?: AvisUtileMinAggregateInputType
+    _max?: AvisUtileMaxAggregateInputType
+  }
+
+  export type AvisUtileGroupByOutputType = {
+    id: string
+    avis_id: string
+    utilisateur_id: string
+    utile: boolean
+    createdAt: Date
+    _count: AvisUtileCountAggregateOutputType | null
+    _min: AvisUtileMinAggregateOutputType | null
+    _max: AvisUtileMaxAggregateOutputType | null
+  }
+
+  type GetAvisUtileGroupByPayload<T extends AvisUtileGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AvisUtileGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AvisUtileGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AvisUtileGroupByOutputType[P]>
+            : GetScalarType<T[P], AvisUtileGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AvisUtileSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    avis_id?: boolean
+    utilisateur_id?: boolean
+    utile?: boolean
+    createdAt?: boolean
+    avis?: boolean | AvisDefaultArgs<ExtArgs>
+    utilisateur?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["avisUtile"]>
+
+  export type AvisUtileSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    avis_id?: boolean
+    utilisateur_id?: boolean
+    utile?: boolean
+    createdAt?: boolean
+    avis?: boolean | AvisDefaultArgs<ExtArgs>
+    utilisateur?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["avisUtile"]>
+
+  export type AvisUtileSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    avis_id?: boolean
+    utilisateur_id?: boolean
+    utile?: boolean
+    createdAt?: boolean
+    avis?: boolean | AvisDefaultArgs<ExtArgs>
+    utilisateur?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["avisUtile"]>
+
+  export type AvisUtileSelectScalar = {
+    id?: boolean
+    avis_id?: boolean
+    utilisateur_id?: boolean
+    utile?: boolean
+    createdAt?: boolean
+  }
+
+  export type AvisUtileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "avis_id" | "utilisateur_id" | "utile" | "createdAt", ExtArgs["result"]["avisUtile"]>
+  export type AvisUtileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    avis?: boolean | AvisDefaultArgs<ExtArgs>
+    utilisateur?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type AvisUtileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    avis?: boolean | AvisDefaultArgs<ExtArgs>
+    utilisateur?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type AvisUtileIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    avis?: boolean | AvisDefaultArgs<ExtArgs>
+    utilisateur?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $AvisUtilePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AvisUtile"
+    objects: {
+      avis: Prisma.$AvisPayload<ExtArgs>
+      utilisateur: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      avis_id: string
+      utilisateur_id: string
+      utile: boolean
+      createdAt: Date
+    }, ExtArgs["result"]["avisUtile"]>
+    composites: {}
+  }
+
+  type AvisUtileGetPayload<S extends boolean | null | undefined | AvisUtileDefaultArgs> = $Result.GetResult<Prisma.$AvisUtilePayload, S>
+
+  type AvisUtileCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AvisUtileFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AvisUtileCountAggregateInputType | true
+    }
+
+  export interface AvisUtileDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AvisUtile'], meta: { name: 'AvisUtile' } }
+    /**
+     * Find zero or one AvisUtile that matches the filter.
+     * @param {AvisUtileFindUniqueArgs} args - Arguments to find a AvisUtile
+     * @example
+     * // Get one AvisUtile
+     * const avisUtile = await prisma.avisUtile.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AvisUtileFindUniqueArgs>(args: SelectSubset<T, AvisUtileFindUniqueArgs<ExtArgs>>): Prisma__AvisUtileClient<$Result.GetResult<Prisma.$AvisUtilePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AvisUtile that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AvisUtileFindUniqueOrThrowArgs} args - Arguments to find a AvisUtile
+     * @example
+     * // Get one AvisUtile
+     * const avisUtile = await prisma.avisUtile.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AvisUtileFindUniqueOrThrowArgs>(args: SelectSubset<T, AvisUtileFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AvisUtileClient<$Result.GetResult<Prisma.$AvisUtilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AvisUtile that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AvisUtileFindFirstArgs} args - Arguments to find a AvisUtile
+     * @example
+     * // Get one AvisUtile
+     * const avisUtile = await prisma.avisUtile.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AvisUtileFindFirstArgs>(args?: SelectSubset<T, AvisUtileFindFirstArgs<ExtArgs>>): Prisma__AvisUtileClient<$Result.GetResult<Prisma.$AvisUtilePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AvisUtile that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AvisUtileFindFirstOrThrowArgs} args - Arguments to find a AvisUtile
+     * @example
+     * // Get one AvisUtile
+     * const avisUtile = await prisma.avisUtile.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AvisUtileFindFirstOrThrowArgs>(args?: SelectSubset<T, AvisUtileFindFirstOrThrowArgs<ExtArgs>>): Prisma__AvisUtileClient<$Result.GetResult<Prisma.$AvisUtilePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AvisUtiles that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AvisUtileFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AvisUtiles
+     * const avisUtiles = await prisma.avisUtile.findMany()
+     * 
+     * // Get first 10 AvisUtiles
+     * const avisUtiles = await prisma.avisUtile.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const avisUtileWithIdOnly = await prisma.avisUtile.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AvisUtileFindManyArgs>(args?: SelectSubset<T, AvisUtileFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AvisUtilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AvisUtile.
+     * @param {AvisUtileCreateArgs} args - Arguments to create a AvisUtile.
+     * @example
+     * // Create one AvisUtile
+     * const AvisUtile = await prisma.avisUtile.create({
+     *   data: {
+     *     // ... data to create a AvisUtile
+     *   }
+     * })
+     * 
+     */
+    create<T extends AvisUtileCreateArgs>(args: SelectSubset<T, AvisUtileCreateArgs<ExtArgs>>): Prisma__AvisUtileClient<$Result.GetResult<Prisma.$AvisUtilePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AvisUtiles.
+     * @param {AvisUtileCreateManyArgs} args - Arguments to create many AvisUtiles.
+     * @example
+     * // Create many AvisUtiles
+     * const avisUtile = await prisma.avisUtile.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AvisUtileCreateManyArgs>(args?: SelectSubset<T, AvisUtileCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AvisUtiles and returns the data saved in the database.
+     * @param {AvisUtileCreateManyAndReturnArgs} args - Arguments to create many AvisUtiles.
+     * @example
+     * // Create many AvisUtiles
+     * const avisUtile = await prisma.avisUtile.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AvisUtiles and only return the `id`
+     * const avisUtileWithIdOnly = await prisma.avisUtile.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AvisUtileCreateManyAndReturnArgs>(args?: SelectSubset<T, AvisUtileCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AvisUtilePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AvisUtile.
+     * @param {AvisUtileDeleteArgs} args - Arguments to delete one AvisUtile.
+     * @example
+     * // Delete one AvisUtile
+     * const AvisUtile = await prisma.avisUtile.delete({
+     *   where: {
+     *     // ... filter to delete one AvisUtile
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AvisUtileDeleteArgs>(args: SelectSubset<T, AvisUtileDeleteArgs<ExtArgs>>): Prisma__AvisUtileClient<$Result.GetResult<Prisma.$AvisUtilePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AvisUtile.
+     * @param {AvisUtileUpdateArgs} args - Arguments to update one AvisUtile.
+     * @example
+     * // Update one AvisUtile
+     * const avisUtile = await prisma.avisUtile.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AvisUtileUpdateArgs>(args: SelectSubset<T, AvisUtileUpdateArgs<ExtArgs>>): Prisma__AvisUtileClient<$Result.GetResult<Prisma.$AvisUtilePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AvisUtiles.
+     * @param {AvisUtileDeleteManyArgs} args - Arguments to filter AvisUtiles to delete.
+     * @example
+     * // Delete a few AvisUtiles
+     * const { count } = await prisma.avisUtile.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AvisUtileDeleteManyArgs>(args?: SelectSubset<T, AvisUtileDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AvisUtiles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AvisUtileUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AvisUtiles
+     * const avisUtile = await prisma.avisUtile.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AvisUtileUpdateManyArgs>(args: SelectSubset<T, AvisUtileUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AvisUtiles and returns the data updated in the database.
+     * @param {AvisUtileUpdateManyAndReturnArgs} args - Arguments to update many AvisUtiles.
+     * @example
+     * // Update many AvisUtiles
+     * const avisUtile = await prisma.avisUtile.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AvisUtiles and only return the `id`
+     * const avisUtileWithIdOnly = await prisma.avisUtile.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AvisUtileUpdateManyAndReturnArgs>(args: SelectSubset<T, AvisUtileUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AvisUtilePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AvisUtile.
+     * @param {AvisUtileUpsertArgs} args - Arguments to update or create a AvisUtile.
+     * @example
+     * // Update or create a AvisUtile
+     * const avisUtile = await prisma.avisUtile.upsert({
+     *   create: {
+     *     // ... data to create a AvisUtile
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AvisUtile we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AvisUtileUpsertArgs>(args: SelectSubset<T, AvisUtileUpsertArgs<ExtArgs>>): Prisma__AvisUtileClient<$Result.GetResult<Prisma.$AvisUtilePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AvisUtiles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AvisUtileCountArgs} args - Arguments to filter AvisUtiles to count.
+     * @example
+     * // Count the number of AvisUtiles
+     * const count = await prisma.avisUtile.count({
+     *   where: {
+     *     // ... the filter for the AvisUtiles we want to count
+     *   }
+     * })
+    **/
+    count<T extends AvisUtileCountArgs>(
+      args?: Subset<T, AvisUtileCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AvisUtileCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AvisUtile.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AvisUtileAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AvisUtileAggregateArgs>(args: Subset<T, AvisUtileAggregateArgs>): Prisma.PrismaPromise<GetAvisUtileAggregateType<T>>
+
+    /**
+     * Group by AvisUtile.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AvisUtileGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AvisUtileGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AvisUtileGroupByArgs['orderBy'] }
+        : { orderBy?: AvisUtileGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AvisUtileGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAvisUtileGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AvisUtile model
+   */
+  readonly fields: AvisUtileFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AvisUtile.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AvisUtileClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    avis<T extends AvisDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AvisDefaultArgs<ExtArgs>>): Prisma__AvisClient<$Result.GetResult<Prisma.$AvisPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    utilisateur<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AvisUtile model
+   */
+  interface AvisUtileFieldRefs {
+    readonly id: FieldRef<"AvisUtile", 'String'>
+    readonly avis_id: FieldRef<"AvisUtile", 'String'>
+    readonly utilisateur_id: FieldRef<"AvisUtile", 'String'>
+    readonly utile: FieldRef<"AvisUtile", 'Boolean'>
+    readonly createdAt: FieldRef<"AvisUtile", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AvisUtile findUnique
+   */
+  export type AvisUtileFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AvisUtile
+     */
+    select?: AvisUtileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AvisUtile
+     */
+    omit?: AvisUtileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvisUtileInclude<ExtArgs> | null
+    /**
+     * Filter, which AvisUtile to fetch.
+     */
+    where: AvisUtileWhereUniqueInput
+  }
+
+  /**
+   * AvisUtile findUniqueOrThrow
+   */
+  export type AvisUtileFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AvisUtile
+     */
+    select?: AvisUtileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AvisUtile
+     */
+    omit?: AvisUtileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvisUtileInclude<ExtArgs> | null
+    /**
+     * Filter, which AvisUtile to fetch.
+     */
+    where: AvisUtileWhereUniqueInput
+  }
+
+  /**
+   * AvisUtile findFirst
+   */
+  export type AvisUtileFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AvisUtile
+     */
+    select?: AvisUtileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AvisUtile
+     */
+    omit?: AvisUtileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvisUtileInclude<ExtArgs> | null
+    /**
+     * Filter, which AvisUtile to fetch.
+     */
+    where?: AvisUtileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AvisUtiles to fetch.
+     */
+    orderBy?: AvisUtileOrderByWithRelationInput | AvisUtileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AvisUtiles.
+     */
+    cursor?: AvisUtileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AvisUtiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AvisUtiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AvisUtiles.
+     */
+    distinct?: AvisUtileScalarFieldEnum | AvisUtileScalarFieldEnum[]
+  }
+
+  /**
+   * AvisUtile findFirstOrThrow
+   */
+  export type AvisUtileFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AvisUtile
+     */
+    select?: AvisUtileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AvisUtile
+     */
+    omit?: AvisUtileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvisUtileInclude<ExtArgs> | null
+    /**
+     * Filter, which AvisUtile to fetch.
+     */
+    where?: AvisUtileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AvisUtiles to fetch.
+     */
+    orderBy?: AvisUtileOrderByWithRelationInput | AvisUtileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AvisUtiles.
+     */
+    cursor?: AvisUtileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AvisUtiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AvisUtiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AvisUtiles.
+     */
+    distinct?: AvisUtileScalarFieldEnum | AvisUtileScalarFieldEnum[]
+  }
+
+  /**
+   * AvisUtile findMany
+   */
+  export type AvisUtileFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AvisUtile
+     */
+    select?: AvisUtileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AvisUtile
+     */
+    omit?: AvisUtileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvisUtileInclude<ExtArgs> | null
+    /**
+     * Filter, which AvisUtiles to fetch.
+     */
+    where?: AvisUtileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AvisUtiles to fetch.
+     */
+    orderBy?: AvisUtileOrderByWithRelationInput | AvisUtileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AvisUtiles.
+     */
+    cursor?: AvisUtileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AvisUtiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AvisUtiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AvisUtiles.
+     */
+    distinct?: AvisUtileScalarFieldEnum | AvisUtileScalarFieldEnum[]
+  }
+
+  /**
+   * AvisUtile create
+   */
+  export type AvisUtileCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AvisUtile
+     */
+    select?: AvisUtileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AvisUtile
+     */
+    omit?: AvisUtileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvisUtileInclude<ExtArgs> | null
+    /**
+     * The data needed to create a AvisUtile.
+     */
+    data: XOR<AvisUtileCreateInput, AvisUtileUncheckedCreateInput>
+  }
+
+  /**
+   * AvisUtile createMany
+   */
+  export type AvisUtileCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AvisUtiles.
+     */
+    data: AvisUtileCreateManyInput | AvisUtileCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AvisUtile createManyAndReturn
+   */
+  export type AvisUtileCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AvisUtile
+     */
+    select?: AvisUtileSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AvisUtile
+     */
+    omit?: AvisUtileOmit<ExtArgs> | null
+    /**
+     * The data used to create many AvisUtiles.
+     */
+    data: AvisUtileCreateManyInput | AvisUtileCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvisUtileIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AvisUtile update
+   */
+  export type AvisUtileUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AvisUtile
+     */
+    select?: AvisUtileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AvisUtile
+     */
+    omit?: AvisUtileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvisUtileInclude<ExtArgs> | null
+    /**
+     * The data needed to update a AvisUtile.
+     */
+    data: XOR<AvisUtileUpdateInput, AvisUtileUncheckedUpdateInput>
+    /**
+     * Choose, which AvisUtile to update.
+     */
+    where: AvisUtileWhereUniqueInput
+  }
+
+  /**
+   * AvisUtile updateMany
+   */
+  export type AvisUtileUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AvisUtiles.
+     */
+    data: XOR<AvisUtileUpdateManyMutationInput, AvisUtileUncheckedUpdateManyInput>
+    /**
+     * Filter which AvisUtiles to update
+     */
+    where?: AvisUtileWhereInput
+    /**
+     * Limit how many AvisUtiles to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AvisUtile updateManyAndReturn
+   */
+  export type AvisUtileUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AvisUtile
+     */
+    select?: AvisUtileSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AvisUtile
+     */
+    omit?: AvisUtileOmit<ExtArgs> | null
+    /**
+     * The data used to update AvisUtiles.
+     */
+    data: XOR<AvisUtileUpdateManyMutationInput, AvisUtileUncheckedUpdateManyInput>
+    /**
+     * Filter which AvisUtiles to update
+     */
+    where?: AvisUtileWhereInput
+    /**
+     * Limit how many AvisUtiles to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvisUtileIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AvisUtile upsert
+   */
+  export type AvisUtileUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AvisUtile
+     */
+    select?: AvisUtileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AvisUtile
+     */
+    omit?: AvisUtileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvisUtileInclude<ExtArgs> | null
+    /**
+     * The filter to search for the AvisUtile to update in case it exists.
+     */
+    where: AvisUtileWhereUniqueInput
+    /**
+     * In case the AvisUtile found by the `where` argument doesn't exist, create a new AvisUtile with this data.
+     */
+    create: XOR<AvisUtileCreateInput, AvisUtileUncheckedCreateInput>
+    /**
+     * In case the AvisUtile was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AvisUtileUpdateInput, AvisUtileUncheckedUpdateInput>
+  }
+
+  /**
+   * AvisUtile delete
+   */
+  export type AvisUtileDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AvisUtile
+     */
+    select?: AvisUtileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AvisUtile
+     */
+    omit?: AvisUtileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvisUtileInclude<ExtArgs> | null
+    /**
+     * Filter which AvisUtile to delete.
+     */
+    where: AvisUtileWhereUniqueInput
+  }
+
+  /**
+   * AvisUtile deleteMany
+   */
+  export type AvisUtileDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AvisUtiles to delete
+     */
+    where?: AvisUtileWhereInput
+    /**
+     * Limit how many AvisUtiles to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AvisUtile without action
+   */
+  export type AvisUtileDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AvisUtile
+     */
+    select?: AvisUtileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AvisUtile
+     */
+    omit?: AvisUtileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvisUtileInclude<ExtArgs> | null
   }
 
 
@@ -8951,6 +10327,7 @@ export namespace Prisma {
     notes: string | null
     statut: $Enums.AppointmentStatus | null
     raison_refus: string | null
+    notes_admin: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -8964,6 +10341,7 @@ export namespace Prisma {
     notes: string | null
     statut: $Enums.AppointmentStatus | null
     raison_refus: string | null
+    notes_admin: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -8977,6 +10355,7 @@ export namespace Prisma {
     notes: number
     statut: number
     raison_refus: number
+    notes_admin: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -9000,6 +10379,7 @@ export namespace Prisma {
     notes?: true
     statut?: true
     raison_refus?: true
+    notes_admin?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -9013,6 +10393,7 @@ export namespace Prisma {
     notes?: true
     statut?: true
     raison_refus?: true
+    notes_admin?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -9026,6 +10407,7 @@ export namespace Prisma {
     notes?: true
     statut?: true
     raison_refus?: true
+    notes_admin?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -9126,6 +10508,7 @@ export namespace Prisma {
     notes: string | null
     statut: $Enums.AppointmentStatus
     raison_refus: string | null
+    notes_admin: string | null
     createdAt: Date
     updatedAt: Date
     _count: RendezVousCountAggregateOutputType | null
@@ -9158,6 +10541,7 @@ export namespace Prisma {
     notes?: boolean
     statut?: boolean
     raison_refus?: boolean
+    notes_admin?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     type_seance?: boolean | TypeSeanceDefaultArgs<ExtArgs>
@@ -9173,6 +10557,7 @@ export namespace Prisma {
     notes?: boolean
     statut?: boolean
     raison_refus?: boolean
+    notes_admin?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     type_seance?: boolean | TypeSeanceDefaultArgs<ExtArgs>
@@ -9188,6 +10573,7 @@ export namespace Prisma {
     notes?: boolean
     statut?: boolean
     raison_refus?: boolean
+    notes_admin?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     type_seance?: boolean | TypeSeanceDefaultArgs<ExtArgs>
@@ -9203,11 +10589,12 @@ export namespace Prisma {
     notes?: boolean
     statut?: boolean
     raison_refus?: boolean
+    notes_admin?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type RendezVousOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "utilisateur_id" | "date_heure" | "duree" | "type_seance_id" | "notes" | "statut" | "raison_refus" | "createdAt" | "updatedAt", ExtArgs["result"]["rendezVous"]>
+  export type RendezVousOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "utilisateur_id" | "date_heure" | "duree" | "type_seance_id" | "notes" | "statut" | "raison_refus" | "notes_admin" | "createdAt" | "updatedAt", ExtArgs["result"]["rendezVous"]>
   export type RendezVousInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     type_seance?: boolean | TypeSeanceDefaultArgs<ExtArgs>
     utilisateur?: boolean | UserDefaultArgs<ExtArgs>
@@ -9236,6 +10623,7 @@ export namespace Prisma {
       notes: string | null
       statut: $Enums.AppointmentStatus
       raison_refus: string | null
+      notes_admin: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["rendezVous"]>
@@ -9671,6 +11059,7 @@ export namespace Prisma {
     readonly notes: FieldRef<"RendezVous", 'String'>
     readonly statut: FieldRef<"RendezVous", 'AppointmentStatus'>
     readonly raison_refus: FieldRef<"RendezVous", 'String'>
+    readonly notes_admin: FieldRef<"RendezVous", 'String'>
     readonly createdAt: FieldRef<"RendezVous", 'DateTime'>
     readonly updatedAt: FieldRef<"RendezVous", 'DateTime'>
   }
@@ -13548,7 +14937,11 @@ export namespace Prisma {
     produit_id: 'produit_id',
     utilisateur_id: 'utilisateur_id',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    reponse_admin: 'reponse_admin',
+    reponse_admin_at: 'reponse_admin_at',
+    reponse_admin_id: 'reponse_admin_id',
+    masque: 'masque'
   };
 
   export type AvisScalarFieldEnum = (typeof AvisScalarFieldEnum)[keyof typeof AvisScalarFieldEnum]
@@ -13562,6 +14955,17 @@ export namespace Prisma {
   };
 
   export type LikeScalarFieldEnum = (typeof LikeScalarFieldEnum)[keyof typeof LikeScalarFieldEnum]
+
+
+  export const AvisUtileScalarFieldEnum: {
+    id: 'id',
+    avis_id: 'avis_id',
+    utilisateur_id: 'utilisateur_id',
+    utile: 'utile',
+    createdAt: 'createdAt'
+  };
+
+  export type AvisUtileScalarFieldEnum = (typeof AvisUtileScalarFieldEnum)[keyof typeof AvisUtileScalarFieldEnum]
 
 
   export const TypeSeanceScalarFieldEnum: {
@@ -13587,6 +14991,7 @@ export namespace Prisma {
     notes: 'notes',
     statut: 'statut',
     raison_refus: 'raison_refus',
+    notes_admin: 'notes_admin',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -13794,6 +15199,8 @@ export namespace Prisma {
     likes?: LikeListRelationFilter
     rendezVous?: RendezVousListRelationFilter
     commandes?: CommandeListRelationFilter
+    avis_repondus?: AvisListRelationFilter
+    votes_utiles?: AvisUtileListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -13812,6 +15219,8 @@ export namespace Prisma {
     likes?: LikeOrderByRelationAggregateInput
     rendezVous?: RendezVousOrderByRelationAggregateInput
     commandes?: CommandeOrderByRelationAggregateInput
+    avis_repondus?: AvisOrderByRelationAggregateInput
+    votes_utiles?: AvisUtileOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -13833,6 +15242,8 @@ export namespace Prisma {
     likes?: LikeListRelationFilter
     rendezVous?: RendezVousListRelationFilter
     commandes?: CommandeListRelationFilter
+    avis_repondus?: AvisListRelationFilter
+    votes_utiles?: AvisUtileListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -14044,8 +15455,14 @@ export namespace Prisma {
     utilisateur_id?: StringFilter<"Avis"> | string
     createdAt?: DateTimeFilter<"Avis"> | Date | string
     updatedAt?: DateTimeFilter<"Avis"> | Date | string
+    reponse_admin?: StringNullableFilter<"Avis"> | string | null
+    reponse_admin_at?: DateTimeNullableFilter<"Avis"> | Date | string | null
+    reponse_admin_id?: StringNullableFilter<"Avis"> | string | null
+    masque?: BoolFilter<"Avis"> | boolean
     produit?: XOR<ProduitScalarRelationFilter, ProduitWhereInput>
     utilisateur?: XOR<UserScalarRelationFilter, UserWhereInput>
+    admin_repondant?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    votes_utiles?: AvisUtileListRelationFilter
   }
 
   export type AvisOrderByWithRelationInput = {
@@ -14057,8 +15474,14 @@ export namespace Prisma {
     utilisateur_id?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    reponse_admin?: SortOrderInput | SortOrder
+    reponse_admin_at?: SortOrderInput | SortOrder
+    reponse_admin_id?: SortOrderInput | SortOrder
+    masque?: SortOrder
     produit?: ProduitOrderByWithRelationInput
     utilisateur?: UserOrderByWithRelationInput
+    admin_repondant?: UserOrderByWithRelationInput
+    votes_utiles?: AvisUtileOrderByRelationAggregateInput
   }
 
   export type AvisWhereUniqueInput = Prisma.AtLeast<{
@@ -14074,8 +15497,14 @@ export namespace Prisma {
     utilisateur_id?: StringFilter<"Avis"> | string
     createdAt?: DateTimeFilter<"Avis"> | Date | string
     updatedAt?: DateTimeFilter<"Avis"> | Date | string
+    reponse_admin?: StringNullableFilter<"Avis"> | string | null
+    reponse_admin_at?: DateTimeNullableFilter<"Avis"> | Date | string | null
+    reponse_admin_id?: StringNullableFilter<"Avis"> | string | null
+    masque?: BoolFilter<"Avis"> | boolean
     produit?: XOR<ProduitScalarRelationFilter, ProduitWhereInput>
     utilisateur?: XOR<UserScalarRelationFilter, UserWhereInput>
+    admin_repondant?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    votes_utiles?: AvisUtileListRelationFilter
   }, "id" | "utilisateur_id_produit_id">
 
   export type AvisOrderByWithAggregationInput = {
@@ -14087,6 +15516,10 @@ export namespace Prisma {
     utilisateur_id?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    reponse_admin?: SortOrderInput | SortOrder
+    reponse_admin_at?: SortOrderInput | SortOrder
+    reponse_admin_id?: SortOrderInput | SortOrder
+    masque?: SortOrder
     _count?: AvisCountOrderByAggregateInput
     _avg?: AvisAvgOrderByAggregateInput
     _max?: AvisMaxOrderByAggregateInput
@@ -14106,6 +15539,10 @@ export namespace Prisma {
     utilisateur_id?: StringWithAggregatesFilter<"Avis"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Avis"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Avis"> | Date | string
+    reponse_admin?: StringNullableWithAggregatesFilter<"Avis"> | string | null
+    reponse_admin_at?: DateTimeNullableWithAggregatesFilter<"Avis"> | Date | string | null
+    reponse_admin_id?: StringNullableWithAggregatesFilter<"Avis"> | string | null
+    masque?: BoolWithAggregatesFilter<"Avis"> | boolean
   }
 
   export type LikeWhereInput = {
@@ -14160,6 +15597,65 @@ export namespace Prisma {
     utilisateur_id?: StringWithAggregatesFilter<"Like"> | string
     produit_id?: StringWithAggregatesFilter<"Like"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Like"> | Date | string
+  }
+
+  export type AvisUtileWhereInput = {
+    AND?: AvisUtileWhereInput | AvisUtileWhereInput[]
+    OR?: AvisUtileWhereInput[]
+    NOT?: AvisUtileWhereInput | AvisUtileWhereInput[]
+    id?: StringFilter<"AvisUtile"> | string
+    avis_id?: StringFilter<"AvisUtile"> | string
+    utilisateur_id?: StringFilter<"AvisUtile"> | string
+    utile?: BoolFilter<"AvisUtile"> | boolean
+    createdAt?: DateTimeFilter<"AvisUtile"> | Date | string
+    avis?: XOR<AvisScalarRelationFilter, AvisWhereInput>
+    utilisateur?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type AvisUtileOrderByWithRelationInput = {
+    id?: SortOrder
+    avis_id?: SortOrder
+    utilisateur_id?: SortOrder
+    utile?: SortOrder
+    createdAt?: SortOrder
+    avis?: AvisOrderByWithRelationInput
+    utilisateur?: UserOrderByWithRelationInput
+  }
+
+  export type AvisUtileWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    avis_id_utilisateur_id?: AvisUtileAvis_idUtilisateur_idCompoundUniqueInput
+    AND?: AvisUtileWhereInput | AvisUtileWhereInput[]
+    OR?: AvisUtileWhereInput[]
+    NOT?: AvisUtileWhereInput | AvisUtileWhereInput[]
+    avis_id?: StringFilter<"AvisUtile"> | string
+    utilisateur_id?: StringFilter<"AvisUtile"> | string
+    utile?: BoolFilter<"AvisUtile"> | boolean
+    createdAt?: DateTimeFilter<"AvisUtile"> | Date | string
+    avis?: XOR<AvisScalarRelationFilter, AvisWhereInput>
+    utilisateur?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "avis_id_utilisateur_id">
+
+  export type AvisUtileOrderByWithAggregationInput = {
+    id?: SortOrder
+    avis_id?: SortOrder
+    utilisateur_id?: SortOrder
+    utile?: SortOrder
+    createdAt?: SortOrder
+    _count?: AvisUtileCountOrderByAggregateInput
+    _max?: AvisUtileMaxOrderByAggregateInput
+    _min?: AvisUtileMinOrderByAggregateInput
+  }
+
+  export type AvisUtileScalarWhereWithAggregatesInput = {
+    AND?: AvisUtileScalarWhereWithAggregatesInput | AvisUtileScalarWhereWithAggregatesInput[]
+    OR?: AvisUtileScalarWhereWithAggregatesInput[]
+    NOT?: AvisUtileScalarWhereWithAggregatesInput | AvisUtileScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AvisUtile"> | string
+    avis_id?: StringWithAggregatesFilter<"AvisUtile"> | string
+    utilisateur_id?: StringWithAggregatesFilter<"AvisUtile"> | string
+    utile?: BoolWithAggregatesFilter<"AvisUtile"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"AvisUtile"> | Date | string
   }
 
   export type TypeSeanceWhereInput = {
@@ -14246,6 +15742,7 @@ export namespace Prisma {
     notes?: StringNullableFilter<"RendezVous"> | string | null
     statut?: EnumAppointmentStatusFilter<"RendezVous"> | $Enums.AppointmentStatus
     raison_refus?: StringNullableFilter<"RendezVous"> | string | null
+    notes_admin?: StringNullableFilter<"RendezVous"> | string | null
     createdAt?: DateTimeFilter<"RendezVous"> | Date | string
     updatedAt?: DateTimeFilter<"RendezVous"> | Date | string
     type_seance?: XOR<TypeSeanceScalarRelationFilter, TypeSeanceWhereInput>
@@ -14261,6 +15758,7 @@ export namespace Prisma {
     notes?: SortOrderInput | SortOrder
     statut?: SortOrder
     raison_refus?: SortOrderInput | SortOrder
+    notes_admin?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     type_seance?: TypeSeanceOrderByWithRelationInput
@@ -14279,6 +15777,7 @@ export namespace Prisma {
     notes?: StringNullableFilter<"RendezVous"> | string | null
     statut?: EnumAppointmentStatusFilter<"RendezVous"> | $Enums.AppointmentStatus
     raison_refus?: StringNullableFilter<"RendezVous"> | string | null
+    notes_admin?: StringNullableFilter<"RendezVous"> | string | null
     createdAt?: DateTimeFilter<"RendezVous"> | Date | string
     updatedAt?: DateTimeFilter<"RendezVous"> | Date | string
     type_seance?: XOR<TypeSeanceScalarRelationFilter, TypeSeanceWhereInput>
@@ -14294,6 +15793,7 @@ export namespace Prisma {
     notes?: SortOrderInput | SortOrder
     statut?: SortOrder
     raison_refus?: SortOrderInput | SortOrder
+    notes_admin?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: RendezVousCountOrderByAggregateInput
@@ -14315,6 +15815,7 @@ export namespace Prisma {
     notes?: StringNullableWithAggregatesFilter<"RendezVous"> | string | null
     statut?: EnumAppointmentStatusWithAggregatesFilter<"RendezVous"> | $Enums.AppointmentStatus
     raison_refus?: StringNullableWithAggregatesFilter<"RendezVous"> | string | null
+    notes_admin?: StringNullableWithAggregatesFilter<"RendezVous"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"RendezVous"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"RendezVous"> | Date | string
   }
@@ -14562,6 +16063,8 @@ export namespace Prisma {
     likes?: LikeCreateNestedManyWithoutUtilisateurInput
     rendezVous?: RendezVousCreateNestedManyWithoutUtilisateurInput
     commandes?: CommandeCreateNestedManyWithoutUtilisateurInput
+    avis_repondus?: AvisCreateNestedManyWithoutAdmin_repondantInput
+    votes_utiles?: AvisUtileCreateNestedManyWithoutUtilisateurInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -14580,6 +16083,8 @@ export namespace Prisma {
     likes?: LikeUncheckedCreateNestedManyWithoutUtilisateurInput
     rendezVous?: RendezVousUncheckedCreateNestedManyWithoutUtilisateurInput
     commandes?: CommandeUncheckedCreateNestedManyWithoutUtilisateurInput
+    avis_repondus?: AvisUncheckedCreateNestedManyWithoutAdmin_repondantInput
+    votes_utiles?: AvisUtileUncheckedCreateNestedManyWithoutUtilisateurInput
   }
 
   export type UserUpdateInput = {
@@ -14598,6 +16103,8 @@ export namespace Prisma {
     likes?: LikeUpdateManyWithoutUtilisateurNestedInput
     rendezVous?: RendezVousUpdateManyWithoutUtilisateurNestedInput
     commandes?: CommandeUpdateManyWithoutUtilisateurNestedInput
+    avis_repondus?: AvisUpdateManyWithoutAdmin_repondantNestedInput
+    votes_utiles?: AvisUtileUpdateManyWithoutUtilisateurNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -14616,6 +16123,8 @@ export namespace Prisma {
     likes?: LikeUncheckedUpdateManyWithoutUtilisateurNestedInput
     rendezVous?: RendezVousUncheckedUpdateManyWithoutUtilisateurNestedInput
     commandes?: CommandeUncheckedUpdateManyWithoutUtilisateurNestedInput
+    avis_repondus?: AvisUncheckedUpdateManyWithoutAdmin_repondantNestedInput
+    votes_utiles?: AvisUtileUncheckedUpdateManyWithoutUtilisateurNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -14848,8 +16357,13 @@ export namespace Prisma {
     contenu: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    reponse_admin?: string | null
+    reponse_admin_at?: Date | string | null
+    masque?: boolean
     produit: ProduitCreateNestedOneWithoutAvisInput
     utilisateur: UserCreateNestedOneWithoutAvisInput
+    admin_repondant?: UserCreateNestedOneWithoutAvis_repondusInput
+    votes_utiles?: AvisUtileCreateNestedManyWithoutAvisInput
   }
 
   export type AvisUncheckedCreateInput = {
@@ -14861,6 +16375,11 @@ export namespace Prisma {
     utilisateur_id: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    reponse_admin?: string | null
+    reponse_admin_at?: Date | string | null
+    reponse_admin_id?: string | null
+    masque?: boolean
+    votes_utiles?: AvisUtileUncheckedCreateNestedManyWithoutAvisInput
   }
 
   export type AvisUpdateInput = {
@@ -14870,8 +16389,13 @@ export namespace Prisma {
     contenu?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reponse_admin?: NullableStringFieldUpdateOperationsInput | string | null
+    reponse_admin_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    masque?: BoolFieldUpdateOperationsInput | boolean
     produit?: ProduitUpdateOneRequiredWithoutAvisNestedInput
     utilisateur?: UserUpdateOneRequiredWithoutAvisNestedInput
+    admin_repondant?: UserUpdateOneWithoutAvis_repondusNestedInput
+    votes_utiles?: AvisUtileUpdateManyWithoutAvisNestedInput
   }
 
   export type AvisUncheckedUpdateInput = {
@@ -14883,6 +16407,11 @@ export namespace Prisma {
     utilisateur_id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reponse_admin?: NullableStringFieldUpdateOperationsInput | string | null
+    reponse_admin_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reponse_admin_id?: NullableStringFieldUpdateOperationsInput | string | null
+    masque?: BoolFieldUpdateOperationsInput | boolean
+    votes_utiles?: AvisUtileUncheckedUpdateManyWithoutAvisNestedInput
   }
 
   export type AvisCreateManyInput = {
@@ -14894,6 +16423,10 @@ export namespace Prisma {
     utilisateur_id: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    reponse_admin?: string | null
+    reponse_admin_at?: Date | string | null
+    reponse_admin_id?: string | null
+    masque?: boolean
   }
 
   export type AvisUpdateManyMutationInput = {
@@ -14903,6 +16436,9 @@ export namespace Prisma {
     contenu?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reponse_admin?: NullableStringFieldUpdateOperationsInput | string | null
+    reponse_admin_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    masque?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type AvisUncheckedUpdateManyInput = {
@@ -14914,6 +16450,10 @@ export namespace Prisma {
     utilisateur_id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reponse_admin?: NullableStringFieldUpdateOperationsInput | string | null
+    reponse_admin_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reponse_admin_id?: NullableStringFieldUpdateOperationsInput | string | null
+    masque?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type LikeCreateInput = {
@@ -14960,6 +16500,60 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     utilisateur_id?: StringFieldUpdateOperationsInput | string
     produit_id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AvisUtileCreateInput = {
+    id?: string
+    utile: boolean
+    createdAt?: Date | string
+    avis: AvisCreateNestedOneWithoutVotes_utilesInput
+    utilisateur: UserCreateNestedOneWithoutVotes_utilesInput
+  }
+
+  export type AvisUtileUncheckedCreateInput = {
+    id?: string
+    avis_id: string
+    utilisateur_id: string
+    utile: boolean
+    createdAt?: Date | string
+  }
+
+  export type AvisUtileUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    utile?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    avis?: AvisUpdateOneRequiredWithoutVotes_utilesNestedInput
+    utilisateur?: UserUpdateOneRequiredWithoutVotes_utilesNestedInput
+  }
+
+  export type AvisUtileUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    avis_id?: StringFieldUpdateOperationsInput | string
+    utilisateur_id?: StringFieldUpdateOperationsInput | string
+    utile?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AvisUtileCreateManyInput = {
+    id?: string
+    avis_id: string
+    utilisateur_id: string
+    utile: boolean
+    createdAt?: Date | string
+  }
+
+  export type AvisUtileUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    utile?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AvisUtileUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    avis_id?: StringFieldUpdateOperationsInput | string
+    utilisateur_id?: StringFieldUpdateOperationsInput | string
+    utile?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -15051,6 +16645,7 @@ export namespace Prisma {
     notes?: string | null
     statut?: $Enums.AppointmentStatus
     raison_refus?: string | null
+    notes_admin?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     type_seance: TypeSeanceCreateNestedOneWithoutRendezVousInput
@@ -15066,6 +16661,7 @@ export namespace Prisma {
     notes?: string | null
     statut?: $Enums.AppointmentStatus
     raison_refus?: string | null
+    notes_admin?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -15077,6 +16673,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     statut?: EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
     raison_refus?: NullableStringFieldUpdateOperationsInput | string | null
+    notes_admin?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     type_seance?: TypeSeanceUpdateOneRequiredWithoutRendezVousNestedInput
@@ -15092,6 +16689,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     statut?: EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
     raison_refus?: NullableStringFieldUpdateOperationsInput | string | null
+    notes_admin?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15105,6 +16703,7 @@ export namespace Prisma {
     notes?: string | null
     statut?: $Enums.AppointmentStatus
     raison_refus?: string | null
+    notes_admin?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -15116,6 +16715,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     statut?: EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
     raison_refus?: NullableStringFieldUpdateOperationsInput | string | null
+    notes_admin?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15129,6 +16729,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     statut?: EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
     raison_refus?: NullableStringFieldUpdateOperationsInput | string | null
+    notes_admin?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15462,6 +17063,12 @@ export namespace Prisma {
     none?: CommandeWhereInput
   }
 
+  export type AvisUtileListRelationFilter = {
+    every?: AvisUtileWhereInput
+    some?: AvisUtileWhereInput
+    none?: AvisUtileWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -15480,6 +17087,10 @@ export namespace Prisma {
   }
 
   export type CommandeOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AvisUtileOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -15799,6 +17410,11 @@ export namespace Prisma {
     isNot?: UserWhereInput
   }
 
+  export type UserNullableScalarRelationFilter = {
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
+  }
+
   export type AvisUtilisateur_idProduit_idCompoundUniqueInput = {
     utilisateur_id: string
     produit_id: string
@@ -15813,6 +17429,10 @@ export namespace Prisma {
     utilisateur_id?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    reponse_admin?: SortOrder
+    reponse_admin_at?: SortOrder
+    reponse_admin_id?: SortOrder
+    masque?: SortOrder
   }
 
   export type AvisAvgOrderByAggregateInput = {
@@ -15828,6 +17448,10 @@ export namespace Prisma {
     utilisateur_id?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    reponse_admin?: SortOrder
+    reponse_admin_at?: SortOrder
+    reponse_admin_id?: SortOrder
+    masque?: SortOrder
   }
 
   export type AvisMinOrderByAggregateInput = {
@@ -15839,6 +17463,10 @@ export namespace Prisma {
     utilisateur_id?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    reponse_admin?: SortOrder
+    reponse_admin_at?: SortOrder
+    reponse_admin_id?: SortOrder
+    masque?: SortOrder
   }
 
   export type AvisSumOrderByAggregateInput = {
@@ -15868,6 +17496,40 @@ export namespace Prisma {
     id?: SortOrder
     utilisateur_id?: SortOrder
     produit_id?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AvisScalarRelationFilter = {
+    is?: AvisWhereInput
+    isNot?: AvisWhereInput
+  }
+
+  export type AvisUtileAvis_idUtilisateur_idCompoundUniqueInput = {
+    avis_id: string
+    utilisateur_id: string
+  }
+
+  export type AvisUtileCountOrderByAggregateInput = {
+    id?: SortOrder
+    avis_id?: SortOrder
+    utilisateur_id?: SortOrder
+    utile?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AvisUtileMaxOrderByAggregateInput = {
+    id?: SortOrder
+    avis_id?: SortOrder
+    utilisateur_id?: SortOrder
+    utile?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AvisUtileMinOrderByAggregateInput = {
+    id?: SortOrder
+    avis_id?: SortOrder
+    utilisateur_id?: SortOrder
+    utile?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -15935,6 +17597,7 @@ export namespace Prisma {
     notes?: SortOrder
     statut?: SortOrder
     raison_refus?: SortOrder
+    notes_admin?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -15952,6 +17615,7 @@ export namespace Prisma {
     notes?: SortOrder
     statut?: SortOrder
     raison_refus?: SortOrder
+    notes_admin?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -15965,6 +17629,7 @@ export namespace Prisma {
     notes?: SortOrder
     statut?: SortOrder
     raison_refus?: SortOrder
+    notes_admin?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -16160,6 +17825,20 @@ export namespace Prisma {
     connect?: CommandeWhereUniqueInput | CommandeWhereUniqueInput[]
   }
 
+  export type AvisCreateNestedManyWithoutAdmin_repondantInput = {
+    create?: XOR<AvisCreateWithoutAdmin_repondantInput, AvisUncheckedCreateWithoutAdmin_repondantInput> | AvisCreateWithoutAdmin_repondantInput[] | AvisUncheckedCreateWithoutAdmin_repondantInput[]
+    connectOrCreate?: AvisCreateOrConnectWithoutAdmin_repondantInput | AvisCreateOrConnectWithoutAdmin_repondantInput[]
+    createMany?: AvisCreateManyAdmin_repondantInputEnvelope
+    connect?: AvisWhereUniqueInput | AvisWhereUniqueInput[]
+  }
+
+  export type AvisUtileCreateNestedManyWithoutUtilisateurInput = {
+    create?: XOR<AvisUtileCreateWithoutUtilisateurInput, AvisUtileUncheckedCreateWithoutUtilisateurInput> | AvisUtileCreateWithoutUtilisateurInput[] | AvisUtileUncheckedCreateWithoutUtilisateurInput[]
+    connectOrCreate?: AvisUtileCreateOrConnectWithoutUtilisateurInput | AvisUtileCreateOrConnectWithoutUtilisateurInput[]
+    createMany?: AvisUtileCreateManyUtilisateurInputEnvelope
+    connect?: AvisUtileWhereUniqueInput | AvisUtileWhereUniqueInput[]
+  }
+
   export type AvisUncheckedCreateNestedManyWithoutUtilisateurInput = {
     create?: XOR<AvisCreateWithoutUtilisateurInput, AvisUncheckedCreateWithoutUtilisateurInput> | AvisCreateWithoutUtilisateurInput[] | AvisUncheckedCreateWithoutUtilisateurInput[]
     connectOrCreate?: AvisCreateOrConnectWithoutUtilisateurInput | AvisCreateOrConnectWithoutUtilisateurInput[]
@@ -16186,6 +17865,20 @@ export namespace Prisma {
     connectOrCreate?: CommandeCreateOrConnectWithoutUtilisateurInput | CommandeCreateOrConnectWithoutUtilisateurInput[]
     createMany?: CommandeCreateManyUtilisateurInputEnvelope
     connect?: CommandeWhereUniqueInput | CommandeWhereUniqueInput[]
+  }
+
+  export type AvisUncheckedCreateNestedManyWithoutAdmin_repondantInput = {
+    create?: XOR<AvisCreateWithoutAdmin_repondantInput, AvisUncheckedCreateWithoutAdmin_repondantInput> | AvisCreateWithoutAdmin_repondantInput[] | AvisUncheckedCreateWithoutAdmin_repondantInput[]
+    connectOrCreate?: AvisCreateOrConnectWithoutAdmin_repondantInput | AvisCreateOrConnectWithoutAdmin_repondantInput[]
+    createMany?: AvisCreateManyAdmin_repondantInputEnvelope
+    connect?: AvisWhereUniqueInput | AvisWhereUniqueInput[]
+  }
+
+  export type AvisUtileUncheckedCreateNestedManyWithoutUtilisateurInput = {
+    create?: XOR<AvisUtileCreateWithoutUtilisateurInput, AvisUtileUncheckedCreateWithoutUtilisateurInput> | AvisUtileCreateWithoutUtilisateurInput[] | AvisUtileUncheckedCreateWithoutUtilisateurInput[]
+    connectOrCreate?: AvisUtileCreateOrConnectWithoutUtilisateurInput | AvisUtileCreateOrConnectWithoutUtilisateurInput[]
+    createMany?: AvisUtileCreateManyUtilisateurInputEnvelope
+    connect?: AvisUtileWhereUniqueInput | AvisUtileWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -16264,6 +17957,34 @@ export namespace Prisma {
     deleteMany?: CommandeScalarWhereInput | CommandeScalarWhereInput[]
   }
 
+  export type AvisUpdateManyWithoutAdmin_repondantNestedInput = {
+    create?: XOR<AvisCreateWithoutAdmin_repondantInput, AvisUncheckedCreateWithoutAdmin_repondantInput> | AvisCreateWithoutAdmin_repondantInput[] | AvisUncheckedCreateWithoutAdmin_repondantInput[]
+    connectOrCreate?: AvisCreateOrConnectWithoutAdmin_repondantInput | AvisCreateOrConnectWithoutAdmin_repondantInput[]
+    upsert?: AvisUpsertWithWhereUniqueWithoutAdmin_repondantInput | AvisUpsertWithWhereUniqueWithoutAdmin_repondantInput[]
+    createMany?: AvisCreateManyAdmin_repondantInputEnvelope
+    set?: AvisWhereUniqueInput | AvisWhereUniqueInput[]
+    disconnect?: AvisWhereUniqueInput | AvisWhereUniqueInput[]
+    delete?: AvisWhereUniqueInput | AvisWhereUniqueInput[]
+    connect?: AvisWhereUniqueInput | AvisWhereUniqueInput[]
+    update?: AvisUpdateWithWhereUniqueWithoutAdmin_repondantInput | AvisUpdateWithWhereUniqueWithoutAdmin_repondantInput[]
+    updateMany?: AvisUpdateManyWithWhereWithoutAdmin_repondantInput | AvisUpdateManyWithWhereWithoutAdmin_repondantInput[]
+    deleteMany?: AvisScalarWhereInput | AvisScalarWhereInput[]
+  }
+
+  export type AvisUtileUpdateManyWithoutUtilisateurNestedInput = {
+    create?: XOR<AvisUtileCreateWithoutUtilisateurInput, AvisUtileUncheckedCreateWithoutUtilisateurInput> | AvisUtileCreateWithoutUtilisateurInput[] | AvisUtileUncheckedCreateWithoutUtilisateurInput[]
+    connectOrCreate?: AvisUtileCreateOrConnectWithoutUtilisateurInput | AvisUtileCreateOrConnectWithoutUtilisateurInput[]
+    upsert?: AvisUtileUpsertWithWhereUniqueWithoutUtilisateurInput | AvisUtileUpsertWithWhereUniqueWithoutUtilisateurInput[]
+    createMany?: AvisUtileCreateManyUtilisateurInputEnvelope
+    set?: AvisUtileWhereUniqueInput | AvisUtileWhereUniqueInput[]
+    disconnect?: AvisUtileWhereUniqueInput | AvisUtileWhereUniqueInput[]
+    delete?: AvisUtileWhereUniqueInput | AvisUtileWhereUniqueInput[]
+    connect?: AvisUtileWhereUniqueInput | AvisUtileWhereUniqueInput[]
+    update?: AvisUtileUpdateWithWhereUniqueWithoutUtilisateurInput | AvisUtileUpdateWithWhereUniqueWithoutUtilisateurInput[]
+    updateMany?: AvisUtileUpdateManyWithWhereWithoutUtilisateurInput | AvisUtileUpdateManyWithWhereWithoutUtilisateurInput[]
+    deleteMany?: AvisUtileScalarWhereInput | AvisUtileScalarWhereInput[]
+  }
+
   export type AvisUncheckedUpdateManyWithoutUtilisateurNestedInput = {
     create?: XOR<AvisCreateWithoutUtilisateurInput, AvisUncheckedCreateWithoutUtilisateurInput> | AvisCreateWithoutUtilisateurInput[] | AvisUncheckedCreateWithoutUtilisateurInput[]
     connectOrCreate?: AvisCreateOrConnectWithoutUtilisateurInput | AvisCreateOrConnectWithoutUtilisateurInput[]
@@ -16318,6 +18039,34 @@ export namespace Prisma {
     update?: CommandeUpdateWithWhereUniqueWithoutUtilisateurInput | CommandeUpdateWithWhereUniqueWithoutUtilisateurInput[]
     updateMany?: CommandeUpdateManyWithWhereWithoutUtilisateurInput | CommandeUpdateManyWithWhereWithoutUtilisateurInput[]
     deleteMany?: CommandeScalarWhereInput | CommandeScalarWhereInput[]
+  }
+
+  export type AvisUncheckedUpdateManyWithoutAdmin_repondantNestedInput = {
+    create?: XOR<AvisCreateWithoutAdmin_repondantInput, AvisUncheckedCreateWithoutAdmin_repondantInput> | AvisCreateWithoutAdmin_repondantInput[] | AvisUncheckedCreateWithoutAdmin_repondantInput[]
+    connectOrCreate?: AvisCreateOrConnectWithoutAdmin_repondantInput | AvisCreateOrConnectWithoutAdmin_repondantInput[]
+    upsert?: AvisUpsertWithWhereUniqueWithoutAdmin_repondantInput | AvisUpsertWithWhereUniqueWithoutAdmin_repondantInput[]
+    createMany?: AvisCreateManyAdmin_repondantInputEnvelope
+    set?: AvisWhereUniqueInput | AvisWhereUniqueInput[]
+    disconnect?: AvisWhereUniqueInput | AvisWhereUniqueInput[]
+    delete?: AvisWhereUniqueInput | AvisWhereUniqueInput[]
+    connect?: AvisWhereUniqueInput | AvisWhereUniqueInput[]
+    update?: AvisUpdateWithWhereUniqueWithoutAdmin_repondantInput | AvisUpdateWithWhereUniqueWithoutAdmin_repondantInput[]
+    updateMany?: AvisUpdateManyWithWhereWithoutAdmin_repondantInput | AvisUpdateManyWithWhereWithoutAdmin_repondantInput[]
+    deleteMany?: AvisScalarWhereInput | AvisScalarWhereInput[]
+  }
+
+  export type AvisUtileUncheckedUpdateManyWithoutUtilisateurNestedInput = {
+    create?: XOR<AvisUtileCreateWithoutUtilisateurInput, AvisUtileUncheckedCreateWithoutUtilisateurInput> | AvisUtileCreateWithoutUtilisateurInput[] | AvisUtileUncheckedCreateWithoutUtilisateurInput[]
+    connectOrCreate?: AvisUtileCreateOrConnectWithoutUtilisateurInput | AvisUtileCreateOrConnectWithoutUtilisateurInput[]
+    upsert?: AvisUtileUpsertWithWhereUniqueWithoutUtilisateurInput | AvisUtileUpsertWithWhereUniqueWithoutUtilisateurInput[]
+    createMany?: AvisUtileCreateManyUtilisateurInputEnvelope
+    set?: AvisUtileWhereUniqueInput | AvisUtileWhereUniqueInput[]
+    disconnect?: AvisUtileWhereUniqueInput | AvisUtileWhereUniqueInput[]
+    delete?: AvisUtileWhereUniqueInput | AvisUtileWhereUniqueInput[]
+    connect?: AvisUtileWhereUniqueInput | AvisUtileWhereUniqueInput[]
+    update?: AvisUtileUpdateWithWhereUniqueWithoutUtilisateurInput | AvisUtileUpdateWithWhereUniqueWithoutUtilisateurInput[]
+    updateMany?: AvisUtileUpdateManyWithWhereWithoutUtilisateurInput | AvisUtileUpdateManyWithWhereWithoutUtilisateurInput[]
+    deleteMany?: AvisUtileScalarWhereInput | AvisUtileScalarWhereInput[]
   }
 
   export type ProduitCreateNestedManyWithoutCategorieInput = {
@@ -16543,6 +18292,26 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type UserCreateNestedOneWithoutAvis_repondusInput = {
+    create?: XOR<UserCreateWithoutAvis_repondusInput, UserUncheckedCreateWithoutAvis_repondusInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAvis_repondusInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type AvisUtileCreateNestedManyWithoutAvisInput = {
+    create?: XOR<AvisUtileCreateWithoutAvisInput, AvisUtileUncheckedCreateWithoutAvisInput> | AvisUtileCreateWithoutAvisInput[] | AvisUtileUncheckedCreateWithoutAvisInput[]
+    connectOrCreate?: AvisUtileCreateOrConnectWithoutAvisInput | AvisUtileCreateOrConnectWithoutAvisInput[]
+    createMany?: AvisUtileCreateManyAvisInputEnvelope
+    connect?: AvisUtileWhereUniqueInput | AvisUtileWhereUniqueInput[]
+  }
+
+  export type AvisUtileUncheckedCreateNestedManyWithoutAvisInput = {
+    create?: XOR<AvisUtileCreateWithoutAvisInput, AvisUtileUncheckedCreateWithoutAvisInput> | AvisUtileCreateWithoutAvisInput[] | AvisUtileUncheckedCreateWithoutAvisInput[]
+    connectOrCreate?: AvisUtileCreateOrConnectWithoutAvisInput | AvisUtileCreateOrConnectWithoutAvisInput[]
+    createMany?: AvisUtileCreateManyAvisInputEnvelope
+    connect?: AvisUtileWhereUniqueInput | AvisUtileWhereUniqueInput[]
+  }
+
   export type ProduitUpdateOneRequiredWithoutAvisNestedInput = {
     create?: XOR<ProduitCreateWithoutAvisInput, ProduitUncheckedCreateWithoutAvisInput>
     connectOrCreate?: ProduitCreateOrConnectWithoutAvisInput
@@ -16557,6 +18326,44 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutAvisInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAvisInput, UserUpdateWithoutAvisInput>, UserUncheckedUpdateWithoutAvisInput>
+  }
+
+  export type UserUpdateOneWithoutAvis_repondusNestedInput = {
+    create?: XOR<UserCreateWithoutAvis_repondusInput, UserUncheckedCreateWithoutAvis_repondusInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAvis_repondusInput
+    upsert?: UserUpsertWithoutAvis_repondusInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAvis_repondusInput, UserUpdateWithoutAvis_repondusInput>, UserUncheckedUpdateWithoutAvis_repondusInput>
+  }
+
+  export type AvisUtileUpdateManyWithoutAvisNestedInput = {
+    create?: XOR<AvisUtileCreateWithoutAvisInput, AvisUtileUncheckedCreateWithoutAvisInput> | AvisUtileCreateWithoutAvisInput[] | AvisUtileUncheckedCreateWithoutAvisInput[]
+    connectOrCreate?: AvisUtileCreateOrConnectWithoutAvisInput | AvisUtileCreateOrConnectWithoutAvisInput[]
+    upsert?: AvisUtileUpsertWithWhereUniqueWithoutAvisInput | AvisUtileUpsertWithWhereUniqueWithoutAvisInput[]
+    createMany?: AvisUtileCreateManyAvisInputEnvelope
+    set?: AvisUtileWhereUniqueInput | AvisUtileWhereUniqueInput[]
+    disconnect?: AvisUtileWhereUniqueInput | AvisUtileWhereUniqueInput[]
+    delete?: AvisUtileWhereUniqueInput | AvisUtileWhereUniqueInput[]
+    connect?: AvisUtileWhereUniqueInput | AvisUtileWhereUniqueInput[]
+    update?: AvisUtileUpdateWithWhereUniqueWithoutAvisInput | AvisUtileUpdateWithWhereUniqueWithoutAvisInput[]
+    updateMany?: AvisUtileUpdateManyWithWhereWithoutAvisInput | AvisUtileUpdateManyWithWhereWithoutAvisInput[]
+    deleteMany?: AvisUtileScalarWhereInput | AvisUtileScalarWhereInput[]
+  }
+
+  export type AvisUtileUncheckedUpdateManyWithoutAvisNestedInput = {
+    create?: XOR<AvisUtileCreateWithoutAvisInput, AvisUtileUncheckedCreateWithoutAvisInput> | AvisUtileCreateWithoutAvisInput[] | AvisUtileUncheckedCreateWithoutAvisInput[]
+    connectOrCreate?: AvisUtileCreateOrConnectWithoutAvisInput | AvisUtileCreateOrConnectWithoutAvisInput[]
+    upsert?: AvisUtileUpsertWithWhereUniqueWithoutAvisInput | AvisUtileUpsertWithWhereUniqueWithoutAvisInput[]
+    createMany?: AvisUtileCreateManyAvisInputEnvelope
+    set?: AvisUtileWhereUniqueInput | AvisUtileWhereUniqueInput[]
+    disconnect?: AvisUtileWhereUniqueInput | AvisUtileWhereUniqueInput[]
+    delete?: AvisUtileWhereUniqueInput | AvisUtileWhereUniqueInput[]
+    connect?: AvisUtileWhereUniqueInput | AvisUtileWhereUniqueInput[]
+    update?: AvisUtileUpdateWithWhereUniqueWithoutAvisInput | AvisUtileUpdateWithWhereUniqueWithoutAvisInput[]
+    updateMany?: AvisUtileUpdateManyWithWhereWithoutAvisInput | AvisUtileUpdateManyWithWhereWithoutAvisInput[]
+    deleteMany?: AvisUtileScalarWhereInput | AvisUtileScalarWhereInput[]
   }
 
   export type ProduitCreateNestedOneWithoutLikesInput = {
@@ -16585,6 +18392,34 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutLikesInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutLikesInput, UserUpdateWithoutLikesInput>, UserUncheckedUpdateWithoutLikesInput>
+  }
+
+  export type AvisCreateNestedOneWithoutVotes_utilesInput = {
+    create?: XOR<AvisCreateWithoutVotes_utilesInput, AvisUncheckedCreateWithoutVotes_utilesInput>
+    connectOrCreate?: AvisCreateOrConnectWithoutVotes_utilesInput
+    connect?: AvisWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutVotes_utilesInput = {
+    create?: XOR<UserCreateWithoutVotes_utilesInput, UserUncheckedCreateWithoutVotes_utilesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutVotes_utilesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type AvisUpdateOneRequiredWithoutVotes_utilesNestedInput = {
+    create?: XOR<AvisCreateWithoutVotes_utilesInput, AvisUncheckedCreateWithoutVotes_utilesInput>
+    connectOrCreate?: AvisCreateOrConnectWithoutVotes_utilesInput
+    upsert?: AvisUpsertWithoutVotes_utilesInput
+    connect?: AvisWhereUniqueInput
+    update?: XOR<XOR<AvisUpdateToOneWithWhereWithoutVotes_utilesInput, AvisUpdateWithoutVotes_utilesInput>, AvisUncheckedUpdateWithoutVotes_utilesInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutVotes_utilesNestedInput = {
+    create?: XOR<UserCreateWithoutVotes_utilesInput, UserUncheckedCreateWithoutVotes_utilesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutVotes_utilesInput
+    upsert?: UserUpsertWithoutVotes_utilesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutVotes_utilesInput, UserUpdateWithoutVotes_utilesInput>, UserUncheckedUpdateWithoutVotes_utilesInput>
   }
 
   export type RendezVousCreateNestedManyWithoutType_seanceInput = {
@@ -16997,7 +18832,12 @@ export namespace Prisma {
     contenu: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    reponse_admin?: string | null
+    reponse_admin_at?: Date | string | null
+    masque?: boolean
     produit: ProduitCreateNestedOneWithoutAvisInput
+    admin_repondant?: UserCreateNestedOneWithoutAvis_repondusInput
+    votes_utiles?: AvisUtileCreateNestedManyWithoutAvisInput
   }
 
   export type AvisUncheckedCreateWithoutUtilisateurInput = {
@@ -17008,6 +18848,11 @@ export namespace Prisma {
     produit_id: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    reponse_admin?: string | null
+    reponse_admin_at?: Date | string | null
+    reponse_admin_id?: string | null
+    masque?: boolean
+    votes_utiles?: AvisUtileUncheckedCreateNestedManyWithoutAvisInput
   }
 
   export type AvisCreateOrConnectWithoutUtilisateurInput = {
@@ -17049,6 +18894,7 @@ export namespace Prisma {
     notes?: string | null
     statut?: $Enums.AppointmentStatus
     raison_refus?: string | null
+    notes_admin?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     type_seance: TypeSeanceCreateNestedOneWithoutRendezVousInput
@@ -17062,6 +18908,7 @@ export namespace Prisma {
     notes?: string | null
     statut?: $Enums.AppointmentStatus
     raison_refus?: string | null
+    notes_admin?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -17118,6 +18965,70 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type AvisCreateWithoutAdmin_repondantInput = {
+    id?: string
+    note: number
+    titre: string
+    contenu: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    reponse_admin?: string | null
+    reponse_admin_at?: Date | string | null
+    masque?: boolean
+    produit: ProduitCreateNestedOneWithoutAvisInput
+    utilisateur: UserCreateNestedOneWithoutAvisInput
+    votes_utiles?: AvisUtileCreateNestedManyWithoutAvisInput
+  }
+
+  export type AvisUncheckedCreateWithoutAdmin_repondantInput = {
+    id?: string
+    note: number
+    titre: string
+    contenu: string
+    produit_id: string
+    utilisateur_id: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    reponse_admin?: string | null
+    reponse_admin_at?: Date | string | null
+    masque?: boolean
+    votes_utiles?: AvisUtileUncheckedCreateNestedManyWithoutAvisInput
+  }
+
+  export type AvisCreateOrConnectWithoutAdmin_repondantInput = {
+    where: AvisWhereUniqueInput
+    create: XOR<AvisCreateWithoutAdmin_repondantInput, AvisUncheckedCreateWithoutAdmin_repondantInput>
+  }
+
+  export type AvisCreateManyAdmin_repondantInputEnvelope = {
+    data: AvisCreateManyAdmin_repondantInput | AvisCreateManyAdmin_repondantInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AvisUtileCreateWithoutUtilisateurInput = {
+    id?: string
+    utile: boolean
+    createdAt?: Date | string
+    avis: AvisCreateNestedOneWithoutVotes_utilesInput
+  }
+
+  export type AvisUtileUncheckedCreateWithoutUtilisateurInput = {
+    id?: string
+    avis_id: string
+    utile: boolean
+    createdAt?: Date | string
+  }
+
+  export type AvisUtileCreateOrConnectWithoutUtilisateurInput = {
+    where: AvisUtileWhereUniqueInput
+    create: XOR<AvisUtileCreateWithoutUtilisateurInput, AvisUtileUncheckedCreateWithoutUtilisateurInput>
+  }
+
+  export type AvisUtileCreateManyUtilisateurInputEnvelope = {
+    data: AvisUtileCreateManyUtilisateurInput | AvisUtileCreateManyUtilisateurInput[]
+    skipDuplicates?: boolean
+  }
+
   export type AvisUpsertWithWhereUniqueWithoutUtilisateurInput = {
     where: AvisWhereUniqueInput
     update: XOR<AvisUpdateWithoutUtilisateurInput, AvisUncheckedUpdateWithoutUtilisateurInput>
@@ -17146,6 +19057,10 @@ export namespace Prisma {
     utilisateur_id?: StringFilter<"Avis"> | string
     createdAt?: DateTimeFilter<"Avis"> | Date | string
     updatedAt?: DateTimeFilter<"Avis"> | Date | string
+    reponse_admin?: StringNullableFilter<"Avis"> | string | null
+    reponse_admin_at?: DateTimeNullableFilter<"Avis"> | Date | string | null
+    reponse_admin_id?: StringNullableFilter<"Avis"> | string | null
+    masque?: BoolFilter<"Avis"> | boolean
   }
 
   export type LikeUpsertWithWhereUniqueWithoutUtilisateurInput = {
@@ -17202,6 +19117,7 @@ export namespace Prisma {
     notes?: StringNullableFilter<"RendezVous"> | string | null
     statut?: EnumAppointmentStatusFilter<"RendezVous"> | $Enums.AppointmentStatus
     raison_refus?: StringNullableFilter<"RendezVous"> | string | null
+    notes_admin?: StringNullableFilter<"RendezVous"> | string | null
     createdAt?: DateTimeFilter<"RendezVous"> | Date | string
     updatedAt?: DateTimeFilter<"RendezVous"> | Date | string
   }
@@ -17239,6 +19155,49 @@ export namespace Prisma {
     notes?: StringNullableFilter<"Commande"> | string | null
     createdAt?: DateTimeFilter<"Commande"> | Date | string
     updatedAt?: DateTimeFilter<"Commande"> | Date | string
+  }
+
+  export type AvisUpsertWithWhereUniqueWithoutAdmin_repondantInput = {
+    where: AvisWhereUniqueInput
+    update: XOR<AvisUpdateWithoutAdmin_repondantInput, AvisUncheckedUpdateWithoutAdmin_repondantInput>
+    create: XOR<AvisCreateWithoutAdmin_repondantInput, AvisUncheckedCreateWithoutAdmin_repondantInput>
+  }
+
+  export type AvisUpdateWithWhereUniqueWithoutAdmin_repondantInput = {
+    where: AvisWhereUniqueInput
+    data: XOR<AvisUpdateWithoutAdmin_repondantInput, AvisUncheckedUpdateWithoutAdmin_repondantInput>
+  }
+
+  export type AvisUpdateManyWithWhereWithoutAdmin_repondantInput = {
+    where: AvisScalarWhereInput
+    data: XOR<AvisUpdateManyMutationInput, AvisUncheckedUpdateManyWithoutAdmin_repondantInput>
+  }
+
+  export type AvisUtileUpsertWithWhereUniqueWithoutUtilisateurInput = {
+    where: AvisUtileWhereUniqueInput
+    update: XOR<AvisUtileUpdateWithoutUtilisateurInput, AvisUtileUncheckedUpdateWithoutUtilisateurInput>
+    create: XOR<AvisUtileCreateWithoutUtilisateurInput, AvisUtileUncheckedCreateWithoutUtilisateurInput>
+  }
+
+  export type AvisUtileUpdateWithWhereUniqueWithoutUtilisateurInput = {
+    where: AvisUtileWhereUniqueInput
+    data: XOR<AvisUtileUpdateWithoutUtilisateurInput, AvisUtileUncheckedUpdateWithoutUtilisateurInput>
+  }
+
+  export type AvisUtileUpdateManyWithWhereWithoutUtilisateurInput = {
+    where: AvisUtileScalarWhereInput
+    data: XOR<AvisUtileUpdateManyMutationInput, AvisUtileUncheckedUpdateManyWithoutUtilisateurInput>
+  }
+
+  export type AvisUtileScalarWhereInput = {
+    AND?: AvisUtileScalarWhereInput | AvisUtileScalarWhereInput[]
+    OR?: AvisUtileScalarWhereInput[]
+    NOT?: AvisUtileScalarWhereInput | AvisUtileScalarWhereInput[]
+    id?: StringFilter<"AvisUtile"> | string
+    avis_id?: StringFilter<"AvisUtile"> | string
+    utilisateur_id?: StringFilter<"AvisUtile"> | string
+    utile?: BoolFilter<"AvisUtile"> | boolean
+    createdAt?: DateTimeFilter<"AvisUtile"> | Date | string
   }
 
   export type ProduitCreateWithoutCategorieInput = {
@@ -17326,7 +19285,12 @@ export namespace Prisma {
     contenu: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    reponse_admin?: string | null
+    reponse_admin_at?: Date | string | null
+    masque?: boolean
     utilisateur: UserCreateNestedOneWithoutAvisInput
+    admin_repondant?: UserCreateNestedOneWithoutAvis_repondusInput
+    votes_utiles?: AvisUtileCreateNestedManyWithoutAvisInput
   }
 
   export type AvisUncheckedCreateWithoutProduitInput = {
@@ -17337,6 +19301,11 @@ export namespace Prisma {
     utilisateur_id: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    reponse_admin?: string | null
+    reponse_admin_at?: Date | string | null
+    reponse_admin_id?: string | null
+    masque?: boolean
+    votes_utiles?: AvisUtileUncheckedCreateNestedManyWithoutAvisInput
   }
 
   export type AvisCreateOrConnectWithoutProduitInput = {
@@ -17569,6 +19538,8 @@ export namespace Prisma {
     likes?: LikeCreateNestedManyWithoutUtilisateurInput
     rendezVous?: RendezVousCreateNestedManyWithoutUtilisateurInput
     commandes?: CommandeCreateNestedManyWithoutUtilisateurInput
+    avis_repondus?: AvisCreateNestedManyWithoutAdmin_repondantInput
+    votes_utiles?: AvisUtileCreateNestedManyWithoutUtilisateurInput
   }
 
   export type UserUncheckedCreateWithoutAvisInput = {
@@ -17586,11 +19557,80 @@ export namespace Prisma {
     likes?: LikeUncheckedCreateNestedManyWithoutUtilisateurInput
     rendezVous?: RendezVousUncheckedCreateNestedManyWithoutUtilisateurInput
     commandes?: CommandeUncheckedCreateNestedManyWithoutUtilisateurInput
+    avis_repondus?: AvisUncheckedCreateNestedManyWithoutAdmin_repondantInput
+    votes_utiles?: AvisUtileUncheckedCreateNestedManyWithoutUtilisateurInput
   }
 
   export type UserCreateOrConnectWithoutAvisInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutAvisInput, UserUncheckedCreateWithoutAvisInput>
+  }
+
+  export type UserCreateWithoutAvis_repondusInput = {
+    id?: string
+    email: string
+    password: string
+    firstName: string
+    lastName: string
+    phone?: string | null
+    avatar?: string | null
+    role?: $Enums.UserRole
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    avis?: AvisCreateNestedManyWithoutUtilisateurInput
+    likes?: LikeCreateNestedManyWithoutUtilisateurInput
+    rendezVous?: RendezVousCreateNestedManyWithoutUtilisateurInput
+    commandes?: CommandeCreateNestedManyWithoutUtilisateurInput
+    votes_utiles?: AvisUtileCreateNestedManyWithoutUtilisateurInput
+  }
+
+  export type UserUncheckedCreateWithoutAvis_repondusInput = {
+    id?: string
+    email: string
+    password: string
+    firstName: string
+    lastName: string
+    phone?: string | null
+    avatar?: string | null
+    role?: $Enums.UserRole
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    avis?: AvisUncheckedCreateNestedManyWithoutUtilisateurInput
+    likes?: LikeUncheckedCreateNestedManyWithoutUtilisateurInput
+    rendezVous?: RendezVousUncheckedCreateNestedManyWithoutUtilisateurInput
+    commandes?: CommandeUncheckedCreateNestedManyWithoutUtilisateurInput
+    votes_utiles?: AvisUtileUncheckedCreateNestedManyWithoutUtilisateurInput
+  }
+
+  export type UserCreateOrConnectWithoutAvis_repondusInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAvis_repondusInput, UserUncheckedCreateWithoutAvis_repondusInput>
+  }
+
+  export type AvisUtileCreateWithoutAvisInput = {
+    id?: string
+    utile: boolean
+    createdAt?: Date | string
+    utilisateur: UserCreateNestedOneWithoutVotes_utilesInput
+  }
+
+  export type AvisUtileUncheckedCreateWithoutAvisInput = {
+    id?: string
+    utilisateur_id: string
+    utile: boolean
+    createdAt?: Date | string
+  }
+
+  export type AvisUtileCreateOrConnectWithoutAvisInput = {
+    where: AvisUtileWhereUniqueInput
+    create: XOR<AvisUtileCreateWithoutAvisInput, AvisUtileUncheckedCreateWithoutAvisInput>
+  }
+
+  export type AvisUtileCreateManyAvisInputEnvelope = {
+    data: AvisUtileCreateManyAvisInput | AvisUtileCreateManyAvisInput[]
+    skipDuplicates?: boolean
   }
 
   export type ProduitUpsertWithoutAvisInput = {
@@ -17663,6 +19703,8 @@ export namespace Prisma {
     likes?: LikeUpdateManyWithoutUtilisateurNestedInput
     rendezVous?: RendezVousUpdateManyWithoutUtilisateurNestedInput
     commandes?: CommandeUpdateManyWithoutUtilisateurNestedInput
+    avis_repondus?: AvisUpdateManyWithoutAdmin_repondantNestedInput
+    votes_utiles?: AvisUtileUpdateManyWithoutUtilisateurNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAvisInput = {
@@ -17680,6 +19722,73 @@ export namespace Prisma {
     likes?: LikeUncheckedUpdateManyWithoutUtilisateurNestedInput
     rendezVous?: RendezVousUncheckedUpdateManyWithoutUtilisateurNestedInput
     commandes?: CommandeUncheckedUpdateManyWithoutUtilisateurNestedInput
+    avis_repondus?: AvisUncheckedUpdateManyWithoutAdmin_repondantNestedInput
+    votes_utiles?: AvisUtileUncheckedUpdateManyWithoutUtilisateurNestedInput
+  }
+
+  export type UserUpsertWithoutAvis_repondusInput = {
+    update: XOR<UserUpdateWithoutAvis_repondusInput, UserUncheckedUpdateWithoutAvis_repondusInput>
+    create: XOR<UserCreateWithoutAvis_repondusInput, UserUncheckedCreateWithoutAvis_repondusInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutAvis_repondusInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAvis_repondusInput, UserUncheckedUpdateWithoutAvis_repondusInput>
+  }
+
+  export type UserUpdateWithoutAvis_repondusInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    avis?: AvisUpdateManyWithoutUtilisateurNestedInput
+    likes?: LikeUpdateManyWithoutUtilisateurNestedInput
+    rendezVous?: RendezVousUpdateManyWithoutUtilisateurNestedInput
+    commandes?: CommandeUpdateManyWithoutUtilisateurNestedInput
+    votes_utiles?: AvisUtileUpdateManyWithoutUtilisateurNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAvis_repondusInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    avis?: AvisUncheckedUpdateManyWithoutUtilisateurNestedInput
+    likes?: LikeUncheckedUpdateManyWithoutUtilisateurNestedInput
+    rendezVous?: RendezVousUncheckedUpdateManyWithoutUtilisateurNestedInput
+    commandes?: CommandeUncheckedUpdateManyWithoutUtilisateurNestedInput
+    votes_utiles?: AvisUtileUncheckedUpdateManyWithoutUtilisateurNestedInput
+  }
+
+  export type AvisUtileUpsertWithWhereUniqueWithoutAvisInput = {
+    where: AvisUtileWhereUniqueInput
+    update: XOR<AvisUtileUpdateWithoutAvisInput, AvisUtileUncheckedUpdateWithoutAvisInput>
+    create: XOR<AvisUtileCreateWithoutAvisInput, AvisUtileUncheckedCreateWithoutAvisInput>
+  }
+
+  export type AvisUtileUpdateWithWhereUniqueWithoutAvisInput = {
+    where: AvisUtileWhereUniqueInput
+    data: XOR<AvisUtileUpdateWithoutAvisInput, AvisUtileUncheckedUpdateWithoutAvisInput>
+  }
+
+  export type AvisUtileUpdateManyWithWhereWithoutAvisInput = {
+    where: AvisUtileScalarWhereInput
+    data: XOR<AvisUtileUpdateManyMutationInput, AvisUtileUncheckedUpdateManyWithoutAvisInput>
   }
 
   export type ProduitCreateWithoutLikesInput = {
@@ -17736,6 +19845,8 @@ export namespace Prisma {
     avis?: AvisCreateNestedManyWithoutUtilisateurInput
     rendezVous?: RendezVousCreateNestedManyWithoutUtilisateurInput
     commandes?: CommandeCreateNestedManyWithoutUtilisateurInput
+    avis_repondus?: AvisCreateNestedManyWithoutAdmin_repondantInput
+    votes_utiles?: AvisUtileCreateNestedManyWithoutUtilisateurInput
   }
 
   export type UserUncheckedCreateWithoutLikesInput = {
@@ -17753,6 +19864,8 @@ export namespace Prisma {
     avis?: AvisUncheckedCreateNestedManyWithoutUtilisateurInput
     rendezVous?: RendezVousUncheckedCreateNestedManyWithoutUtilisateurInput
     commandes?: CommandeUncheckedCreateNestedManyWithoutUtilisateurInput
+    avis_repondus?: AvisUncheckedCreateNestedManyWithoutAdmin_repondantInput
+    votes_utiles?: AvisUtileUncheckedCreateNestedManyWithoutUtilisateurInput
   }
 
   export type UserCreateOrConnectWithoutLikesInput = {
@@ -17830,6 +19943,8 @@ export namespace Prisma {
     avis?: AvisUpdateManyWithoutUtilisateurNestedInput
     rendezVous?: RendezVousUpdateManyWithoutUtilisateurNestedInput
     commandes?: CommandeUpdateManyWithoutUtilisateurNestedInput
+    avis_repondus?: AvisUpdateManyWithoutAdmin_repondantNestedInput
+    votes_utiles?: AvisUtileUpdateManyWithoutUtilisateurNestedInput
   }
 
   export type UserUncheckedUpdateWithoutLikesInput = {
@@ -17847,6 +19962,176 @@ export namespace Prisma {
     avis?: AvisUncheckedUpdateManyWithoutUtilisateurNestedInput
     rendezVous?: RendezVousUncheckedUpdateManyWithoutUtilisateurNestedInput
     commandes?: CommandeUncheckedUpdateManyWithoutUtilisateurNestedInput
+    avis_repondus?: AvisUncheckedUpdateManyWithoutAdmin_repondantNestedInput
+    votes_utiles?: AvisUtileUncheckedUpdateManyWithoutUtilisateurNestedInput
+  }
+
+  export type AvisCreateWithoutVotes_utilesInput = {
+    id?: string
+    note: number
+    titre: string
+    contenu: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    reponse_admin?: string | null
+    reponse_admin_at?: Date | string | null
+    masque?: boolean
+    produit: ProduitCreateNestedOneWithoutAvisInput
+    utilisateur: UserCreateNestedOneWithoutAvisInput
+    admin_repondant?: UserCreateNestedOneWithoutAvis_repondusInput
+  }
+
+  export type AvisUncheckedCreateWithoutVotes_utilesInput = {
+    id?: string
+    note: number
+    titre: string
+    contenu: string
+    produit_id: string
+    utilisateur_id: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    reponse_admin?: string | null
+    reponse_admin_at?: Date | string | null
+    reponse_admin_id?: string | null
+    masque?: boolean
+  }
+
+  export type AvisCreateOrConnectWithoutVotes_utilesInput = {
+    where: AvisWhereUniqueInput
+    create: XOR<AvisCreateWithoutVotes_utilesInput, AvisUncheckedCreateWithoutVotes_utilesInput>
+  }
+
+  export type UserCreateWithoutVotes_utilesInput = {
+    id?: string
+    email: string
+    password: string
+    firstName: string
+    lastName: string
+    phone?: string | null
+    avatar?: string | null
+    role?: $Enums.UserRole
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    avis?: AvisCreateNestedManyWithoutUtilisateurInput
+    likes?: LikeCreateNestedManyWithoutUtilisateurInput
+    rendezVous?: RendezVousCreateNestedManyWithoutUtilisateurInput
+    commandes?: CommandeCreateNestedManyWithoutUtilisateurInput
+    avis_repondus?: AvisCreateNestedManyWithoutAdmin_repondantInput
+  }
+
+  export type UserUncheckedCreateWithoutVotes_utilesInput = {
+    id?: string
+    email: string
+    password: string
+    firstName: string
+    lastName: string
+    phone?: string | null
+    avatar?: string | null
+    role?: $Enums.UserRole
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    avis?: AvisUncheckedCreateNestedManyWithoutUtilisateurInput
+    likes?: LikeUncheckedCreateNestedManyWithoutUtilisateurInput
+    rendezVous?: RendezVousUncheckedCreateNestedManyWithoutUtilisateurInput
+    commandes?: CommandeUncheckedCreateNestedManyWithoutUtilisateurInput
+    avis_repondus?: AvisUncheckedCreateNestedManyWithoutAdmin_repondantInput
+  }
+
+  export type UserCreateOrConnectWithoutVotes_utilesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutVotes_utilesInput, UserUncheckedCreateWithoutVotes_utilesInput>
+  }
+
+  export type AvisUpsertWithoutVotes_utilesInput = {
+    update: XOR<AvisUpdateWithoutVotes_utilesInput, AvisUncheckedUpdateWithoutVotes_utilesInput>
+    create: XOR<AvisCreateWithoutVotes_utilesInput, AvisUncheckedCreateWithoutVotes_utilesInput>
+    where?: AvisWhereInput
+  }
+
+  export type AvisUpdateToOneWithWhereWithoutVotes_utilesInput = {
+    where?: AvisWhereInput
+    data: XOR<AvisUpdateWithoutVotes_utilesInput, AvisUncheckedUpdateWithoutVotes_utilesInput>
+  }
+
+  export type AvisUpdateWithoutVotes_utilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    note?: IntFieldUpdateOperationsInput | number
+    titre?: StringFieldUpdateOperationsInput | string
+    contenu?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reponse_admin?: NullableStringFieldUpdateOperationsInput | string | null
+    reponse_admin_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    masque?: BoolFieldUpdateOperationsInput | boolean
+    produit?: ProduitUpdateOneRequiredWithoutAvisNestedInput
+    utilisateur?: UserUpdateOneRequiredWithoutAvisNestedInput
+    admin_repondant?: UserUpdateOneWithoutAvis_repondusNestedInput
+  }
+
+  export type AvisUncheckedUpdateWithoutVotes_utilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    note?: IntFieldUpdateOperationsInput | number
+    titre?: StringFieldUpdateOperationsInput | string
+    contenu?: StringFieldUpdateOperationsInput | string
+    produit_id?: StringFieldUpdateOperationsInput | string
+    utilisateur_id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reponse_admin?: NullableStringFieldUpdateOperationsInput | string | null
+    reponse_admin_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reponse_admin_id?: NullableStringFieldUpdateOperationsInput | string | null
+    masque?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type UserUpsertWithoutVotes_utilesInput = {
+    update: XOR<UserUpdateWithoutVotes_utilesInput, UserUncheckedUpdateWithoutVotes_utilesInput>
+    create: XOR<UserCreateWithoutVotes_utilesInput, UserUncheckedCreateWithoutVotes_utilesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutVotes_utilesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutVotes_utilesInput, UserUncheckedUpdateWithoutVotes_utilesInput>
+  }
+
+  export type UserUpdateWithoutVotes_utilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    avis?: AvisUpdateManyWithoutUtilisateurNestedInput
+    likes?: LikeUpdateManyWithoutUtilisateurNestedInput
+    rendezVous?: RendezVousUpdateManyWithoutUtilisateurNestedInput
+    commandes?: CommandeUpdateManyWithoutUtilisateurNestedInput
+    avis_repondus?: AvisUpdateManyWithoutAdmin_repondantNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutVotes_utilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    avis?: AvisUncheckedUpdateManyWithoutUtilisateurNestedInput
+    likes?: LikeUncheckedUpdateManyWithoutUtilisateurNestedInput
+    rendezVous?: RendezVousUncheckedUpdateManyWithoutUtilisateurNestedInput
+    commandes?: CommandeUncheckedUpdateManyWithoutUtilisateurNestedInput
+    avis_repondus?: AvisUncheckedUpdateManyWithoutAdmin_repondantNestedInput
   }
 
   export type RendezVousCreateWithoutType_seanceInput = {
@@ -17856,6 +20141,7 @@ export namespace Prisma {
     notes?: string | null
     statut?: $Enums.AppointmentStatus
     raison_refus?: string | null
+    notes_admin?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     utilisateur: UserCreateNestedOneWithoutRendezVousInput
@@ -17869,6 +20155,7 @@ export namespace Prisma {
     notes?: string | null
     statut?: $Enums.AppointmentStatus
     raison_refus?: string | null
+    notes_admin?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -17941,6 +20228,8 @@ export namespace Prisma {
     avis?: AvisCreateNestedManyWithoutUtilisateurInput
     likes?: LikeCreateNestedManyWithoutUtilisateurInput
     commandes?: CommandeCreateNestedManyWithoutUtilisateurInput
+    avis_repondus?: AvisCreateNestedManyWithoutAdmin_repondantInput
+    votes_utiles?: AvisUtileCreateNestedManyWithoutUtilisateurInput
   }
 
   export type UserUncheckedCreateWithoutRendezVousInput = {
@@ -17958,6 +20247,8 @@ export namespace Prisma {
     avis?: AvisUncheckedCreateNestedManyWithoutUtilisateurInput
     likes?: LikeUncheckedCreateNestedManyWithoutUtilisateurInput
     commandes?: CommandeUncheckedCreateNestedManyWithoutUtilisateurInput
+    avis_repondus?: AvisUncheckedCreateNestedManyWithoutAdmin_repondantInput
+    votes_utiles?: AvisUtileUncheckedCreateNestedManyWithoutUtilisateurInput
   }
 
   export type UserCreateOrConnectWithoutRendezVousInput = {
@@ -18024,6 +20315,8 @@ export namespace Prisma {
     avis?: AvisUpdateManyWithoutUtilisateurNestedInput
     likes?: LikeUpdateManyWithoutUtilisateurNestedInput
     commandes?: CommandeUpdateManyWithoutUtilisateurNestedInput
+    avis_repondus?: AvisUpdateManyWithoutAdmin_repondantNestedInput
+    votes_utiles?: AvisUtileUpdateManyWithoutUtilisateurNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRendezVousInput = {
@@ -18041,6 +20334,8 @@ export namespace Prisma {
     avis?: AvisUncheckedUpdateManyWithoutUtilisateurNestedInput
     likes?: LikeUncheckedUpdateManyWithoutUtilisateurNestedInput
     commandes?: CommandeUncheckedUpdateManyWithoutUtilisateurNestedInput
+    avis_repondus?: AvisUncheckedUpdateManyWithoutAdmin_repondantNestedInput
+    votes_utiles?: AvisUtileUncheckedUpdateManyWithoutUtilisateurNestedInput
   }
 
   export type UserCreateWithoutCommandesInput = {
@@ -18058,6 +20353,8 @@ export namespace Prisma {
     avis?: AvisCreateNestedManyWithoutUtilisateurInput
     likes?: LikeCreateNestedManyWithoutUtilisateurInput
     rendezVous?: RendezVousCreateNestedManyWithoutUtilisateurInput
+    avis_repondus?: AvisCreateNestedManyWithoutAdmin_repondantInput
+    votes_utiles?: AvisUtileCreateNestedManyWithoutUtilisateurInput
   }
 
   export type UserUncheckedCreateWithoutCommandesInput = {
@@ -18075,6 +20372,8 @@ export namespace Prisma {
     avis?: AvisUncheckedCreateNestedManyWithoutUtilisateurInput
     likes?: LikeUncheckedCreateNestedManyWithoutUtilisateurInput
     rendezVous?: RendezVousUncheckedCreateNestedManyWithoutUtilisateurInput
+    avis_repondus?: AvisUncheckedCreateNestedManyWithoutAdmin_repondantInput
+    votes_utiles?: AvisUtileUncheckedCreateNestedManyWithoutUtilisateurInput
   }
 
   export type UserCreateOrConnectWithoutCommandesInput = {
@@ -18138,6 +20437,8 @@ export namespace Prisma {
     avis?: AvisUpdateManyWithoutUtilisateurNestedInput
     likes?: LikeUpdateManyWithoutUtilisateurNestedInput
     rendezVous?: RendezVousUpdateManyWithoutUtilisateurNestedInput
+    avis_repondus?: AvisUpdateManyWithoutAdmin_repondantNestedInput
+    votes_utiles?: AvisUtileUpdateManyWithoutUtilisateurNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCommandesInput = {
@@ -18155,6 +20456,8 @@ export namespace Prisma {
     avis?: AvisUncheckedUpdateManyWithoutUtilisateurNestedInput
     likes?: LikeUncheckedUpdateManyWithoutUtilisateurNestedInput
     rendezVous?: RendezVousUncheckedUpdateManyWithoutUtilisateurNestedInput
+    avis_repondus?: AvisUncheckedUpdateManyWithoutAdmin_repondantNestedInput
+    votes_utiles?: AvisUtileUncheckedUpdateManyWithoutUtilisateurNestedInput
   }
 
   export type LigneCommandeUpsertWithWhereUniqueWithoutCommandeInput = {
@@ -18344,6 +20647,10 @@ export namespace Prisma {
     produit_id: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    reponse_admin?: string | null
+    reponse_admin_at?: Date | string | null
+    reponse_admin_id?: string | null
+    masque?: boolean
   }
 
   export type LikeCreateManyUtilisateurInput = {
@@ -18360,6 +20667,7 @@ export namespace Prisma {
     notes?: string | null
     statut?: $Enums.AppointmentStatus
     raison_refus?: string | null
+    notes_admin?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -18379,6 +20687,27 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type AvisCreateManyAdmin_repondantInput = {
+    id?: string
+    note: number
+    titre: string
+    contenu: string
+    produit_id: string
+    utilisateur_id: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    reponse_admin?: string | null
+    reponse_admin_at?: Date | string | null
+    masque?: boolean
+  }
+
+  export type AvisUtileCreateManyUtilisateurInput = {
+    id?: string
+    avis_id: string
+    utile: boolean
+    createdAt?: Date | string
+  }
+
   export type AvisUpdateWithoutUtilisateurInput = {
     id?: StringFieldUpdateOperationsInput | string
     note?: IntFieldUpdateOperationsInput | number
@@ -18386,7 +20715,12 @@ export namespace Prisma {
     contenu?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reponse_admin?: NullableStringFieldUpdateOperationsInput | string | null
+    reponse_admin_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    masque?: BoolFieldUpdateOperationsInput | boolean
     produit?: ProduitUpdateOneRequiredWithoutAvisNestedInput
+    admin_repondant?: UserUpdateOneWithoutAvis_repondusNestedInput
+    votes_utiles?: AvisUtileUpdateManyWithoutAvisNestedInput
   }
 
   export type AvisUncheckedUpdateWithoutUtilisateurInput = {
@@ -18397,6 +20731,11 @@ export namespace Prisma {
     produit_id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reponse_admin?: NullableStringFieldUpdateOperationsInput | string | null
+    reponse_admin_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reponse_admin_id?: NullableStringFieldUpdateOperationsInput | string | null
+    masque?: BoolFieldUpdateOperationsInput | boolean
+    votes_utiles?: AvisUtileUncheckedUpdateManyWithoutAvisNestedInput
   }
 
   export type AvisUncheckedUpdateManyWithoutUtilisateurInput = {
@@ -18407,6 +20746,10 @@ export namespace Prisma {
     produit_id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reponse_admin?: NullableStringFieldUpdateOperationsInput | string | null
+    reponse_admin_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reponse_admin_id?: NullableStringFieldUpdateOperationsInput | string | null
+    masque?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type LikeUpdateWithoutUtilisateurInput = {
@@ -18434,6 +20777,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     statut?: EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
     raison_refus?: NullableStringFieldUpdateOperationsInput | string | null
+    notes_admin?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     type_seance?: TypeSeanceUpdateOneRequiredWithoutRendezVousNestedInput
@@ -18447,6 +20791,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     statut?: EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
     raison_refus?: NullableStringFieldUpdateOperationsInput | string | null
+    notes_admin?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -18459,6 +20804,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     statut?: EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
     raison_refus?: NullableStringFieldUpdateOperationsInput | string | null
+    notes_admin?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -18508,6 +20854,71 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AvisUpdateWithoutAdmin_repondantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    note?: IntFieldUpdateOperationsInput | number
+    titre?: StringFieldUpdateOperationsInput | string
+    contenu?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reponse_admin?: NullableStringFieldUpdateOperationsInput | string | null
+    reponse_admin_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    masque?: BoolFieldUpdateOperationsInput | boolean
+    produit?: ProduitUpdateOneRequiredWithoutAvisNestedInput
+    utilisateur?: UserUpdateOneRequiredWithoutAvisNestedInput
+    votes_utiles?: AvisUtileUpdateManyWithoutAvisNestedInput
+  }
+
+  export type AvisUncheckedUpdateWithoutAdmin_repondantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    note?: IntFieldUpdateOperationsInput | number
+    titre?: StringFieldUpdateOperationsInput | string
+    contenu?: StringFieldUpdateOperationsInput | string
+    produit_id?: StringFieldUpdateOperationsInput | string
+    utilisateur_id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reponse_admin?: NullableStringFieldUpdateOperationsInput | string | null
+    reponse_admin_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    masque?: BoolFieldUpdateOperationsInput | boolean
+    votes_utiles?: AvisUtileUncheckedUpdateManyWithoutAvisNestedInput
+  }
+
+  export type AvisUncheckedUpdateManyWithoutAdmin_repondantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    note?: IntFieldUpdateOperationsInput | number
+    titre?: StringFieldUpdateOperationsInput | string
+    contenu?: StringFieldUpdateOperationsInput | string
+    produit_id?: StringFieldUpdateOperationsInput | string
+    utilisateur_id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reponse_admin?: NullableStringFieldUpdateOperationsInput | string | null
+    reponse_admin_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    masque?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type AvisUtileUpdateWithoutUtilisateurInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    utile?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    avis?: AvisUpdateOneRequiredWithoutVotes_utilesNestedInput
+  }
+
+  export type AvisUtileUncheckedUpdateWithoutUtilisateurInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    avis_id?: StringFieldUpdateOperationsInput | string
+    utile?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AvisUtileUncheckedUpdateManyWithoutUtilisateurInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    avis_id?: StringFieldUpdateOperationsInput | string
+    utile?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ProduitCreateManyCategorieInput = {
@@ -18579,6 +20990,10 @@ export namespace Prisma {
     utilisateur_id: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    reponse_admin?: string | null
+    reponse_admin_at?: Date | string | null
+    reponse_admin_id?: string | null
+    masque?: boolean
   }
 
   export type LikeCreateManyProduitInput = {
@@ -18604,7 +21019,12 @@ export namespace Prisma {
     contenu?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reponse_admin?: NullableStringFieldUpdateOperationsInput | string | null
+    reponse_admin_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    masque?: BoolFieldUpdateOperationsInput | boolean
     utilisateur?: UserUpdateOneRequiredWithoutAvisNestedInput
+    admin_repondant?: UserUpdateOneWithoutAvis_repondusNestedInput
+    votes_utiles?: AvisUtileUpdateManyWithoutAvisNestedInput
   }
 
   export type AvisUncheckedUpdateWithoutProduitInput = {
@@ -18615,6 +21035,11 @@ export namespace Prisma {
     utilisateur_id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reponse_admin?: NullableStringFieldUpdateOperationsInput | string | null
+    reponse_admin_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reponse_admin_id?: NullableStringFieldUpdateOperationsInput | string | null
+    masque?: BoolFieldUpdateOperationsInput | boolean
+    votes_utiles?: AvisUtileUncheckedUpdateManyWithoutAvisNestedInput
   }
 
   export type AvisUncheckedUpdateManyWithoutProduitInput = {
@@ -18625,6 +21050,10 @@ export namespace Prisma {
     utilisateur_id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reponse_admin?: NullableStringFieldUpdateOperationsInput | string | null
+    reponse_admin_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reponse_admin_id?: NullableStringFieldUpdateOperationsInput | string | null
+    masque?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type LikeUpdateWithoutProduitInput = {
@@ -18675,6 +21104,34 @@ export namespace Prisma {
     sous_total?: FloatFieldUpdateOperationsInput | number
   }
 
+  export type AvisUtileCreateManyAvisInput = {
+    id?: string
+    utilisateur_id: string
+    utile: boolean
+    createdAt?: Date | string
+  }
+
+  export type AvisUtileUpdateWithoutAvisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    utile?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    utilisateur?: UserUpdateOneRequiredWithoutVotes_utilesNestedInput
+  }
+
+  export type AvisUtileUncheckedUpdateWithoutAvisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    utilisateur_id?: StringFieldUpdateOperationsInput | string
+    utile?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AvisUtileUncheckedUpdateManyWithoutAvisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    utilisateur_id?: StringFieldUpdateOperationsInput | string
+    utile?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type RendezVousCreateManyType_seanceInput = {
     id?: string
     utilisateur_id: string
@@ -18683,6 +21140,7 @@ export namespace Prisma {
     notes?: string | null
     statut?: $Enums.AppointmentStatus
     raison_refus?: string | null
+    notes_admin?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -18694,6 +21152,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     statut?: EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
     raison_refus?: NullableStringFieldUpdateOperationsInput | string | null
+    notes_admin?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     utilisateur?: UserUpdateOneRequiredWithoutRendezVousNestedInput
@@ -18707,6 +21166,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     statut?: EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
     raison_refus?: NullableStringFieldUpdateOperationsInput | string | null
+    notes_admin?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -18719,6 +21179,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     statut?: EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
     raison_refus?: NullableStringFieldUpdateOperationsInput | string | null
+    notes_admin?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

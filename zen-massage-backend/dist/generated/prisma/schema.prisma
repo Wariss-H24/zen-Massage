@@ -8,21 +8,23 @@ datasource db {
 }
 
 model User {
-  id         String       @id @default(cuid())
-  email      String       @unique
-  password   String
-  firstName  String
-  lastName   String
-  phone      String?
-  avatar     String?
-  role       UserRole     @default(USER)
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-  deletedAt  DateTime?
-  avis       Avis[]
-  likes      Like[]
-  rendezVous RendezVous[]
-  commandes  Commande[]
+  id            String       @id @default(cuid())
+  email         String       @unique
+  password      String
+  firstName     String
+  lastName      String
+  phone         String?
+  avatar        String?
+  role          UserRole     @default(USER)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  deletedAt     DateTime?
+  avis          Avis[]
+  likes         Like[]
+  rendezVous    RendezVous[]
+  commandes     Commande[]
+  avis_repondus Avis[]       @relation("AvisReponses")
+  votes_utiles  AvisUtile[]
 
   @@index([email])
   @@index([role])
@@ -63,20 +65,27 @@ model Produit {
 }
 
 model Avis {
-  id             String   @id @default(cuid())
-  note           Int
-  titre          String
-  contenu        String
-  produit_id     String
-  utilisateur_id String
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  produit        Produit  @relation(fields: [produit_id], references: [id], onDelete: Cascade)
-  utilisateur    User     @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
+  id               String      @id @default(cuid())
+  note             Int
+  titre            String
+  contenu          String
+  produit_id       String
+  utilisateur_id   String
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  reponse_admin    String?
+  reponse_admin_at DateTime?
+  reponse_admin_id String?
+  masque           Boolean     @default(false)
+  produit          Produit     @relation(fields: [produit_id], references: [id], onDelete: Cascade)
+  utilisateur      User        @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
+  admin_repondant  User?       @relation("AvisReponses", fields: [reponse_admin_id], references: [id], onDelete: SetNull)
+  votes_utiles     AvisUtile[]
 
   @@unique([utilisateur_id, produit_id])
   @@index([produit_id])
   @@index([utilisateur_id])
+  @@index([reponse_admin_id])
 }
 
 model Like {
@@ -89,6 +98,21 @@ model Like {
 
   @@unique([utilisateur_id, produit_id])
   @@index([produit_id])
+  @@index([utilisateur_id])
+}
+
+model AvisUtile {
+  id             String   @id @default(cuid())
+  avis_id        String
+  utilisateur_id String
+  utile          Boolean // true = utile, false = pas utile
+  createdAt      DateTime @default(now())
+  avis           Avis     @relation(fields: [avis_id], references: [id], onDelete: Cascade)
+  utilisateur    User     @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
+
+  @@unique([avis_id, utilisateur_id])
+  @@index([avis_id])
+  @@index([utilisateur_id])
 }
 
 model TypeSeance {
@@ -112,6 +136,7 @@ model RendezVous {
   notes          String?
   statut         AppointmentStatus @default(PENDING)
   raison_refus   String?
+  notes_admin    String?
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @updatedAt
   type_seance    TypeSeance        @relation(fields: [type_seance_id], references: [id])

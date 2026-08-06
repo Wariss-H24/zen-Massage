@@ -56,4 +56,5 @@ router.put('/:id', auth_1.requireAuth, appointment.updateAppointment);
 // Routes admin
 router.get('/all', auth_1.requireAuth, (0, roleCheck_1.requireRole)('ADMIN', 'SUPER_ADMIN'), appointment.getAllAppointments);
 router.put('/:id/status', auth_1.requireAuth, (0, roleCheck_1.requireRole)('ADMIN', 'SUPER_ADMIN'), appointment.updateAppointmentStatus);
+router.patch('/:id/notes-admin', auth_1.requireAuth, (0, roleCheck_1.requireRole)('ADMIN', 'SUPER_ADMIN'), appointment.updateNotesAdmin);
 exports.default = router;

@@ -105,6 +105,19 @@ export async function repondreAvis(req: Request, res: Response, next: NextFuncti
   } catch (err) { next(err) }
 }
 
+/* ── Masquer / Démasquer un avis (ADMIN) ── */
+export async function toggleMasque(req: Request, res: Response, next: NextFunction) {
+  try {
+    const avis_id = req.params.id as string
+    const result = await reviewService.toggleMasqueAvis(avis_id)
+    res.json({
+      success: true,
+      message: result.masque ? 'Avis masqué' : 'Avis visible',
+      data: result,
+    })
+  } catch (err) { next(err) }
+}
+
 export async function getProductStats(req: Request, res: Response, next: NextFunction) {
   try {
     const produit_id = req.params.productId as string

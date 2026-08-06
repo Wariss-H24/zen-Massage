@@ -29,5 +29,6 @@ router.put('/:id', requireAuth, appointment.updateAppointment)
 // Routes admin
 router.get('/all', requireAuth, requireRole('ADMIN', 'SUPER_ADMIN'), appointment.getAllAppointments)
 router.put('/:id/status', requireAuth, requireRole('ADMIN', 'SUPER_ADMIN'), appointment.updateAppointmentStatus)
+router.patch('/:id/notes-admin', requireAuth, requireRole('ADMIN', 'SUPER_ADMIN'), appointment.updateNotesAdmin)
 
 export default router

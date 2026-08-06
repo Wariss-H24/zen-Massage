@@ -383,7 +383,14 @@ export default function ProductDetail() {
                 >
                   favorite
                 </span>
-                {liked ? 'Retiré des favoris' : 'Ajouter aux favoris'}
+                {liked
+                  ? likeCount > 1
+                    ? `Vous et ${likeCount - 1} autre${likeCount - 1 > 1 ? 's' : ''} aimez ce produit`
+                    : 'Vous aimez ce produit'
+                  : likeCount > 0
+                    ? `${likeCount} personne${likeCount > 1 ? 's aiment' : ' aime'} ce produit`
+                    : 'Ajouter aux favoris'
+                }
               </button>
             </div>
 

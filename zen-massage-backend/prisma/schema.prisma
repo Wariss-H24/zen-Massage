@@ -76,6 +76,7 @@ model Avis {
   reponse_admin     String?
   reponse_admin_at  DateTime?
   reponse_admin_id  String?
+  masque            Boolean  @default(false)
   produit           Produit  @relation(fields: [produit_id], references: [id], onDelete: Cascade)
   utilisateur       User     @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
   admin_repondant     User?    @relation("AvisReponses", fields: [reponse_admin_id], references: [id], onDelete: SetNull)
@@ -135,6 +136,7 @@ model RendezVous {
   notes          String?
   statut         AppointmentStatus @default(PENDING)
   raison_refus   String?
+  notes_admin    String?
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @updatedAt
   type_seance    TypeSeance        @relation(fields: [type_seance_id], references: [id])

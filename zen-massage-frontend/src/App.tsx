@@ -11,6 +11,7 @@ import Register from './pages/Register'
 import Account from './pages/Account'
 import Profile from './pages/Profile'
 import Orders from './pages/Orders'
+import OrderDetail from './pages/OrderDetail'
 import ForgotPassword from './pages/ForgotPassword'
 import ProductDetail from './pages/ProductDetail'
 import Checkout from './pages/Checkout'
@@ -110,6 +111,7 @@ export default function App() {
       <Route path="/checkout"     element={<RequireUser><Checkout /></RequireUser>} />
       <Route path="/account"      element={<RequireUser><Account /></RequireUser>} />
       <Route path="/orders"       element={<RequireUser><Orders /></RequireUser>} />
+      <Route path="/orders/:id"   element={<RequireUser><OrderDetail /></RequireUser>} />
       <Route path="/profile"      element={<RequireUser><Profile /></RequireUser>} />
 
       {/* Pages ADMIN + SUPER_ADMIN */}

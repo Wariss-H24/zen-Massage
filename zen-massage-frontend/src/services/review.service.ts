@@ -55,4 +55,7 @@ export const reviewService = {
 
   repondreAdmin: (reviewId: string, reponse: string | null) =>
     api.patch<ApiResponse<Review>>(`/reviews/${reviewId}/reponse-admin`, { reponse }),
+
+  toggleMasque: (reviewId: string) =>
+    api.patch<ApiResponse<Review>>(`/reviews/${reviewId}/masque`),
 }
