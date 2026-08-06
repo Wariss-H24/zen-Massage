@@ -210,13 +210,6 @@ export async function getProduitById(id: string) {
     where: { id },
     include: {
       categorie: true,
-      avis: {
-        include: {
-          utilisateur: { select: { id: true, firstName: true, lastName: true, avatar: true } },
-        },
-        orderBy: { createdAt: 'desc' },
-        take: 10,
-      },
       _count: { select: { avis: true, likes: true } },
     },
   })
@@ -229,7 +222,9 @@ export async function getProduitById(id: string) {
     where: { produit_id: id },
     _avg: { note: true },
   })
-  return { produit: prod, moyenne: avg._avg.note ?? 0 }
+  const produit: any = prod
+  delete produit.avis
+  return { produit, moyenne: avg._avg.note ?? 0 }
 }
 
 /* ============================================================
@@ -261,4 +256,28 @@ export async function getLikeStatus(produit_id: string, utilisateur_id: string) 
     where: { utilisateur_id_produit_id: { utilisateur_id, produit_id } },
   })
   return !!like
+}
+
+/* ============================================================
+   STOCK PAR LOT (vérification panier)
+   ============================================================ */
+
+export async function getBatchStocks(ids: string[]) {
+  const unique = Array.from(new Set(ids))
+  const produits = await prisma.produit.findMany({
+    where: { id: { in: unique } },
+    select: { id: true, stock: true, nom: true, publie: true },
+  })
+  const map = new Map<string, { id: string; stock: number; nom: string; publie: boolean }>()
+  for (const p of produits) map.set(p.id, p)
+  return unique.map(id => {
+    const p = map.get(id)
+    return {
+      id,
+      exists: !!p,
+      publie: p?.publie ?? false,
+      nom: p?.nom ?? null,
+      stock: p?.stock ?? 0,
+    }
+  })
 }

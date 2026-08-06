@@ -16,6 +16,14 @@ interface ApiResponse<T> {
   data: T
 }
 
+export interface BatchStockItem {
+  id: string
+  exists: boolean
+  publie: boolean
+  nom: string | null
+  stock: number
+}
+
 export const productService = {
   /* ---- CATÉGORIES ---- */
   getCategories: () =>
@@ -69,6 +77,9 @@ export const productService = {
 
   deleteProduit: (id: string) =>
     api.delete<ApiResponse<null>>(`/products/${id}`),
+
+  batchStocks: (ids: string[]) =>
+    api.post<ApiResponse<BatchStockItem[]>>('/products/batch-stocks', { ids }),
 
   /* ---- LIKES ---- */
   toggleLike: (id: string) =>

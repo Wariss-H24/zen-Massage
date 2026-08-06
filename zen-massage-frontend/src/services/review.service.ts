@@ -6,6 +6,7 @@ import type {
   ReviewCreateInput,
   ReviewUpdateInput,
   ReviewFilters,
+  ReviewVoteResult,
 } from '../types/review'
 
 interface ApiResponse<T> {
@@ -48,4 +49,10 @@ export const reviewService = {
 
   deleteReview: (id: string) =>
     api.delete<ApiResponse<null>>(`/reviews/${id}`),
+
+  voteUtile: (reviewId: string, utile: boolean) =>
+    api.post<ApiResponse<ReviewVoteResult>>(`/reviews/${reviewId}/vote-utile`, { utile }),
+
+  repondreAdmin: (reviewId: string, reponse: string | null) =>
+    api.patch<ApiResponse<Review>>(`/reviews/${reviewId}/reponse-admin`, { reponse }),
 }

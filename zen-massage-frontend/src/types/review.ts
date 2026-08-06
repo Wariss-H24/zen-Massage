@@ -3,6 +3,7 @@ export interface ReviewUser {
   firstName: string
   lastName: string
   avatar?: string
+  role?: string
 }
 
 export interface Review {
@@ -15,6 +16,11 @@ export interface Review {
   createdAt: string
   updatedAt: string
   utilisateur: ReviewUser
+  reponse_admin?: string | null
+  reponse_admin_at?: string | null
+  admin_repondant?: ReviewUser | null
+  utiles: number
+  mon_vote: boolean | null
 }
 
 export interface ListReviewsResponse {
@@ -48,4 +54,9 @@ export interface ReviewFilters {
   tri?: 'recent' | 'note_desc' | 'note_asc'
   page?: number
   limite?: number
+}
+
+export interface ReviewVoteResult {
+  utiles: number
+  mon_vote: boolean | null
 }

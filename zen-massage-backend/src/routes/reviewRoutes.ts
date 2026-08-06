@@ -26,6 +26,17 @@ router.delete('/:id',
   requireAuth,
   review.deleteReview
 )
+router.post('/:id/vote-utile',
+  requireAuth,
+  review.voteUtile
+)
+
+// Admin : répondre / modifier réponse avis
+router.patch('/:id/reponse-admin',
+  requireAuth,
+  requireRole('ADMIN', 'SUPER_ADMIN'),
+  review.repondreAvis
+)
 
 // Admin : peut utiliser DELETE ci-dessus (grâce au roleCheck dans le service)
 

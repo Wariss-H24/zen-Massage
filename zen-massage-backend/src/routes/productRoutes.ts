@@ -10,7 +10,7 @@ const router = Router()
 
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 10 * 1024 * 1024, files: 3 },
+  limits: { fileSize: 10 * 1024 * 1024, files: 5 },
   fileFilter: (_req, file, cb) => {
     if (!file.mimetype?.startsWith('image/')) return cb(new Error('Fichier invalide (image uniquement)'))
     cb(null, true)
@@ -48,7 +48,7 @@ router.delete('/categories/:id',
 router.post('/images/upload',
   requireAuth,
   requireRole('ADMIN', 'SUPER_ADMIN'),
-  upload.array('images', 3),
+  upload.array('images', 5),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const files = (req.files as Express.Multer.File[]) || []
@@ -66,6 +66,7 @@ router.post('/images/upload',
 
 // Publiques : voir les produits publiés
 router.get('/',                               product.listProduits)
+router.post('/batch-stocks',                  product.batchStocks)  // Récupérer stocks pour une liste d'IDs (panier)
 router.get('/admin',
   requireAuth,
   requireRole('ADMIN', 'SUPER_ADMIN'),

@@ -171,3 +171,135 @@ export async function getProductReviewStats(produit_id: string) {
     distribution,
   }
 }
+
+/* ============================================================
+   INCLUDES COMMUNS (utilisateur, réponse admin, votes)
+   ============================================================ */
+
+const reviewInclude = (utilisateur_id?: string) => ({
+  utilisateur: { select: { id: true, firstName: true, lastName: true, avatar: true } },
+  admin_repondant: { select: { id: true, firstName: true, lastName: true, avatar: true, role: true } },
+  _count: {
+    select: {
+      votes_utiles: {
+        where: { utile: true },
+      },
+    },
+  },
+  votes_utiles: utilisateur_id
+    ? { where: { utilisateur_id }, take: 1, select: { utile: true } }
+    : false,
+}) as const
+
+/* ── Helper pour mapper un avis avec compteurs et vote utilisateur ── */
+function mapAvis(avis: any, userId?: string) {
+  const utiles = Number(avis._count?.votes_utiles ?? 0)
+  const monVote = (userId && avis.votes_utiles?.length ? avis.votes_utiles[0].utile : undefined) as boolean | undefined
+  const { votes_utiles, _count, ...rest } = avis
+  return { ...rest, utiles, mon_vote: monVote ?? null }
+}
+
+export async function listReviewsEnhanced(filters: ReviewFilters = {}, userId?: string) {
+  const where: any = {}
+  if (filters.produit_id) where.produit_id = filters.produit_id
+
+  let orderBy: any = { createdAt: 'desc' as const }
+  switch (filters.tri) {
+    case 'note_desc': orderBy = { note: 'desc' as const }; break
+    case 'note_asc':  orderBy = { note: 'asc' as const }; break
+    case 'recent':
+    default: orderBy = { createdAt: 'desc' as const }
+  }
+
+  const page = Math.max(1, filters.page ?? 1)
+  const limite = Math.min(100, Math.max(1, filters.limite ?? 20))
+  const skip = (page - 1) * limite
+
+  const [raw, total] = await Promise.all([
+    prisma.avis.findMany({
+      where,
+      include: reviewInclude(userId),
+      orderBy,
+      skip,
+      take: limite,
+    }),
+    prisma.avis.count({ where }),
+  ])
+
+  const avis = raw.map(a => mapAvis(a, userId))
+  return { avis, total, page, pages: Math.ceil(total / limite) }
+}
+
+export async function getReviewByIdEnhanced(id: string, userId?: string) {
+  const raw = await prisma.avis.findUnique({
+    where: { id },
+    include: reviewInclude(userId),
+  })
+  if (!raw) {
+    const err = new Error('Avis introuvable') as any; err.status = 404; throw err
+  }
+  return mapAvis(raw, userId)
+}
+
+/* ============================================================
+   VOTE UTILE / PAS UTILE
+   ============================================================ */
+
+export async function toggleVoteUtile(avis_id: string, utilisateur_id: string, utile: boolean) {
+  const avis = await prisma.avis.findUnique({ where: { id: avis_id } })
+  if (!avis) {
+    const err = new Error('Avis introuvable') as any; err.status = 404; throw err
+  }
+  const existing = await prisma.avisUtile.findUnique({
+    where: { avis_id_utilisateur_id: { avis_id, utilisateur_id } },
+  })
+
+  let result: { utiles: number; mon_vote: boolean | null }
+
+  if (existing) {
+    if (existing.utile === utile) {
+      // Annuler le vote
+      await prisma.avisUtile.delete({ where: { avis_id_utilisateur_id: { avis_id, utilisateur_id } } })
+      const utiles = await prisma.avisUtile.count({ where: { avis_id, utile: true } })
+      result = { utiles, mon_vote: null }
+    } else {
+      // Changer le vote
+      await prisma.avisUtile.update({
+        where: { avis_id_utilisateur_id: { avis_id, utilisateur_id } },
+        data: { utile },
+      })
+      const utiles = await prisma.avisUtile.count({ where: { avis_id, utile: true } })
+      result = { utiles, mon_vote: utile }
+    }
+  } else {
+    await prisma.avisUtile.create({ data: { avis_id, utilisateur_id, utile } })
+    const utiles = await prisma.avisUtile.count({ where: { avis_id, utile: true } })
+    result = { utiles, mon_vote: utile }
+  }
+  return result
+}
+
+/* ============================================================
+   RÉPONSE ADMIN À UN AVIS
+   ============================================================ */
+
+export async function repondreAvis(
+  avis_id: string,
+  admin_id: string,
+  reponse: string | null,
+) {
+  const avis = await prisma.avis.findUnique({ where: { id: avis_id } })
+  if (!avis) {
+    const err = new Error('Avis introuvable') as any; err.status = 404; throw err
+  }
+  const updated = await prisma.avis.update({
+    where: { id: avis_id },
+    data: {
+      reponse_admin: reponse,
+      reponse_admin_at: reponse ? new Date() : null,
+      reponse_admin_id: reponse ? admin_id : null,
+    },
+    include: reviewInclude(),
+  })
+  return mapAvis(updated)
+}

@@ -171,6 +171,11 @@ export default function Dashboard() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null)
   const [processingReschedule, setProcessingReschedule] = useState(false)
+  // États pour la réponse admin aux avis
+  const [replyModalOpen, setReplyModalOpen] = useState(false)
+  const [selectedReview, setSelectedReview] = useState<Review | null>(null)
+  const [replyText, setReplyText] = useState('')
+  const [processingReply, setProcessingReply] = useState(false)
   const firstName = user?.firstName || ''
   const lastName = user?.lastName || ''
 
@@ -398,6 +403,25 @@ export default function Dashboard() {
   }
 
   // Gérer la reprogrammation
+  const handleReply = async () => {
+    if (!selectedReview) return
+    setProcessingReply(true)
+    try {
+      await reviewService.repondreAdmin(selectedReview.id, replyText.trim() || null)
+      setReviews(prev => prev.map(r =>
+        r.id === selectedReview.id
+          ? { ...r, reponse_admin: replyText.trim() || null }
+          : r
+      ))
+      setReplyModalOpen(false)
+      setToast({ type: 'success', msg: replyText.trim() ? 'Réponse publiée' : 'Réponse supprimée' })
+    } catch (err: any) {
+      setToast({ type: 'error', msg: err.message || 'Erreur lors de la réponse' })
+    } finally {
+      setProcessingReply(false)
+    }
+  }
+
   const handleReschedule = async () => {
     if (!selectedAppt || !selectedDate || !selectedSlot) return
     try {
@@ -734,11 +758,25 @@ export default function Dashboard() {
                       </span>
                     </div>
 
+                    {/* Réponse admin existante */}
+                    {r.reponse_admin && (
+                      <div className="mt-3 bg-sage-deep/5 border-l-4 border-primary p-3 rounded-r-lg">
+                        <p className="text-xs text-primary font-semibold mb-1">Votre réponse :</p>
+                        <p className="text-xs text-on-surface-variant line-clamp-2">{r.reponse_admin}</p>
+                      </div>
+                    )}
                     {/* Bouton répondre */}
                     <div className="pl-4 border-l border-outline-variant pt-2 mt-3">
-                      <button className="text-xs text-primary font-semibold flex items-center gap-1 hover:underline">
+                      <button
+                        onClick={() => {
+                          setSelectedReview(r)
+                          setReplyText(r.reponse_admin ?? '')
+                          setReplyModalOpen(true)
+                        }}
+                        className="text-xs text-primary font-semibold flex items-center gap-1 hover:underline"
+                      >
                         <span className="material-symbols-outlined text-sm">reply</span>
-                        Répondre au client
+                        {r.reponse_admin ? 'Modifier la réponse' : 'Répondre au client'}
                       </button>
                     </div>
                   </div>
@@ -957,6 +995,68 @@ export default function Dashboard() {
                 style={{ backgroundColor: '#425646' }}
               >
                 {processingReschedule ? 'Reprogrammation...' : 'Enregistrer'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Modal réponse admin à un avis */}
+      {replyModalOpen && selectedReview && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+          <div className="bg-white rounded-xl p-6 max-w-lg w-full shadow-2xl">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <span className="material-symbols-outlined text-primary text-2xl">support_agent</span>
+                <h3 className="font-headline-sm text-sage-deep">
+                  {selectedReview.reponse_admin ? 'Modifier la réponse' : 'Répondre au client'}
+                </h3>
+              </div>
+              <button onClick={() => setReplyModalOpen(false)} className="p-1 hover:bg-sand-light rounded-full">
+                <span className="material-symbols-outlined text-on-surface-variant">close</span>
+              </button>
+            </div>
+
+            {/* Avis original */}
+            <div className="bg-surface-container-low rounded-lg p-3 mb-4">
+              <div className="flex gap-0.5 text-[#D4AF37] mb-1">
+                {Array.from({ length: 5 }).map((_, j) => (
+                  <span key={j} className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: j < selectedReview.note ? "'FILL' 1" : "'FILL' 0" }}>star</span>
+                ))}
+              </div>
+              <p className="text-sm font-semibold text-sage-deep mb-1">{selectedReview.titre}</p>
+              <p className="text-xs text-on-surface-variant line-clamp-3">{selectedReview.contenu}</p>
+              <p className="text-xs text-outline mt-1">
+                — {selectedReview.utilisateur.firstName} {selectedReview.utilisateur.lastName}
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <label className="font-label-md text-label-md text-sage-deep block">Votre réponse</label>
+              <textarea
+                value={replyText}
+                onChange={e => setReplyText(e.target.value)}
+                rows={4}
+                maxLength={1000}
+                className="w-full p-3 rounded-lg border border-outline-variant/30 bg-surface-container-lowest resize-none text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                placeholder="Écrivez votre réponse... (laisser vide pour supprimer)"
+              />
+              <p className="text-xs text-on-surface-variant text-right">{replyText.length}/1000</p>
+            </div>
+
+            <div className="flex gap-3 pt-4 border-t border-outline-variant/20 mt-4">
+              <button
+                onClick={() => setReplyModalOpen(false)}
+                disabled={processingReply}
+                className="flex-1 py-2 font-label-md text-on-surface-variant border border-outline-variant/30 rounded-lg hover:bg-surface-variant transition-colors"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={handleReply}
+                disabled={processingReply}
+                className="flex-1 py-2 font-label-md bg-primary text-white rounded-lg hover:bg-sage-deep transition-colors disabled:opacity-50"
+              >
+                {processingReply ? 'Publication...' : replyText.trim() ? 'Publier la réponse' : 'Supprimer la réponse'}
               </button>
             </div>
           </div>

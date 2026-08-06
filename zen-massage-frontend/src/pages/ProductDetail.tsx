@@ -9,6 +9,7 @@ import type { ProduitDetail } from '../types/product'
 import type { Review, ReviewStats } from '../types/review'
 import Spinner from '../components/ui/Spinner'
 import Toast from '../components/ui/Toast'
+import Select from '../components/ui/Select'
 
 function Stars({ rating, size = 'sm' }: { rating: number; size?: 'sm' | 'xs' }) {
   const r = Math.round(rating * 2) / 2
@@ -54,6 +55,10 @@ function getInitials(first?: string, last?: string) {
 
 const BG_COLORS = ['bg-secondary-fixed', 'bg-primary-fixed', 'bg-tertiary-fixed', 'bg-error-container']
 
+const REVIEW_PAGE_SIZE = 5
+
+type ReviewSortKey = 'recent' | 'note_desc' | 'note_asc'
+
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>()
   const { user } = useAuth()
@@ -66,6 +71,11 @@ export default function ProductDetail() {
 
   const [data, setData] = useState<ProduitDetail | null>(null)
   const [reviews, setReviews] = useState<Review[]>([])
+  const [reviewsTotal, setReviewsTotal] = useState(0)
+  const [reviewsPage, setReviewsPage] = useState(1)
+  const [reviewsPages, setReviewsPages] = useState(1)
+  const [reviewsSort, setReviewsSort] = useState<ReviewSortKey>('recent')
+  const [loadingReviews, setLoadingReviews] = useState(false)
   const [stats, setStats] = useState<ReviewStats | null>(null)
   const [related, setRelated] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -77,19 +87,36 @@ export default function ProductDetail() {
   const [submittingReview, setSubmittingReview] = useState(false)
 
   /* ---- Chargement ---- */
+  const loadReviews = useCallback(async () => {
+    if (!id) return
+    setLoadingReviews(true)
+    try {
+      const res = await reviewService.listProductReviews(id, {
+        limite: REVIEW_PAGE_SIZE,
+        page: reviewsPage,
+        tri: reviewsSort,
+      })
+      setReviews(prev => (reviewsPage === 1 ? res.data.avis : [...prev, ...res.data.avis]))
+      setReviewsTotal(res.data.total)
+      setReviewsPages(res.data.pages)
+    } catch {
+      setToast({ type: 'error', msg: 'Impossible de charger les avis.' })
+    } finally {
+      setLoadingReviews(false)
+    }
+  }, [id, reviewsPage, reviewsSort])
+
   const loadData = useCallback(async () => {
     if (!id) return
     setLoading(true)
     setError(null)
     try {
-      const [detailRes, statsRes, reviewsRes] = await Promise.all([
+      const [detailRes, statsRes] = await Promise.all([
         productService.getProduit(id),
         reviewService.getProductStats(id),
-        reviewService.listProductReviews(id, { limite: 10, tri: 'recent' }),
       ])
       setData(detailRes.data)
       setStats(statsRes.data)
-      setReviews(reviewsRes.data.avis)
       document.title = `${detailRes.data.produit.nom} | Ben Massage & Wellness`
 
       if (user) {
@@ -119,6 +146,8 @@ export default function ProductDetail() {
   }, [id, user])
 
   useEffect(() => { loadData() }, [loadData])
+  useEffect(() => { loadReviews() }, [loadReviews])
+  useEffect(() => { setReviewsPage(1) }, [reviewsSort])
 
   /* ---- Actions ---- */
   const toggleLike = async () => {
@@ -162,11 +191,28 @@ export default function ProductDetail() {
       setToast({ type: 'success', msg: 'Merci pour votre avis !' })
       setReviewForm({ note: 5, titre: '', contenu: '' })
       setShowReviewForm(false)
+      setReviewsPage(1)
+      loadReviews()
       loadData()
     } catch (err: any) {
       setToast({ type: 'error', msg: err.message })
     } finally {
       setSubmittingReview(false)
+    }
+  }
+
+  async function handleVoteUtile(review: Review, utile: boolean) {
+    if (!user) {
+      setToast({ type: 'info', msg: 'Connectez-vous pour voter' })
+      return
+    }
+    try {
+      const res = await reviewService.voteUtile(review.id, utile)
+      setReviews(prev =>
+        prev.map(r => r.id === review.id ? { ...r, utiles: res.data.utiles, mon_vote: res.data.mon_vote } : r)
+      )
+    } catch (e: any) {
+      setToast({ type: 'error', msg: e.message || 'Impossible de voter.' })
     }
   }
 
@@ -197,6 +243,12 @@ export default function ProductDetail() {
   const images = p.images?.length ? p.images : ['']
   const moyenne = data.moyenne
   const stockOk = p.stock > 0
+  const stockBadge = (() => {
+    if (p.stock <= 0) return { label: 'Rupture de stock', className: 'bg-error text-white' }
+    if (p.stock <= 3) return { label: `Stock faible (${p.stock})`, className: 'bg-amber-500/90 text-white' }
+    return { label: 'En Stock', className: 'bg-status-confirmed/10 text-status-confirmed border border-status-confirmed/30' }
+  })()
+  const thumbnails = images.slice(0, 4)
 
   return (
     <MainLayout>
@@ -235,7 +287,7 @@ export default function ProductDetail() {
               )}
             </div>
 
-            {images.slice(0, 4).map((img, i) => (
+            {thumbnails.map((img, i) => (
               <button
                 key={i}
                 onClick={() => setActiveImg(i)}
@@ -257,26 +309,25 @@ export default function ProductDetail() {
           {/* Infos produit */}
           <div className="lg:col-span-5 flex flex-col">
 
-            <span className="inline-flex items-center px-3 py-1 rounded-full font-label-md text-caption bg-primary-fixed text-on-primary-fixed-variant mb-3 w-fit">
-              {p.categorie?.nom || 'Produit'}
-            </span>
+            <div className="flex items-start justify-between gap-4 mb-3">
+              <span className="inline-flex items-center px-3 py-1 rounded-full font-label-md text-caption bg-primary-fixed text-on-primary-fixed-variant">
+                {p.categorie?.nom || 'Produit'}
+              </span>
+              <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-label-md text-caption ${stockBadge.className}`}>
+                <span className="material-symbols-outlined text-[16px]">{stockOk ? (p.stock <= 3 ? 'warning' : 'check_circle') : 'cancel'}</span>
+                {stockBadge.label}
+              </span>
+            </div>
             <h1 className="font-headline-md text-headline-md text-sage-deep mb-3 leading-tight">
               {p.nom}
             </h1>
 
-            {/* Note + stock */}
-            <div className="flex items-center gap-4 mb-6 flex-wrap">
-              <div className="flex items-center gap-2">
-                <Stars rating={moyenne} />
-                <span className="font-label-md text-caption text-on-surface-variant">
-                  {moyenne.toFixed(1)} ({stats?.total ?? 0} avis)
-                </span>
-              </div>
-              <div className="h-4 w-px bg-outline-variant" />
-              <div className={`flex items-center gap-1.5 font-label-md text-caption ${stockOk ? 'text-status-confirmed' : 'text-error'}`}>
-                <span className="material-symbols-outlined text-sm">inventory_2</span>
-                {stockOk ? (p.stock <= 3 ? `Stock faible (${p.stock})` : 'En Stock') : 'Rupture de stock'}
-              </div>
+            {/* Note */}
+            <div className="flex items-center gap-2 mb-6">
+              <Stars rating={moyenne} />
+              <span className="font-label-md text-caption text-on-surface-variant">
+                {moyenne.toFixed(1)} ({stats?.total ?? 0} avis)
+              </span>
             </div>
 
             {/* Prix */}
@@ -384,7 +435,7 @@ export default function ProductDetail() {
 
         {/* Section Avis */}
         <section className="mt-section-gap">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
             <div>
               <h2 className="font-headline-md text-headline-md text-sage-deep mb-2">Avis de la Communauté</h2>
               <p className="font-body-md text-body-md text-on-surface-variant">
@@ -420,6 +471,25 @@ export default function ProductDetail() {
               >
                 Écrire un avis
               </button>
+            </div>
+          </div>
+
+          {/* Barre tri / compteur avis */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-8">
+            <div className="flex items-center gap-2 font-caption text-caption text-on-surface-variant">
+              <span className="material-symbols-outlined text-[18px] text-outline">rate_review</span>
+              {reviewsTotal > 0 ? `${reviewsTotal} avis affichés` : 'Aucun avis publié'}
+            </div>
+            <div className="flex sm:justify-end">
+              <Select
+                value={reviewsSort}
+                onChange={(v) => setReviewsSort(v as ReviewSortKey)}
+                options={[
+                  { value: 'recent',    label: 'Plus récents'   },
+                  { value: 'note_desc', label: 'Mieux notés'    },
+                  { value: 'note_asc',  label: 'Moins bien notés' },
+                ]}
+              />
             </div>
           </div>
 
@@ -491,36 +561,111 @@ export default function ProductDetail() {
           )}
 
           {reviews.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {reviews.map((r, idx) => (
-                <div key={r.id} className="bg-white p-8 rounded-2xl border border-outline-variant/30 flex flex-col">
-                  <div className="flex justify-between items-start mb-6">
-                    <div className="flex items-center gap-4">
-                      <div className={`w-12 h-12 rounded-full ${BG_COLORS[idx % BG_COLORS.length]} flex items-center justify-center font-bold text-on-surface`}>
-                        {r.utilisateur.avatar ? (
-                          <img src={r.utilisateur.avatar} alt="" className="w-full h-full object-cover rounded-full" />
-                        ) : getInitials(r.utilisateur.firstName, r.utilisateur.lastName)}
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {reviews.map((r, idx) => (
+                  <div key={r.id} className="bg-white p-8 rounded-2xl border border-outline-variant/30 flex flex-col">
+                    <div className="flex justify-between items-start mb-6">
+                      <div className="flex items-center gap-4">
+                        <div className={`w-12 h-12 rounded-full ${BG_COLORS[idx % BG_COLORS.length]} flex items-center justify-center font-bold text-on-surface`}>
+                          {r.utilisateur.avatar ? (
+                            <img src={r.utilisateur.avatar} alt="" className="w-full h-full object-cover rounded-full" />
+                          ) : getInitials(r.utilisateur.firstName, r.utilisateur.lastName)}
+                        </div>
+                        <div>
+                          <h4 className="font-label-md text-label-md">
+                            {r.utilisateur.firstName} {r.utilisateur.lastName}
+                          </h4>
+                          <span className="font-caption text-caption text-on-surface-variant flex items-center gap-1">
+                            <span className="material-symbols-outlined text-status-confirmed" style={{ fontSize: 14, fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                            Vérifié
+                          </span>
+                        </div>
                       </div>
-                      <div>
-                        <h4 className="font-label-md text-label-md">
-                          {r.utilisateur.firstName} {r.utilisateur.lastName}
-                        </h4>
-                        <span className="font-caption text-caption text-on-surface-variant flex items-center gap-1">
-                          <span className="material-symbols-outlined text-status-confirmed" style={{ fontSize: 14, fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                          Vérifié
-                        </span>
+                      <Stars rating={r.note} size="xs" />
+                    </div>
+                    <h5 className="font-semibold font-body-md mb-3 text-sage-deep">{r.titre}</h5>
+                    <p className="font-body-md text-body-md text-on-surface-variant flex-grow">{r.contenu}</p>
+
+                    {r.reponse_admin && (
+                      <div className="mt-4 bg-sage-deep/5 border-l-4 border-primary p-4 rounded-r-xl">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="material-symbols-outlined text-primary text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>support_agent</span>
+                          <span className="font-label-md text-label-md text-primary">
+                            {r.admin_repondant
+                              ? `${r.admin_repondant.firstName} ${r.admin_repondant.lastName} · Ben Massage`
+                              : 'Réponse de Ben Massage'}
+                          </span>
+                          {r.reponse_admin_at && (
+                            <span className="font-caption text-caption text-on-surface-variant ml-auto">
+                              {formatDate(r.reponse_admin_at)}
+                            </span>
+                          )}
+                        </div>
+                        <p className="font-body-md text-body-md text-on-surface-variant">{r.reponse_admin}</p>
+                      </div>
+                    )}
+
+                    <div className="mt-6 pt-6 border-t border-outline-variant/20 flex items-center justify-between gap-4 flex-wrap">
+                      <span className="font-caption text-caption text-on-surface-variant">{formatDate(r.createdAt)}</span>
+
+                      <div className="flex items-center gap-2">
+                        <span className="font-caption text-caption text-on-surface-variant mr-1">Utile ?</span>
+                        <button
+                          type="button"
+                          disabled={!user}
+                          title={!user ? 'Connectez-vous pour voter' : r.mon_vote === true ? 'Annuler mon vote' : 'Marquer comme utile'}
+                          onClick={() => handleVoteUtile(r, true)}
+                          className={`flex items-center gap-1 px-2.5 py-1 rounded-full font-caption text-caption transition-all border ${
+                            r.mon_vote === true
+                              ? 'bg-primary text-white border-primary'
+                              : 'border-outline-variant text-on-surface-variant hover:border-primary hover:text-primary'
+                          } ${!user ? 'opacity-40 cursor-not-allowed' : ''}`}
+                        >
+                          <span className="material-symbols-outlined text-[15px]" style={{ fontVariationSettings: r.mon_vote === true ? "'FILL' 1" : "'FILL' 0" }}>thumb_up</span>
+                          {r.utiles > 0 && <span className="font-bold">{r.utiles}</span>}
+                        </button>
+                        <button
+                          type="button"
+                          disabled={!user}
+                          title={!user ? 'Connectez-vous pour voter' : r.mon_vote === false ? 'Annuler mon vote' : 'Marquer comme pas utile'}
+                          onClick={() => handleVoteUtile(r, false)}
+                          className={`flex items-center gap-1 px-2.5 py-1 rounded-full font-caption text-caption transition-all border ${
+                            r.mon_vote === false
+                              ? 'bg-error text-white border-error'
+                              : 'border-outline-variant text-on-surface-variant hover:border-error hover:text-error'
+                          } ${!user ? 'opacity-40 cursor-not-allowed' : ''}`}
+                        >
+                          <span className="material-symbols-outlined text-[15px]" style={{ fontVariationSettings: r.mon_vote === false ? "'FILL' 1" : "'FILL' 0" }}>thumb_down</span>
+                        </button>
                       </div>
                     </div>
-                    <Stars rating={r.note} size="xs" />
                   </div>
-                  <h5 className="font-semibold font-body-md mb-3 text-sage-deep">{r.titre}</h5>
-                  <p className="font-body-md text-body-md text-on-surface-variant flex-grow">{r.contenu}</p>
-                  <div className="mt-6 pt-6 border-t border-outline-variant/20 flex items-center gap-4 font-caption text-caption text-on-surface-variant">
-                    <span>{formatDate(r.createdAt)}</span>
-                  </div>
+                ))}
+              </div>
+
+              {reviewsPage < reviewsPages && (
+                <div className="flex justify-center mt-10">
+                  <button
+                    type="button"
+                    onClick={() => setReviewsPage(p => p + 1)}
+                    disabled={loadingReviews}
+                    className="px-8 py-3 rounded-full border-2 border-primary text-primary font-label-md hover:bg-primary hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  >
+                    {loadingReviews ? (
+                      <>
+                        <Spinner size="sm" /> Chargement…
+                      </>
+                    ) : (
+                      <>
+                        Charger plus d’avis
+                        <span className="material-symbols-outlined text-[18px]">expand_more</span>
+                      </>
+                    )}
+                  </button>
                 </div>
-              ))}
-            </div>
+              )}
+            </>
           ) : (
             <div className="text-center py-16 bg-sand-light/30 rounded-2xl">
               <span className="material-symbols-outlined text-5xl text-outline-variant mb-3 block">rate_review</span>

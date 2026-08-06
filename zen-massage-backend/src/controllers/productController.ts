@@ -139,3 +139,18 @@ export async function getLikeStatus(req: Request, res: Response, next: NextFunct
     res.json({ success: true, data: { liked } })
   } catch (err) { next(err) }
 }
+
+/* ── Récupérer les stocks d'une liste de produits (panier) ── */
+export async function batchStocks(req: Request, res: Response, next: NextFunction) {
+  try {
+    const ids = Array.isArray(req.body?.ids)
+      ? req.body.ids.map((x: any) => String(x)).filter(Boolean)
+      : []
+    if (ids.length === 0) {
+      res.json({ success: true, data: [] })
+      return
+    }
+    const result = await productService.getBatchStocks(ids)
+    res.json({ success: true, data: result })
+  } catch (err) { next(err) }
+}

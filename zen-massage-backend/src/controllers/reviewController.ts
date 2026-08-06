@@ -45,7 +45,8 @@ export async function deleteReview(req: Request, res: Response, next: NextFuncti
 export async function listReviews(req: Request, res: Response, next: NextFunction) {
   try {
     const filters = parseFilters(req.query)
-    const result = await reviewService.listReviews(filters)
+    const userId = res.locals.user?.id
+    const result = await reviewService.listReviewsEnhanced(filters, userId)
     res.json({ success: true, data: result })
   } catch (err) { next(err) }
 }
@@ -53,7 +54,8 @@ export async function listReviews(req: Request, res: Response, next: NextFunctio
 export async function getReview(req: Request, res: Response, next: NextFunction) {
   try {
     const id = req.params.id as string
-    const avis = await reviewService.getReviewById(id)
+    const userId = res.locals.user?.id
+    const avis = await reviewService.getReviewByIdEnhanced(id, userId)
     res.json({ success: true, data: avis })
   } catch (err) { next(err) }
 }
@@ -63,8 +65,43 @@ export async function listProductReviews(req: Request, res: Response, next: Next
     const produit_id = req.params.productId as string
     const filters = parseFilters(req.query)
     filters.produit_id = produit_id
-    const result = await reviewService.listReviews(filters)
+    const userId = res.locals.user?.id
+    const result = await reviewService.listReviewsEnhanced(filters, userId)
     res.json({ success: true, data: result })
+  } catch (err) { next(err) }
+}
+
+/* ── Voter Utile / Pas utile sur un avis ── */
+export async function voteUtile(req: Request, res: Response, next: NextFunction) {
+  try {
+    const avis_id = req.params.id as string
+    const utilisateur_id = res.locals.user.id
+    const { utile } = req.body
+    if (typeof utile !== 'boolean') {
+      const err = new Error('Paramètre "utile" booléen attendu') as any; err.status = 400; throw err
+    }
+    const result = await reviewService.toggleVoteUtile(avis_id, utilisateur_id, utile)
+    res.json({ success: true, message: 'Vote enregistré', data: result })
+  } catch (err) { next(err) }
+}
+
+/* ── Répondre à un avis (ADMIN uniquement) ── */
+export async function repondreAvis(req: Request, res: Response, next: NextFunction) {
+  try {
+    const avis_id = req.params.id as string
+    const admin_id = res.locals.user.id
+    const { reponse } = req.body
+    const reponseClean = typeof reponse === 'string' ? reponse.trim() : null
+    const finalReponse = reponseClean && reponseClean.length > 0 ? reponseClean : null
+    if (finalReponse && finalReponse.length > 1000) {
+      const err = new Error('La réponse admin est trop longue (max 1000 caractères)') as any; err.status = 400; throw err
+    }
+    const result = await reviewService.repondreAvis(avis_id, admin_id, finalReponse)
+    res.json({
+      success: true,
+      message: finalReponse ? 'Réponse publiée' : 'Réponse supprimée',
+      data: result,
+    })
   } catch (err) { next(err) }
 }
 

@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import MainLayout from '../components/layout/MainLayout'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
 import { orderService } from '../services/order.service'
+import { productService, type BatchStockItem } from '../services/product.service'
 
 /* ══════════════════════════════════════════
    CONSTANTES
@@ -71,6 +72,12 @@ export default function Checkout() {
   const [confirmedNumero, setConfirmedNumero] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
+  const [stockErrors, setStockErrors] = useState<Record<string, { type: 'out' | 'low' | 'missing'; current?: number; message: string }>>({})
+  const [verifyingStock, setVerifyingStock] = useState(false)
+  const stockMap = useMemo(() => {
+    const m = new Map<string, BatchStockItem>()
+    return m
+  }, [])
 
   // Pré-remplissage depuis le compte connecté
   const [form, setForm] = useState({
@@ -96,6 +103,52 @@ export default function Checkout() {
     document.title = 'Finaliser la commande | Ben Massage & Wellness'
   }, [])
 
+  /* ── Vérification dynamique du stock panier (appel API) ── */
+  useEffect(() => {
+    let mounted = true
+    if (items.length === 0) {
+      setStockErrors({}); return
+    }
+    const ids = items.map(i => i.id)
+    setVerifyingStock(true)
+    productService.batchStocks(ids)
+      .then(res => {
+        if (!mounted) return
+        const stocks = res.data
+        const errors: typeof stockErrors = {}
+        for (const st of stocks) {
+          const item = items.find(i => i.id === st.id)
+          if (!item) continue
+          if (!st.exists || !st.publie) {
+            errors[st.id] = { type: 'missing', message: !st.exists ? 'Produit introuvable' : 'Produit non disponible' }
+            continue
+          }
+          if (st.stock <= 0) {
+            errors[st.id] = { type: 'out', current: 0, message: 'Rupture de stock' }
+          } else if (item.qty > st.stock) {
+            errors[st.id] = {
+              type: 'low',
+              current: st.stock,
+              message: `Stock insuffisant (disponible: ${st.stock})`,
+            }
+          }
+        }
+        setStockErrors(errors)
+      })
+      .catch(() => {
+        if (!mounted) return
+        setStockErrors({})
+      })
+      .finally(() => {
+        if (mounted) setVerifyingStock(false)
+      })
+    return () => { mounted = false }
+  }, [items])
+
+  /* ── Mettre à jour item.stock si batch renvoie un stock plus bas ── */
+  const stockErrorsCount = Object.keys(stockErrors).length
+  const hasBlockingStockErrors = Object.values(stockErrors).some(e => e.type === 'out' || e.type === 'missing' || e.type === 'low')
+
   const set = (k: keyof typeof form, v: string) => setForm(f => ({ ...f, [k]: v }))
 
   const delivery  = DELIVERY_FEES[city] ?? 3000
@@ -107,13 +160,37 @@ export default function Checkout() {
     && form.email.trim()
     && form.address.trim()
     && form.phone.trim()
+    && !hasBlockingStockErrors
+    && !verifyingStock
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!canSubmit) return
+    if (!canSubmit) {
+      if (hasBlockingStockErrors) {
+        setSubmitError('Veuillez corriger les erreurs de stock avant de commander.')
+      }
+      return
+    }
     setSubmitting(true)
     setSubmitError(null)
     try {
+      // Double-check stock juste avant submit
+      const ids = items.map(i => i.id)
+      const finalCheck = await productService.batchStocks(ids)
+      const finalErrors: typeof stockErrors = {}
+      for (const st of finalCheck.data) {
+        const item = items.find(i => i.id === st.id)
+        if (!item) continue
+        if (!st.exists || !st.publie) finalErrors[st.id] = { type: 'missing', message: !st.exists ? 'Produit introuvable' : 'Produit non disponible' }
+        else if (st.stock <= 0) finalErrors[st.id] = { type: 'out', current: 0, message: 'Rupture de stock' }
+        else if (item.qty > st.stock) finalErrors[st.id] = { type: 'low', current: st.stock, message: `Stock insuffisant (disponible: ${st.stock})` }
+      }
+      if (Object.keys(finalErrors).length > 0) {
+        setStockErrors(finalErrors)
+        setSubmitError('Le stock a changé, veuillez corriger les articles concernés.')
+        return
+      }
+
       const res = await orderService.createCommande({
         items: items.map(i => ({
           produit_id:    i.id,
@@ -385,8 +462,16 @@ export default function Checkout() {
 
                 {/* ── Liste des articles ── */}
                 <div className="flex flex-col gap-4 max-h-72 overflow-y-auto pr-1" style={{ scrollbarWidth: 'thin', scrollbarColor: '#d2e8d3 transparent' }}>
-                  {items.map(item => (
-                    <div key={item.id} className="flex gap-3 group">
+                  {verifyingStock && items.length > 0 && (
+                    <div className="flex items-center gap-2 bg-surface-container-low text-on-surface-variant px-3 py-2 rounded-lg text-xs">
+                      <span className="w-3 h-3 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+                      Vérification des stocks en cours…
+                    </div>
+                  )}
+                  {items.map(item => {
+                    const err = stockErrors[item.id]
+                    return (
+                    <div key={item.id} className={`flex gap-3 group ${err ? 'p-3 rounded-xl bg-red-50/60 border border-red-200/60' : ''}`}>
                       {/* Image */}
                       <div className="w-16 h-16 rounded-xl flex-shrink-0 bg-sand-light overflow-hidden">
                         {item.image
@@ -412,6 +497,32 @@ export default function Checkout() {
                             <span className="material-symbols-outlined text-[16px]">close</span>
                           </button>
                         </div>
+
+                        {/* Erreur stock + correction */}
+                        {err && (
+                          <div className="mt-1 flex items-start gap-1.5 text-red-700 text-xs flex-wrap">
+                            <span className="material-symbols-outlined text-[14px] shrink-0 mt-0.5">error</span>
+                            <span className="flex-1 min-w-0">{err.message}</span>
+                            {err.type === 'low' && typeof err.current === 'number' && (
+                              <button
+                                type="button"
+                                onClick={() => updateQty(item.id, err.current!)}
+                                className="ml-auto shrink-0 px-2 py-0.5 bg-red-700 text-white rounded-full text-[10px] font-bold hover:bg-red-800 transition-colors"
+                              >
+                                Fixer à {err.current}
+                              </button>
+                            )}
+                            {(err.type === 'out' || err.type === 'missing') && (
+                              <button
+                                type="button"
+                                onClick={() => removeItem(item.id)}
+                                className="ml-auto shrink-0 px-2 py-0.5 bg-error text-white rounded-full text-[10px] font-bold hover:bg-red-700 transition-colors"
+                              >
+                                Supprimer
+                              </button>
+                            )}
+                          </div>
+                        )}
 
                         <div className="flex items-center justify-between mt-1">
                           {/* Contrôle quantité */}
@@ -439,7 +550,7 @@ export default function Checkout() {
                         </div>
                       </div>
                     </div>
-                  ))}
+                  )})}
                 </div>
 
                 {/* ── Totaux ── */}
