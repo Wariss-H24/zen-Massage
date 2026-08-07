@@ -11,6 +11,26 @@ import { reviewService } from '../../services/review.service'
 ══════════════════════════════════════════ */
 const fmt = (n: number) => n.toLocaleString('fr-FR') + ' FCFA'
 const MONTHS_FR = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc']
+type Period = 'all' | 'month' | 'year'
+
+function filterByPeriod<T extends { createdAt: string }>(items: T[], period: Period): T[] {
+  if (period === 'all') return items
+  const now = new Date()
+  return items.filter(item => {
+    const d = new Date(item.createdAt)
+    if (period === 'month') return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth()
+    return d.getFullYear() === now.getFullYear()
+  })
+}
+
+function downloadCSV(filename: string, rows: string[][]) {
+  const bom = '\uFEFF'
+  const csv = bom + rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(';')).join('\n')
+  const a = document.createElement('a')
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }))
+  a.download = filename
+  a.click()
+}
 
 function fmtDate(d: string) {
   return new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
@@ -65,6 +85,8 @@ export default function Statistics() {
   const [moyenneAvis, setMoyenneAvis]   = useState(0)
   const [totalAvis, setTotalAvis]       = useState(0)
   const [loading, setLoading]           = useState(true)
+  const [period, setPeriod]             = useState<Period>('all')
+  const [exportOpen, setExportOpen]     = useState(false)
 
   useEffect(() => {
     document.title = 'Analytiques | Admin Ben Massage'
@@ -94,37 +116,81 @@ export default function Statistics() {
     load()
   }, [])
 
+  /* ── Données filtrées ── */
+  const filteredCommandes    = useMemo(() => filterByPeriod(commandes, period), [commandes, period])
+  const filteredAppointments = useMemo(() => {
+    if (period === 'all') return appointments
+    const now = new Date()
+    return appointments.filter(a => {
+      const d = new Date(a.date_heure)
+      if (period === 'month') return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth()
+      return d.getFullYear() === now.getFullYear()
+    })
+  }, [appointments, period])
+
+  /* ── Exports ── */
+  function exportCommandesCSV() {
+    const rows = [
+      ['N°', 'Client', 'Email', 'Total', 'Statut', 'Date'],
+      ...filteredCommandes.map(c => [
+        c.numero,
+        c.utilisateur ? `${c.utilisateur.firstName} ${c.utilisateur.lastName}` : '',
+        c.utilisateur?.email ?? '',
+        String(c.total),
+        c.statut,
+        new Date(c.createdAt).toLocaleDateString('fr-FR'),
+      ]),
+    ]
+    downloadCSV(`commandes_${period}.csv`, rows)
+  }
+
+  function exportRdvCSV() {
+    const rows = [
+      ['Client', 'Email', 'Service', 'Date', 'Statut'],
+      ...filteredAppointments.map(a => [
+        a.utilisateur ? `${a.utilisateur.firstName} ${a.utilisateur.lastName}` : '',
+        a.utilisateur?.email ?? '',
+        a.type_seance?.nom ?? '',
+        new Date(a.date_heure).toLocaleDateString('fr-FR'),
+        a.statut,
+      ]),
+    ]
+    downloadCSV(`rendez_vous_${period}.csv`, rows)
+  }
+
+  function exportPDF() { window.print() }
+
   /* ── Métriques calculées ── */
   const metrics = useMemo(() => {
-    const delivered  = commandes.filter(c => c.statut === 'DELIVERED')
-    const cancelled  = commandes.filter(c => c.statut === 'CANCELLED')
-    const active     = commandes.filter(c => !['CANCELLED'].includes(c.statut))
+    const delivered  = filteredCommandes.filter(c => c.statut === 'DELIVERED')
+    const cancelled  = filteredCommandes.filter(c => c.statut === 'CANCELLED')
+    const active     = filteredCommandes.filter(c => !['CANCELLED'].includes(c.statut))
     const caTotal    = delivered.reduce((s, c) => s + c.total, 0)
     const panierMoyen = delivered.length ? caTotal / delivered.length : 0
 
-    const confirmedAppts  = appointments.filter(a => a.statut === 'CONFIRMED')
-    const pendingAppts    = appointments.filter(a => a.statut === 'PENDING')
-    const completedAppts  = appointments.filter(a => a.statut === 'COMPLETED')
+    const confirmedAppts  = filteredAppointments.filter(a => a.statut === 'CONFIRMED')
+    const pendingAppts    = filteredAppointments.filter(a => a.statut === 'PENDING')
+    const completedAppts  = filteredAppointments.filter(a => a.statut === 'COMPLETED')
 
     return {
       caTotal, panierMoyen,
       nbCommandes: active.length,
       nbAnnulees:  cancelled.length,
-      nbRdvTotal:  appointments.length,
+      nbRdvTotal:  filteredAppointments.length,
       nbRdvConfirmed: confirmedAppts.length,
       nbRdvPending:   pendingAppts.length,
       nbRdvCompleted: completedAppts.length,
     }
-  }, [commandes, appointments])
+  }, [filteredCommandes, filteredAppointments])
 
   /* ── Données graphique ── */
-  const barData = useMemo(() => commandesByMonth(commandes), [commandes])
+  const barData = useMemo(() => commandesByMonth(filteredCommandes), [filteredCommandes])
   const maxRevenue = Math.max(...barData.map(b => b.revenue), 1)
 
   /* ── Top produits commandés ── */
   const topProduits = useMemo(() => {
     const map: Record<string, { nom: string; image?: string; qty: number; revenue: number }> = {}
-    for (const cmd of commandes) {
+    for (const cmd of filteredCommandes) {
       for (const ligne of cmd.lignes) {
         if (!map[ligne.produit_id]) {
           map[ligne.produit_id] = { nom: ligne.nom_produit, image: ligne.image, qty: 0, revenue: 0 }
@@ -134,12 +200,12 @@ export default function Statistics() {
       }
     }
     return Object.values(map).sort((a, b) => b.revenue - a.revenue).slice(0, 5)
-  }, [commandes])
+  }, [filteredCommandes])
 
   /* ── 5 dernières commandes ── */
   const recentCommandes = useMemo(() =>
-    [...commandes].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 5),
-    [commandes]
+    [...filteredCommandes].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 5),
+    [filteredCommandes]
   )
 
   const STATUS_FR: Record<string, string> = {
@@ -163,9 +229,48 @@ export default function Statistics() {
             <h2 className="font-headline-md text-headline-md text-sage-deep">Performance & Insights</h2>
             <p className="font-body-md text-on-surface-variant text-sm mt-1">Vue d'ensemble de l'activité — données en temps réel.</p>
           </div>
-          <Link to="/admin/orders" className="text-primary font-label-md text-sm hover:underline shrink-0">
-            Gérer les commandes →
-          </Link>
+          <div className="flex items-center gap-2 flex-wrap">
+            {/* Filtre période */}
+            <div className="flex items-center bg-surface-container rounded-full p-0.5 text-xs font-semibold">
+              {(['all', 'month', 'year'] as Period[]).map(p => (
+                <button key={p} onClick={() => setPeriod(p)}
+                  className={`px-3 py-1.5 rounded-full transition-colors ${
+                    period === p ? 'bg-sage-deep text-white shadow-sm' : 'text-on-surface-variant hover:text-on-surface'
+                  }`}>
+                  {p === 'all' ? 'Tout' : p === 'month' ? 'Ce mois' : 'Cette année'}
+                </button>
+              ))}
+            </div>
+
+            {/* Export CSV dropdown */}
+            <div className="relative">
+              <button onClick={() => setExportOpen(o => !o)}
+                className="flex items-center gap-1.5 px-3 py-2 bg-white border border-outline-variant/40 rounded-full text-xs font-semibold text-on-surface hover:bg-surface-container transition-colors">
+                <span className="material-symbols-outlined text-[16px]">download</span>
+                CSV
+                <span className="material-symbols-outlined text-[14px]">expand_more</span>
+              </button>
+              {exportOpen && (
+                <div className="absolute right-0 top-full mt-1 bg-white border border-outline-variant/30 rounded-xl shadow-lg z-20 min-w-[160px] overflow-hidden">
+                  <button onClick={() => { exportCommandesCSV(); setExportOpen(false) }}
+                    className="w-full text-left px-4 py-2.5 text-xs hover:bg-surface-container transition-colors">
+                    Commandes
+                  </button>
+                  <button onClick={() => { exportRdvCSV(); setExportOpen(false) }}
+                    className="w-full text-left px-4 py-2.5 text-xs hover:bg-surface-container transition-colors">
+                    Rendez-vous
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Export PDF */}
+            <button onClick={exportPDF}
+              className="flex items-center gap-1.5 px-3 py-2 bg-sage-deep text-white rounded-full text-xs font-semibold hover:opacity-90 transition-opacity">
+              <span className="material-symbols-outlined text-[16px]">picture_as_pdf</span>
+              PDF
+            </button>
+          </div>
         </div>
 
         {/* ══════════════════════════════════════
@@ -333,13 +438,13 @@ export default function Statistics() {
             <h4 className="font-semibold text-sm text-sage-deep mb-4">Répartition des commandes</h4>
             {loading ? (
               <div className="space-y-2">{Array.from({ length: 4 }).map((_, i) => <div key={i} className="h-8 bg-outline-variant/10 rounded animate-pulse" />)}</div>
-            ) : commandes.length === 0 ? (
+            ) : filteredCommandes.length === 0 ? (
               <p className="text-xs text-on-surface-variant text-center py-6">Aucune commande</p>
             ) : (
               <div className="space-y-3">
                 {(['PENDING', 'CONFIRMED', 'SHIPPED', 'DELIVERED', 'CANCELLED'] as const).map(s => {
-                  const count = commandes.filter(c => c.statut === s).length
-                  const pct   = commandes.length ? Math.round((count / commandes.length) * 100) : 0
+                  const count = filteredCommandes.filter(c => c.statut === s).length
+                  const pct   = filteredCommandes.length ? Math.round((count / filteredCommandes.length) * 100) : 0
                   const colors: Record<string, string> = {
                     PENDING: 'bg-amber-400', CONFIRMED: 'bg-sage-deep', SHIPPED: 'bg-purple-400', DELIVERED: 'bg-green-500', CANCELLED: 'bg-red-400',
                   }
@@ -364,7 +469,7 @@ export default function Statistics() {
             <h4 className="font-semibold text-sm text-sage-deep mb-4">Répartition des rendez-vous</h4>
             {loading ? (
               <div className="space-y-2">{Array.from({ length: 4 }).map((_, i) => <div key={i} className="h-8 bg-outline-variant/10 rounded animate-pulse" />)}</div>
-            ) : appointments.length === 0 ? (
+            ) : filteredAppointments.length === 0 ? (
               <p className="text-xs text-on-surface-variant text-center py-6">Aucun rendez-vous</p>
             ) : (
               <div className="space-y-3">
@@ -374,8 +479,8 @@ export default function Statistics() {
                   { s: 'COMPLETED', label: 'Terminés',    color: 'bg-green-500'  },
                   { s: 'CANCELLED', label: 'Annulés',     color: 'bg-red-400'    },
                 ] as const).map(({ s, label, color }) => {
-                  const count = appointments.filter(a => a.statut === s).length
-                  const pct   = appointments.length ? Math.round((count / appointments.length) * 100) : 0
+                  const count = filteredAppointments.filter(a => a.statut === s).length
+                  const pct   = filteredAppointments.length ? Math.round((count / filteredAppointments.length) * 100) : 0
                   return (
                     <div key={s}>
                       <div className="flex justify-between text-xs mb-1">
