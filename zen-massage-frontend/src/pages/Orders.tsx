@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import UserLayout from '../components/layout/UserLayout'
 import { orderService, type Commande, type OrderStatus } from '../services/order.service'
+import Toast from '../components/ui/Toast'
 
 /* ══════════════════════════════════════════
    HELPERS
@@ -79,6 +80,7 @@ function OrderSkeleton() {
 function OrderCard({ order, onCancel }: { order: Commande; onCancel: (id: string) => void }) {
   const [expanded, setExpanded] = useState(false)
   const [cancelling, setCancelling] = useState(false)
+  const [toast, setToast] = useState<{ msg: string } | null>(null)
 
   const canCancel = order.statut === 'PENDING' || order.statut === 'CONFIRMED'
 
@@ -94,13 +96,14 @@ function OrderCard({ order, onCancel }: { order: Commande; onCancel: (id: string
       await orderService.cancelCommande(order.id)
       onCancel(order.id)
     } catch (e: any) {
-      alert(e.message || "Impossible d'annuler")
+      setToast({ msg: e.message || "Impossible d'annuler" })
     }
     setCancelling(false)
   }
 
   return (
     <div className="bg-white rounded-2xl border border-outline-variant/30 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+      {toast && <Toast type="error" message={toast.msg} onClose={() => setToast(null)} />}
       {/* Barre colorée statut */}
       <div className={`h-1 w-full ${STATUS_DOT[order.statut]}`} />
 

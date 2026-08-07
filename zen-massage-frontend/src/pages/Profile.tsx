@@ -2,11 +2,10 @@ import { useEffect, useState } from 'react'
 import UserLayout from '../components/layout/UserLayout'
 import { useAuth } from '../context/AuthContext'
 import { authService } from '../services/auth.service'
+import Toast from '../components/ui/Toast'
 
-// Fonction pour générer les initiales
-const getInitials = (firstName: string, lastName: string) => {
-  return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase()
-}
+const getInitials = (firstName: string, lastName: string) =>
+  `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase()
 
 export default function Profile() {
   const { user, refreshUser } = useAuth()
@@ -18,8 +17,8 @@ export default function Profile() {
   })
   const [saving, setSaving] = useState(false)
   const [saved, setSaved]   = useState(false)
+  const [toast, setToast]   = useState<{ type: 'success' | 'error'; msg: string } | null>(null)
 
-  // Initialiser le formulaire avec les données de l'utilisateur
   useEffect(() => {
     if (user) {
       setForm(f => ({
@@ -43,33 +42,28 @@ export default function Profile() {
     try {
       setSaving(true)
 
-      // Préparer les données à envoyer
       const data: any = {
         firstName: form.firstName,
         lastName: form.lastName,
         phone: form.phone || null,
       }
 
-      // Vérifier si on change le mot de passe
       if (form.newPwd && form.newPwd === form.confirmPwd) {
         data.password = form.newPwd
       } else if (form.newPwd && form.newPwd !== form.confirmPwd) {
-        alert('Les nouveaux mots de passe ne correspondent pas')
+        setToast({ type: 'error', msg: 'Les nouveaux mots de passe ne correspondent pas' })
+        setSaving(false)
         return
       }
 
-      // Envoyer les modifications
       await authService.updateProfile(data)
-
-      // Mettre à jour le contexte utilisateur
       await refreshUser()
 
       setSaved(true)
-      // Réinitialiser les champs de mot de passe
       setForm(f => ({ ...f, currentPwd: '', newPwd: '', confirmPwd: '' }))
       setTimeout(() => setSaved(false), 2500)
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Erreur lors de la mise à jour du profil')
+      setToast({ type: 'error', msg: err instanceof Error ? err.message : 'Erreur lors de la mise à jour du profil' })
     } finally {
       setSaving(false)
     }
@@ -77,12 +71,12 @@ export default function Profile() {
 
   return (
     <UserLayout title="Profil Utilisateur" subtitle="Gérez vos informations personnelles et vos préférences.">
+      {toast && <Toast type={toast.type} message={toast.msg} onClose={() => setToast(null)} />}
 
       <div className="px-6 md:px-margin-desktop pb-section-gap pt-stack-lg max-w-4xl">
 
             <form className="space-y-stack-lg" onSubmit={handleSubmit}>
 
-              {/* Avatar avec initiales */}
               <section className="flex flex-col md:flex-row gap-gutter items-center md:items-start">
                 <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-primary-fixed ring-4 ring-background shadow-sm bg-sand-light flex items-center justify-center">
                   <span className="font-display-lg text-display-lg-mobile text-sage-deep">
@@ -91,7 +85,6 @@ export default function Profile() {
                 </div>
               </section>
 
-              {/* Informations personnelles */}
               <section className="grid grid-cols-1 md:grid-cols-2 gap-gutter pt-stack-lg border-t border-outline-variant/30">
                 {[
                   { label: 'Prénom',             key: 'firstName', type: 'text',  disabled: false },
@@ -114,7 +107,6 @@ export default function Profile() {
                 ))}
               </section>
 
-              {/* Sécurité */}
               <section className="pt-stack-lg border-t border-outline-variant/30">
                 <h3 className="font-headline-sm text-headline-sm text-sage-deep mb-stack-md">Sécurité du compte</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter">
@@ -158,7 +150,6 @@ export default function Profile() {
                 </div>
               </section>
 
-              {/* Actions */}
               <div className="flex flex-col md:flex-row justify-end gap-stack-md pt-stack-lg">
                 <button
                   type="button"
@@ -179,7 +170,6 @@ export default function Profile() {
                 </button>
               </div>
             </form>
-
 
       </div>
     </UserLayout>

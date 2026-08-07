@@ -1,8 +1,10 @@
 import { useEffect, useState, useMemo } from 'react'
+import { Link } from 'react-router-dom'
 import MainLayout from '../components/layout/MainLayout'
 import MiniCalendar from '../components/MiniCalendar'
 import { appointmentService, type AppointmentScheduleConfig, type DayKey, type PublicRendezVous } from '../services/appointment.service'
 import { useAuth } from '../context/AuthContext'
+import Toast from '../components/ui/Toast'
 
 /* ── Types ── */
 interface Service {
@@ -128,6 +130,7 @@ export default function Appointments() {
   const [services, setServices]       = useState<Service[]>([])
   const [loading, setLoading]         = useState(true)
   const [error, setError]             = useState<string | null>(null)
+  const [toast, setToast]             = useState<{ type: 'error'; msg: string } | null>(null)
   const [appointments, setAppointments] = useState<PublicRendezVous[]>([])
   const [schedule, setSchedule] = useState<AppointmentScheduleConfig | null>(null)
   const { user } = useAuth()
@@ -296,7 +299,7 @@ export default function Appointments() {
 
       setConfirmed(true)
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Erreur lors de la réservation')
+      setToast({ type: 'error', msg: err instanceof Error ? err.message : 'Erreur lors de la réservation' })
     }
   }
 
@@ -317,9 +320,23 @@ export default function Appointments() {
             <p className="font-body-md text-body-md text-on-surface-variant mb-8">
               Le {selectedDate?.getDate()} {MONTHS_FR[selectedDate?.getMonth() || 0]} {selectedDate?.getFullYear()} — à {selectedSlot}
             </p>
-            <p className="font-caption text-caption text-on-surface-variant">
+            <p className="font-caption text-caption text-on-surface-variant mb-8">
               Un email de confirmation vous sera envoyé à <strong>{form.email}</strong>
             </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Link
+                to="/account"
+                className="px-8 py-3 bg-primary text-white rounded-full font-label-md hover:bg-sage-deep transition-colors"
+              >
+                Voir mes rendez-vous
+              </Link>
+              <Link
+                to="/"
+                className="px-8 py-3 border border-outline-variant text-on-surface-variant rounded-full font-label-md hover:bg-surface-container transition-colors"
+              >
+                Retour à l’accueil
+              </Link>
+            </div>
           </div>
         </div>
       </MainLayout>
@@ -328,6 +345,7 @@ export default function Appointments() {
 
   return (
     <MainLayout>
+      {toast && <Toast type={toast.type} message={toast.msg} onClose={() => setToast(null)} />}
       <main className="pt-32 pb-section-gap px-6 md:px-margin-desktop max-w-container-max mx-auto">
 
         {/* ── Header ── */}

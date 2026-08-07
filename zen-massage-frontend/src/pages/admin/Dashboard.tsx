@@ -259,17 +259,15 @@ export default function Dashboard() {
     async function loadAppointments() {
       try {
         setLoading(true)
-        console.log('Chargement des rendez-vous...')
         const [allResponse, publicResponse] = await Promise.all([
           appointmentService.getAllAppointments(),
           appointmentService.getPublicAppointments()
         ])
-        console.log('Rendez-vous chargés:', allResponse.data)
         setAppointments(allResponse.data)
         setPublicAppointments(publicResponse.data)
       } catch (err) {
         console.error('Erreur lors du chargement des rendez-vous:', err)
-        alert('Erreur lors du chargement des rendez-vous: ' + (err as Error).message)
+        setToast({ type: 'error', msg: 'Erreur lors du chargement des rendez-vous: ' + (err as Error).message })
       } finally {
         setLoading(false)
       }
@@ -401,7 +399,7 @@ export default function Dashboard() {
       setPublicAppointments(prev => prev.map(a => a.id === selectedAppt.id ? { ...a, statut: newStatus } : a))
       setStatusModalOpen(false)
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Erreur lors de la mise à jour')
+      setToast({ type: 'error', msg: err instanceof Error ? err.message : 'Erreur lors de la mise à jour' })
     } finally {
       setProcessingStatus(false)
     }
@@ -464,7 +462,7 @@ export default function Dashboard() {
       setSelectedDate(null)
       setSelectedSlot(null)
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Erreur lors de la reprogrammation')
+      setToast({ type: 'error', msg: err instanceof Error ? err.message : 'Erreur lors de la reprogrammation' })
     } finally {
       setProcessingReschedule(false)
     }

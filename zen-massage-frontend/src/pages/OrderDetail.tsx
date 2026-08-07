@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import UserLayout from '../components/layout/UserLayout'
 import { orderService, type Commande, type OrderStatus } from '../services/order.service'
+import Toast from '../components/ui/Toast'
 
 const fmt = (n: number) => n.toLocaleString('fr-FR') + ' FCFA'
 
@@ -50,6 +51,7 @@ export default function OrderDetail() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [cancelling, setCancelling] = useState(false)
+  const [toast, setToast] = useState<{ msg: string } | null>(null)
 
   useEffect(() => {
     if (!id) return
@@ -67,7 +69,7 @@ export default function OrderDetail() {
       await orderService.cancelCommande(order.id)
       setOrder(prev => prev ? { ...prev, statut: 'CANCELLED' } : prev)
     } catch (e: any) {
-      alert(e.message || "Impossible d'annuler")
+      setToast({ msg: e.message || "Impossible d'annuler" })
     }
     setCancelling(false)
   }
@@ -111,6 +113,7 @@ export default function OrderDetail() {
         </Link>
       }
     >
+      {toast && <Toast type="error" message={toast.msg} onClose={() => setToast(null)} />}
       <div className="p-4 sm:p-6 md:p-8 max-w-3xl mx-auto w-full space-y-6">
 
         {/* Statut + badge */}

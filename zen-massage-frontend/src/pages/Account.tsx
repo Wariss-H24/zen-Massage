@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from 'react'
 import { useAuth } from '../context/AuthContext'
 import UserLayout from '../components/layout/UserLayout'
 import { appointmentService, type RendezVous } from '../services/appointment.service'
+import Toast from '../components/ui/Toast'
 
 /* ── Helper functions ── */
 // Fonction pour générer les initiales du service
@@ -205,6 +206,7 @@ export default function Account() {
   const [selectedAppt, setSelectedAppt] = useState<RendezVous | null>(null)
   const [processingCancel, setProcessingCancel] = useState(false)
   const [processingEdit, setProcessingEdit] = useState(false)
+  const [toast, setToast] = useState<{ type: 'success' | 'error'; msg: string } | null>(null)
   const [editSelectedDate, setEditSelectedDate] = useState<Date | null>(null)
   const [editSelectedSlot, setEditSelectedSlot] = useState<string | null>(null)
 
@@ -279,7 +281,7 @@ export default function Account() {
       setAppointments(prev => prev.map(a => a.id === selectedAppt.id ? { ...a, statut: 'CANCELLED' } : a))
       setCancelModalOpen(false)
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Erreur lors de l\'annulation')
+      setToast({ type: 'error', msg: err instanceof Error ? err.message : "Erreur lors de l'annulation" })
     } finally {
       setProcessingCancel(false)
     }
@@ -302,7 +304,7 @@ export default function Account() {
       setAppointments(prev => prev.map(a => a.id === selectedAppt.id ? updatedAppt.data : a))
       setEditModalOpen(false)
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Erreur lors de la modification')
+      setToast({ type: 'error', msg: err instanceof Error ? err.message : 'Erreur lors de la modification' })
     } finally {
       setProcessingEdit(false)
     }
@@ -323,6 +325,7 @@ export default function Account() {
         </div>
       }
     >
+      {toast && <Toast type={toast.type} message={toast.msg} onClose={() => setToast(null)} />}
 
       <div className="p-6 md:p-margin-desktop space-y-section-gap max-w-container-max mx-auto w-full">
 
