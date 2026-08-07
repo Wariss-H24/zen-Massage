@@ -39,6 +39,24 @@ export async function me(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+export async function forgotPassword(req: Request, res: Response, next: NextFunction) {
+  try {
+    await authService.forgotPassword(req.body.email)
+    res.json({ success: true, message: 'Si cet email existe, un lien a été envoyé.' })
+  } catch (err) {
+    next(err)
+  }
+}
+
+export async function resetPassword(req: Request, res: Response, next: NextFunction) {
+  try {
+    await authService.resetPassword(req.body.token, req.body.password)
+    res.json({ success: true, message: 'Mot de passe réinitialisé avec succès.' })
+  } catch (err) {
+    next(err)
+  }
+}
+
 export async function updateProfile(req: Request, res: Response, next: NextFunction) {
   try {
     const user = await authService.updateProfile(

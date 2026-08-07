@@ -1,20 +1,29 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { authService } from '../services/auth.service'
 
-type Step = 'form' | 'loading' | 'success'
+type Step = 'form' | 'loading' | 'success' | 'error'
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('')
   const [step, setStep] = useState<Step>('form')
+  const [errorMsg, setErrorMsg] = useState('')
 
   useEffect(() => {
     document.title = 'Récupération de mot de passe | Ben Massage & Wellness'
   }, [])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setStep('loading')
-    setTimeout(() => setStep('success'), 1500)
+    setErrorMsg('')
+    try {
+      await authService.forgotPassword(email)
+      setStep('success')
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Une erreur est survenue.')
+      setStep('error')
+    }
   }
 
   return (
@@ -44,13 +53,10 @@ export default function ForgotPassword() {
           </div>
 
           {/* Formulaire */}
-          {step !== 'success' && (
+          {(step === 'form' || step === 'loading' || step === 'error') && (
             <form className="space-y-stack-md" onSubmit={handleSubmit}>
               <div>
-                <label
-                  htmlFor="email"
-                  className="block font-label-md text-label-md text-secondary mb-1 ml-1"
-                >
+                <label htmlFor="email" className="block font-label-md text-label-md text-secondary mb-1 ml-1">
                   Adresse Email
                 </label>
                 <input
@@ -64,6 +70,13 @@ export default function ForgotPassword() {
                 />
               </div>
 
+              {step === 'error' && (
+                <div className="flex items-center gap-2 bg-error-container text-on-error-container px-4 py-3 rounded-xl text-sm">
+                  <span className="material-symbols-outlined text-[18px]">error</span>
+                  {errorMsg}
+                </div>
+              )}
+
               <button
                 type="submit"
                 disabled={step === 'loading'}
@@ -74,9 +87,7 @@ export default function ForgotPassword() {
                 ) : (
                   <>
                     <span>Envoyer le lien de réinitialisation</span>
-                    <span className="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1">
-                      arrow_forward
-                    </span>
+                    <span className="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1">arrow_forward</span>
                   </>
                 )}
               </button>

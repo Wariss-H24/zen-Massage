@@ -13,6 +13,7 @@ import Profile from './pages/Profile'
 import Orders from './pages/Orders'
 import OrderDetail from './pages/OrderDetail'
 import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword from './pages/ResetPassword'
 import ProductDetail from './pages/ProductDetail'
 import Checkout from './pages/Checkout'
 
@@ -98,6 +99,7 @@ export default function App() {
       <Route path="/products/:id"    element={<ProductDetail />} />
       <Route path="/services"        element={<Services />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password"  element={<ResetPassword />} />
 
       {/* Pages auth — redirige si déjà connecté */}
       <Route path="/login"    element={<GuestOnly><Login /></GuestOnly>} />

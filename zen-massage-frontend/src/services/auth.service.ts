@@ -36,4 +36,10 @@ export const authService = {
     password?: string
   }) =>
     api.put<AuthResponse>('/auth/me', body),
+
+  forgotPassword: (email: string) =>
+    api.post<{ success: boolean; message: string }>('/auth/forgot-password', { email }),
+
+  resetPassword: (token: string, password: string) =>
+    api.post<{ success: boolean; message: string }>('/auth/reset-password', { token, password }),
 }
