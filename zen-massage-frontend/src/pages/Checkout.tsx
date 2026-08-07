@@ -4,6 +4,7 @@ import MainLayout from '../components/layout/MainLayout'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
 import { orderService } from '../services/order.service'
+import Select from '../components/ui/Select'
 import { productService } from '../services/product.service'
 
 /* ══════════════════════════════════════════
@@ -11,11 +12,11 @@ import { productService } from '../services/product.service'
 ══════════════════════════════════════════ */
 type PaymentMethod = 'airtel' | 'moov' | 'cash' | 'card'
 
-const PAYMENT_OPTIONS: { id: PaymentMethod; icon: string; label: string; sub: string }[] = [
-  { id: 'airtel', icon: 'smartphone',             label: 'Airtel Money',           sub: 'Paiement mobile rapide'   },
-  { id: 'moov',   icon: 'account_balance_wallet',  label: 'Moov Money',             sub: 'Portefeuille Flooz'       },
-  { id: 'cash',   icon: 'payments',               label: 'Paiement à la livraison', sub: 'Payez en espèces'         },
-  { id: 'card',   icon: 'credit_card',             label: 'Carte Bancaire',          sub: 'Visa / Mastercard'        },
+const PAYMENT_OPTIONS: { id: PaymentMethod; icon: string; label: string; sub: string; disabled?: boolean }[] = [
+  { id: 'airtel', icon: 'smartphone',             label: 'Airtel Money',            sub: 'Bientôt disponible',       disabled: true  },
+  { id: 'moov',   icon: 'account_balance_wallet',  label: 'Moov Money',              sub: 'Bientôt disponible',       disabled: true  },
+  { id: 'cash',   icon: 'payments',               label: 'Paiement à la livraison', sub: 'Payez en espèces',         disabled: false },
+  { id: 'card',   icon: 'credit_card',             label: 'Carte Bancaire',          sub: 'Bientôt disponible',       disabled: true  },
 ]
 
 const CITIES = ['Libreville', 'Port-Gentil', 'Franceville', 'Oyem', 'Moanda']
@@ -66,7 +67,7 @@ export default function Checkout() {
   const { items, totalPrice, updateQty, removeItem, clearCart } = useCart()
   const navigate = useNavigate()
 
-  const [payment, setPayment] = useState<PaymentMethod>('airtel')
+  const [payment, setPayment] = useState<PaymentMethod>('cash')
   const [city, setCity]       = useState('Libreville')
   const [confirmed, setConfirmed] = useState(false)
   const [confirmedNumero, setConfirmedNumero] = useState('')
@@ -377,13 +378,11 @@ export default function Checkout() {
                 </div>
                 <div className="grid grid-cols-1 gap-5">
                   <Field label="Ville (Gabon)" required>
-                    <select
+                    <Select
                       value={city}
-                      onChange={e => setCity(e.target.value)}
-                      className={inputCls}
-                    >
-                      {CITIES.map(c => <option key={c}>{c}</option>)}
-                    </select>
+                      onChange={(v) => setCity(v)}
+                      options={CITIES.map(c => ({ value: c, label: c }))}
+                    />
                   </Field>
                   <Field label="Adresse de livraison / Quartier" required>
                     <input
@@ -413,21 +412,26 @@ export default function Checkout() {
                     <button
                       key={opt.id}
                       type="button"
-                      onClick={() => setPayment(opt.id)}
+                      disabled={opt.disabled}
+                      onClick={() => !opt.disabled && setPayment(opt.id)}
                       className={`flex items-center gap-3 p-4 border rounded-xl transition-all text-left ${
-                        payment === opt.id
+                        opt.disabled
+                          ? 'border-outline-variant/30 opacity-40 cursor-not-allowed'
+                          : payment === opt.id
                           ? 'border-primary bg-sage-deep/5 shadow-sm'
                           : 'border-outline-variant hover:border-primary/50'
                       }`}
                     >
-                      <span className={`material-symbols-outlined text-[22px] shrink-0 ${payment === opt.id ? 'text-primary' : 'text-on-surface-variant'}`}>
+                      <span className={`material-symbols-outlined text-[22px] shrink-0 ${
+                        opt.disabled ? 'text-outline' : payment === opt.id ? 'text-primary' : 'text-on-surface-variant'
+                      }`}>
                         {opt.icon}
                       </span>
                       <div className="min-w-0 flex-1">
                         <span className="font-label-md text-label-md block">{opt.label}</span>
                         <span className="font-caption text-caption text-on-surface-variant">{opt.sub}</span>
                       </div>
-                      {payment === opt.id && (
+                      {!opt.disabled && payment === opt.id && (
                         <span className="material-symbols-outlined text-primary text-[18px] shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>
                           check_circle
                         </span>

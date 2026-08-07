@@ -4,6 +4,11 @@ import UserLayout from '../components/layout/UserLayout'
 import { appointmentService, type RendezVous } from '../services/appointment.service'
 import Toast from '../components/ui/Toast'
 
+function toLibrevilleUTC(date: Date, timeStr: string): string {
+  const [hours, minutes] = timeStr.split(':').map(Number)
+  return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), hours - 1, minutes, 0, 0)).toISOString()
+}
+
 /* ── Helper functions ── */
 // Fonction pour générer les initiales du service
 const getServiceInitials = (serviceName: string): string => {
@@ -291,12 +296,10 @@ export default function Account() {
     if (!selectedAppt || !editSelectedDate || !editSelectedSlot) return
     try {
       setProcessingEdit(true)
-      const [hours, minutes] = editSelectedSlot.split(':').map(Number)
-      const newDateTime = new Date(editSelectedDate)
-      newDateTime.setHours(hours, minutes, 0, 0)
+      const newDateTime = toLibrevilleUTC(editSelectedDate, editSelectedSlot)
       
       const updatedAppt = await appointmentService.updateAppointment(selectedAppt.id, {
-        date_heure: newDateTime.toISOString(),
+        date_heure: newDateTime,
         duree: selectedAppt.duree,
         type_seance_id: selectedAppt.type_seance_id,
         notes: selectedAppt.notes
@@ -341,7 +344,7 @@ export default function Account() {
                     const now = new Date()
                     const apptDate = new Date(appt.date_heure)
                     return apptDate.getMonth() === now.getMonth() && apptDate.getFullYear() === now.getFullYear() && appt.statut !== 'CANCELLED'
-                  }).length} sessions prévues ce mois-ci et 1 250 points de fidélité Ben cumulés.
+                  }).length} sessions prévues ce mois-ci et 0 points de fidélité Ben cumulés.
                 </p>
                 <div className="flex flex-wrap gap-4">
                   <div className="px-6 py-4 bg-sand-light rounded-xl">
@@ -356,7 +359,7 @@ export default function Account() {
                   </div>
                   <div className="px-6 py-4 bg-primary-fixed/30 rounded-xl">
                     <span className="block font-caption text-caption text-on-surface-variant uppercase tracking-widest mb-1">Points Ben</span>
-                    <span className="block font-headline-sm text-headline-sm text-primary">1 250 pts</span>
+                    <span className="block font-headline-sm text-headline-sm text-primary">0 pts</span>
                   </div>
                 </div>
               </div>
@@ -370,7 +373,7 @@ export default function Account() {
             </div>
 
             {/* Promo card */}
-            <div className="bg-sage-deep text-surface p-stack-lg rounded-xl flex flex-col justify-between"
+            {/* <div className="bg-sage-deep text-surface p-stack-lg rounded-xl flex flex-col justify-between"
               style={{ boxShadow: '0 20px 40px -15px rgba(44,46,48,0.05)' }}>
               <div>
                 <span className="material-symbols-outlined text-4xl mb-4 block">spa</span>
@@ -382,7 +385,7 @@ export default function Account() {
               <button className="w-full py-3 bg-surface text-sage-deep rounded-lg font-label-md text-label-md hover:bg-sand-light transition-colors mt-6">
                 Profiter maintenant
               </button>
-            </div>
+            </div> */}
           </section>
 
           {/* ── Appointments ── */}

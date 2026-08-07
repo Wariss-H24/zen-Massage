@@ -1,4 +1,4 @@
-import { useState } from 'react'
+// import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 
 const navLinks = [
@@ -10,12 +10,12 @@ const navLinks = [
 ]
 
 export default function Footer() {
-  const [email, setEmail] = useState('')
+  // const [email, setEmail] = useState('')
 
-  const handleNewsletter = (e: React.FormEvent) => {
-    e.preventDefault()
-    setEmail('')
-  }
+  // const handleNewsletter = (e: React.FormEvent) => {
+  //   e.preventDefault()
+  //   setEmail('')
+  // }
 
   return (
     <footer className="w-full bg-[#121212] text-white">
@@ -94,7 +94,7 @@ export default function Footer() {
         </div>
 
         {/* Newsletter */}
-        <div className="space-y-6">
+        {/* <div className="space-y-6">
           <h4 className="font-label-md text-label-md text-white uppercase tracking-wider">
             Newsletter
           </h4>
@@ -117,7 +117,7 @@ export default function Footer() {
               S'inscrire
             </button>
           </form>
-        </div>
+        </div> */}
       </div>
 
       {/* Bottom bar */}
@@ -125,14 +125,11 @@ export default function Footer() {
         <p className="font-caption text-caption text-surface-variant">
           © {new Date().getFullYear()} Ben Massage &amp; Wellness Gabon. Sanctuaire à travers le design.
         </p>
-        <div className="flex space-x-8 mt-4 md:mt-0">
+        {/* <div className="flex space-x-8 mt-4 md:mt-0">
           <a href="#" className="font-caption text-caption text-surface-variant hover:text-white transition-colors">
             Mentions Légales
           </a>
-          <a href="#" className="font-caption text-caption text-surface-variant hover:text-white transition-colors">
-            Confidentialité
-          </a>
-        </div>
+        </div> */}
       </div>
     </footer>
   )

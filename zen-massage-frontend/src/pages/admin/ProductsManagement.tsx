@@ -138,17 +138,19 @@ export default function ProductsManagement() {
         <div className="flex items-center gap-2">
           <Link
             to="/products"
-            className="flex items-center gap-2 px-4 py-2 rounded-full font-label-md text-label-md border border-outline-variant/40 hover:bg-surface-variant transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-full font-label-md text-sm border border-outline-variant/40 hover:bg-surface-variant transition-colors"
+            title="Voir la boutique"
           >
-            <span className="material-symbols-outlined text-[20px]">storefront</span>
-            Voir la boutique
+            <span className="material-symbols-outlined text-[18px]">storefront</span>
+            <span className="hidden sm:inline">Voir la boutique</span>
           </Link>
           <Link
             to="/admin/products/add"
-            className="flex items-center gap-2 bg-surface-container-highest px-4 py-2 rounded-full font-label-md text-label-md hover:bg-secondary-container transition-colors"
+            className="flex items-center gap-1.5 bg-surface-container-highest px-3 py-2 rounded-full font-label-md text-sm hover:bg-secondary-container transition-colors"
+            title="Ajouter un produit"
           >
-            <span className="material-symbols-outlined text-[20px]">add</span>
-            Ajouter un produit
+            <span className="material-symbols-outlined text-[18px]">add</span>
+            <span className="hidden sm:inline">Ajouter un produit</span>
           </Link>
         </div>
       }

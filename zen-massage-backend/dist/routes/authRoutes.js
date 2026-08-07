@@ -43,4 +43,6 @@ router.post('/login', (0, validation_1.validateBody)(['email', 'password']), aut
 router.post('/logout', auth.logout);
 router.get('/me', auth_1.requireAuth, auth.me);
 router.put('/me', auth_1.requireAuth, auth.updateProfile);
+router.post('/forgot-password', (0, validation_1.validateBody)(['email']), auth.forgotPassword);
+router.post('/reset-password', (0, validation_1.validateBody)(['token', 'password']), auth.resetPassword);
 exports.default = router;

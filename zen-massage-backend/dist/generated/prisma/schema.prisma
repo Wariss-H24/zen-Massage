@@ -8,23 +8,25 @@ datasource db {
 }
 
 model User {
-  id            String       @id @default(cuid())
-  email         String       @unique
-  password      String
-  firstName     String
-  lastName      String
-  phone         String?
-  avatar        String?
-  role          UserRole     @default(USER)
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  deletedAt     DateTime?
-  avis          Avis[]
-  likes         Like[]
-  rendezVous    RendezVous[]
-  commandes     Commande[]
-  avis_repondus Avis[]       @relation("AvisReponses")
-  votes_utiles  AvisUtile[]
+  id                  String       @id @default(cuid())
+  email               String       @unique
+  password            String
+  firstName           String
+  lastName            String
+  phone               String?
+  avatar              String?
+  role                UserRole     @default(USER)
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+  deletedAt           DateTime?
+  reset_token         String?      @unique
+  reset_token_expires DateTime?
+  avis                Avis[]
+  likes               Like[]
+  rendezVous          RendezVous[]
+  commandes           Commande[]
+  avis_repondus       Avis[]       @relation("AvisReponses")
+  votes_utiles        AvisUtile[]
 
   @@index([email])
   @@index([role])

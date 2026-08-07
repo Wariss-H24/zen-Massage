@@ -131,7 +131,9 @@ exports.Prisma.UserScalarFieldEnum = {
   role: 'role',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  deletedAt: 'deletedAt'
+  deletedAt: 'deletedAt',
+  reset_token: 'reset_token',
+  reset_token_expires: 'reset_token_expires'
 };
 
 exports.Prisma.CategorieScalarFieldEnum = {

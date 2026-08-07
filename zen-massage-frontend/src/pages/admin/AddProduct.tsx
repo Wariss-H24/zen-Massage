@@ -142,7 +142,7 @@ export default function AddProduct() {
       topbarRight={
         <div className="flex items-center gap-4">
           <span className="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-colors">notifications</span>
-          <span className="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-colors">help</span>
+          {/* <span className="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-colors">help</span> */}
           <div className="h-8 w-8 rounded-full overflow-hidden border border-outline-variant bg-sand-light flex items-center justify-center font-bold text-sage-deep">
             {user ? `${(user.firstName || 'U').slice(0,1)}${(user.lastName || '').slice(0,1)}` : 'U'}
           </div>
@@ -151,10 +151,10 @@ export default function AddProduct() {
     >
       {toast && <Toast type={toast.type} message={toast.msg} onClose={() => setToast(null)} />}
 
-      <form onSubmit={handleSubmit} className="p-12 max-w-[1400px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-16">
+      <form onSubmit={handleSubmit} className="p-4 md:p-8 lg:p-12 max-w-[1400px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16">
 
         {/* ── Form ── */}
-        <div className="lg:col-span-7 space-y-12">
+        <div className="lg:col-span-7 space-y-8 lg:space-y-12">
 
           {/* Section 1 — Informations générales */}
           <section className="space-y-6">
@@ -162,7 +162,7 @@ export default function AddProduct() {
               <span className="h-8 w-8 rounded-full bg-sand-light flex items-center justify-center text-sage-deep font-bold font-label-md flex-shrink-0">1</span>
               <h3 className="font-headline-sm text-headline-sm text-charcoal-muted">Informations générales</h3>
             </div>
-            <div className="space-y-8 pl-11">
+            <div className="space-y-6 pl-0 md:pl-11">
               <div>
                 <label className="block font-label-md text-label-md text-on-surface-variant mb-2">Nom du produit *</label>
                 <input
@@ -211,7 +211,7 @@ export default function AddProduct() {
               <span className="h-8 w-8 rounded-full bg-sand-light flex items-center justify-center text-sage-deep font-bold font-label-md flex-shrink-0">2</span>
               <h3 className="font-headline-sm text-headline-sm text-charcoal-muted">Prix &amp; Inventaire</h3>
             </div>
-            <div className="grid grid-cols-2 gap-8 pl-11">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pl-0 md:pl-11">
               <div>
                 <label className="block font-label-md text-label-md text-on-surface-variant mb-2">Prix (FCFA) *</label>
                 <div className="flex items-center border-b border-outline-variant focus-within:border-sage-deep transition-colors"
@@ -319,7 +319,7 @@ export default function AddProduct() {
               <span className="h-8 w-8 rounded-full bg-sand-light flex items-center justify-center text-sage-deep font-bold font-label-md flex-shrink-0">3</span>
               <h3 className="font-headline-sm text-headline-sm text-charcoal-muted">Images du produit (max 3)</h3>
             </div>
-            <div className="pl-11">
+            <div className="pl-0 md:pl-11">
               <div
                 onDragOver={(e) => { e.preventDefault() }}
                 onDrop={(e) => { e.preventDefault(); if (e.dataTransfer.files?.length) uploadFiles(e.dataTransfer.files) }}
@@ -434,7 +434,7 @@ export default function AddProduct() {
         </div>
 
         {/* ── Preview ── */}
-        <aside className="lg:col-span-5 sticky top-24 h-fit">
+        <aside className="lg:col-span-5 lg:sticky lg:top-24 h-fit">
           <div className="bg-white rounded-xl p-8 shadow-sm border border-sand-light">
             <div className="flex justify-between items-end mb-8">
               <div>

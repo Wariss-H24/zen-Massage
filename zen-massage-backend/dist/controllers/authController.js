@@ -37,6 +37,8 @@ exports.register = register;
 exports.login = login;
 exports.logout = logout;
 exports.me = me;
+exports.forgotPassword = forgotPassword;
+exports.resetPassword = resetPassword;
 exports.updateProfile = updateProfile;
 const authService = __importStar(require("../services/authService"));
 const jwt_1 = require("../utils/jwt");
@@ -71,6 +73,24 @@ async function me(req, res, next) {
     try {
         const user = await authService.getMe(res.locals.user.id);
         res.json({ success: true, message: 'OK', data: user });
+    }
+    catch (err) {
+        next(err);
+    }
+}
+async function forgotPassword(req, res, next) {
+    try {
+        await authService.forgotPassword(req.body.email);
+        res.json({ success: true, message: 'Si cet email existe, un lien a été envoyé.' });
+    }
+    catch (err) {
+        next(err);
+    }
+}
+async function resetPassword(req, res, next) {
+    try {
+        await authService.resetPassword(req.body.token, req.body.password);
+        res.json({ success: true, message: 'Mot de passe réinitialisé avec succès.' });
     }
     catch (err) {
         next(err);

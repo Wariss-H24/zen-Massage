@@ -2093,6 +2093,8 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     deletedAt: Date | null
+    reset_token: string | null
+    reset_token_expires: Date | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -2107,6 +2109,8 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     deletedAt: Date | null
+    reset_token: string | null
+    reset_token_expires: Date | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -2121,6 +2125,8 @@ export namespace Prisma {
     createdAt: number
     updatedAt: number
     deletedAt: number
+    reset_token: number
+    reset_token_expires: number
     _all: number
   }
 
@@ -2137,6 +2143,8 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
+    reset_token?: true
+    reset_token_expires?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -2151,6 +2159,8 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
+    reset_token?: true
+    reset_token_expires?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -2165,6 +2175,8 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
+    reset_token?: true
+    reset_token_expires?: true
     _all?: true
   }
 
@@ -2252,6 +2264,8 @@ export namespace Prisma {
     createdAt: Date
     updatedAt: Date
     deletedAt: Date | null
+    reset_token: string | null
+    reset_token_expires: Date | null
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -2283,6 +2297,8 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
+    reset_token?: boolean
+    reset_token_expires?: boolean
     avis?: boolean | User$avisArgs<ExtArgs>
     likes?: boolean | User$likesArgs<ExtArgs>
     rendezVous?: boolean | User$rendezVousArgs<ExtArgs>
@@ -2304,6 +2320,8 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
+    reset_token?: boolean
+    reset_token_expires?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -2318,6 +2336,8 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
+    reset_token?: boolean
+    reset_token_expires?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -2332,9 +2352,11 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
+    reset_token?: boolean
+    reset_token_expires?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "firstName" | "lastName" | "phone" | "avatar" | "role" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "firstName" | "lastName" | "phone" | "avatar" | "role" | "createdAt" | "updatedAt" | "deletedAt" | "reset_token" | "reset_token_expires", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     avis?: boolean | User$avisArgs<ExtArgs>
     likes?: boolean | User$likesArgs<ExtArgs>
@@ -2369,6 +2391,8 @@ export namespace Prisma {
       createdAt: Date
       updatedAt: Date
       deletedAt: Date | null
+      reset_token: string | null
+      reset_token_expires: Date | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -2809,6 +2833,8 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
     readonly deletedAt: FieldRef<"User", 'DateTime'>
+    readonly reset_token: FieldRef<"User", 'String'>
+    readonly reset_token_expires: FieldRef<"User", 'DateTime'>
   }
     
 
@@ -14893,7 +14919,9 @@ export namespace Prisma {
     role: 'role',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    deletedAt: 'deletedAt'
+    deletedAt: 'deletedAt',
+    reset_token: 'reset_token',
+    reset_token_expires: 'reset_token_expires'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -15195,6 +15223,8 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     deletedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    reset_token?: StringNullableFilter<"User"> | string | null
+    reset_token_expires?: DateTimeNullableFilter<"User"> | Date | string | null
     avis?: AvisListRelationFilter
     likes?: LikeListRelationFilter
     rendezVous?: RendezVousListRelationFilter
@@ -15215,6 +15245,8 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
+    reset_token?: SortOrderInput | SortOrder
+    reset_token_expires?: SortOrderInput | SortOrder
     avis?: AvisOrderByRelationAggregateInput
     likes?: LikeOrderByRelationAggregateInput
     rendezVous?: RendezVousOrderByRelationAggregateInput
@@ -15226,6 +15258,7 @@ export namespace Prisma {
   export type UserWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     email?: string
+    reset_token?: string
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
@@ -15238,13 +15271,14 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     deletedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    reset_token_expires?: DateTimeNullableFilter<"User"> | Date | string | null
     avis?: AvisListRelationFilter
     likes?: LikeListRelationFilter
     rendezVous?: RendezVousListRelationFilter
     commandes?: CommandeListRelationFilter
     avis_repondus?: AvisListRelationFilter
     votes_utiles?: AvisUtileListRelationFilter
-  }, "id" | "email">
+  }, "id" | "email" | "reset_token">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
@@ -15258,6 +15292,8 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
+    reset_token?: SortOrderInput | SortOrder
+    reset_token_expires?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -15278,6 +15314,8 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     deletedAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    reset_token?: StringNullableWithAggregatesFilter<"User"> | string | null
+    reset_token_expires?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   }
 
   export type CategorieWhereInput = {
@@ -16059,6 +16097,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    reset_token?: string | null
+    reset_token_expires?: Date | string | null
     avis?: AvisCreateNestedManyWithoutUtilisateurInput
     likes?: LikeCreateNestedManyWithoutUtilisateurInput
     rendezVous?: RendezVousCreateNestedManyWithoutUtilisateurInput
@@ -16079,6 +16119,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    reset_token?: string | null
+    reset_token_expires?: Date | string | null
     avis?: AvisUncheckedCreateNestedManyWithoutUtilisateurInput
     likes?: LikeUncheckedCreateNestedManyWithoutUtilisateurInput
     rendezVous?: RendezVousUncheckedCreateNestedManyWithoutUtilisateurInput
@@ -16099,6 +16141,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token_expires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     avis?: AvisUpdateManyWithoutUtilisateurNestedInput
     likes?: LikeUpdateManyWithoutUtilisateurNestedInput
     rendezVous?: RendezVousUpdateManyWithoutUtilisateurNestedInput
@@ -16119,6 +16163,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token_expires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     avis?: AvisUncheckedUpdateManyWithoutUtilisateurNestedInput
     likes?: LikeUncheckedUpdateManyWithoutUtilisateurNestedInput
     rendezVous?: RendezVousUncheckedUpdateManyWithoutUtilisateurNestedInput
@@ -16139,6 +16185,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    reset_token?: string | null
+    reset_token_expires?: Date | string | null
   }
 
   export type UserUpdateManyMutationInput = {
@@ -16153,6 +16201,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token_expires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -16167,6 +16217,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token_expires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type CategorieCreateInput = {
@@ -17106,6 +17158,8 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
+    reset_token?: SortOrder
+    reset_token_expires?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -17120,6 +17174,8 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
+    reset_token?: SortOrder
+    reset_token_expires?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -17134,6 +17190,8 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
+    reset_token?: SortOrder
+    reset_token_expires?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -19535,6 +19593,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    reset_token?: string | null
+    reset_token_expires?: Date | string | null
     likes?: LikeCreateNestedManyWithoutUtilisateurInput
     rendezVous?: RendezVousCreateNestedManyWithoutUtilisateurInput
     commandes?: CommandeCreateNestedManyWithoutUtilisateurInput
@@ -19554,6 +19614,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    reset_token?: string | null
+    reset_token_expires?: Date | string | null
     likes?: LikeUncheckedCreateNestedManyWithoutUtilisateurInput
     rendezVous?: RendezVousUncheckedCreateNestedManyWithoutUtilisateurInput
     commandes?: CommandeUncheckedCreateNestedManyWithoutUtilisateurInput
@@ -19578,6 +19640,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    reset_token?: string | null
+    reset_token_expires?: Date | string | null
     avis?: AvisCreateNestedManyWithoutUtilisateurInput
     likes?: LikeCreateNestedManyWithoutUtilisateurInput
     rendezVous?: RendezVousCreateNestedManyWithoutUtilisateurInput
@@ -19597,6 +19661,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    reset_token?: string | null
+    reset_token_expires?: Date | string | null
     avis?: AvisUncheckedCreateNestedManyWithoutUtilisateurInput
     likes?: LikeUncheckedCreateNestedManyWithoutUtilisateurInput
     rendezVous?: RendezVousUncheckedCreateNestedManyWithoutUtilisateurInput
@@ -19700,6 +19766,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token_expires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     likes?: LikeUpdateManyWithoutUtilisateurNestedInput
     rendezVous?: RendezVousUpdateManyWithoutUtilisateurNestedInput
     commandes?: CommandeUpdateManyWithoutUtilisateurNestedInput
@@ -19719,6 +19787,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token_expires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     likes?: LikeUncheckedUpdateManyWithoutUtilisateurNestedInput
     rendezVous?: RendezVousUncheckedUpdateManyWithoutUtilisateurNestedInput
     commandes?: CommandeUncheckedUpdateManyWithoutUtilisateurNestedInput
@@ -19749,6 +19819,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token_expires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     avis?: AvisUpdateManyWithoutUtilisateurNestedInput
     likes?: LikeUpdateManyWithoutUtilisateurNestedInput
     rendezVous?: RendezVousUpdateManyWithoutUtilisateurNestedInput
@@ -19768,6 +19840,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token_expires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     avis?: AvisUncheckedUpdateManyWithoutUtilisateurNestedInput
     likes?: LikeUncheckedUpdateManyWithoutUtilisateurNestedInput
     rendezVous?: RendezVousUncheckedUpdateManyWithoutUtilisateurNestedInput
@@ -19842,6 +19916,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    reset_token?: string | null
+    reset_token_expires?: Date | string | null
     avis?: AvisCreateNestedManyWithoutUtilisateurInput
     rendezVous?: RendezVousCreateNestedManyWithoutUtilisateurInput
     commandes?: CommandeCreateNestedManyWithoutUtilisateurInput
@@ -19861,6 +19937,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    reset_token?: string | null
+    reset_token_expires?: Date | string | null
     avis?: AvisUncheckedCreateNestedManyWithoutUtilisateurInput
     rendezVous?: RendezVousUncheckedCreateNestedManyWithoutUtilisateurInput
     commandes?: CommandeUncheckedCreateNestedManyWithoutUtilisateurInput
@@ -19940,6 +20018,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token_expires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     avis?: AvisUpdateManyWithoutUtilisateurNestedInput
     rendezVous?: RendezVousUpdateManyWithoutUtilisateurNestedInput
     commandes?: CommandeUpdateManyWithoutUtilisateurNestedInput
@@ -19959,6 +20039,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token_expires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     avis?: AvisUncheckedUpdateManyWithoutUtilisateurNestedInput
     rendezVous?: RendezVousUncheckedUpdateManyWithoutUtilisateurNestedInput
     commandes?: CommandeUncheckedUpdateManyWithoutUtilisateurNestedInput
@@ -20013,6 +20095,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    reset_token?: string | null
+    reset_token_expires?: Date | string | null
     avis?: AvisCreateNestedManyWithoutUtilisateurInput
     likes?: LikeCreateNestedManyWithoutUtilisateurInput
     rendezVous?: RendezVousCreateNestedManyWithoutUtilisateurInput
@@ -20032,6 +20116,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    reset_token?: string | null
+    reset_token_expires?: Date | string | null
     avis?: AvisUncheckedCreateNestedManyWithoutUtilisateurInput
     likes?: LikeUncheckedCreateNestedManyWithoutUtilisateurInput
     rendezVous?: RendezVousUncheckedCreateNestedManyWithoutUtilisateurInput
@@ -20108,6 +20194,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token_expires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     avis?: AvisUpdateManyWithoutUtilisateurNestedInput
     likes?: LikeUpdateManyWithoutUtilisateurNestedInput
     rendezVous?: RendezVousUpdateManyWithoutUtilisateurNestedInput
@@ -20127,6 +20215,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token_expires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     avis?: AvisUncheckedUpdateManyWithoutUtilisateurNestedInput
     likes?: LikeUncheckedUpdateManyWithoutUtilisateurNestedInput
     rendezVous?: RendezVousUncheckedUpdateManyWithoutUtilisateurNestedInput
@@ -20225,6 +20315,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    reset_token?: string | null
+    reset_token_expires?: Date | string | null
     avis?: AvisCreateNestedManyWithoutUtilisateurInput
     likes?: LikeCreateNestedManyWithoutUtilisateurInput
     commandes?: CommandeCreateNestedManyWithoutUtilisateurInput
@@ -20244,6 +20336,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    reset_token?: string | null
+    reset_token_expires?: Date | string | null
     avis?: AvisUncheckedCreateNestedManyWithoutUtilisateurInput
     likes?: LikeUncheckedCreateNestedManyWithoutUtilisateurInput
     commandes?: CommandeUncheckedCreateNestedManyWithoutUtilisateurInput
@@ -20312,6 +20406,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token_expires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     avis?: AvisUpdateManyWithoutUtilisateurNestedInput
     likes?: LikeUpdateManyWithoutUtilisateurNestedInput
     commandes?: CommandeUpdateManyWithoutUtilisateurNestedInput
@@ -20331,6 +20427,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token_expires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     avis?: AvisUncheckedUpdateManyWithoutUtilisateurNestedInput
     likes?: LikeUncheckedUpdateManyWithoutUtilisateurNestedInput
     commandes?: CommandeUncheckedUpdateManyWithoutUtilisateurNestedInput
@@ -20350,6 +20448,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    reset_token?: string | null
+    reset_token_expires?: Date | string | null
     avis?: AvisCreateNestedManyWithoutUtilisateurInput
     likes?: LikeCreateNestedManyWithoutUtilisateurInput
     rendezVous?: RendezVousCreateNestedManyWithoutUtilisateurInput
@@ -20369,6 +20469,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    reset_token?: string | null
+    reset_token_expires?: Date | string | null
     avis?: AvisUncheckedCreateNestedManyWithoutUtilisateurInput
     likes?: LikeUncheckedCreateNestedManyWithoutUtilisateurInput
     rendezVous?: RendezVousUncheckedCreateNestedManyWithoutUtilisateurInput
@@ -20434,6 +20536,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token_expires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     avis?: AvisUpdateManyWithoutUtilisateurNestedInput
     likes?: LikeUpdateManyWithoutUtilisateurNestedInput
     rendezVous?: RendezVousUpdateManyWithoutUtilisateurNestedInput
@@ -20453,6 +20557,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token_expires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     avis?: AvisUncheckedUpdateManyWithoutUtilisateurNestedInput
     likes?: LikeUncheckedUpdateManyWithoutUtilisateurNestedInput
     rendezVous?: RendezVousUncheckedUpdateManyWithoutUtilisateurNestedInput

@@ -11,6 +11,11 @@ import type { Review } from '../../types/review'
 import type { Produit } from '../../types/product'
 import Toast from '../../components/ui/Toast'
 
+function toLibrevilleUTC(date: Date, timeStr: string): string {
+  const [hours, minutes] = timeStr.split(':').map(Number)
+  return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), hours - 1, minutes, 0, 0)).toISOString()
+}
+
 // Fonction pour formater la date en français (ex: "Aujourd'hui, 16h30")
 const formatAppointmentTime = (dateStr: string): string => {
   const date = new Date(dateStr)
@@ -445,19 +450,16 @@ export default function Dashboard() {
     try {
       setProcessingReschedule(true)
       // Construire la date complète
-      const appointmentDate = new Date(selectedDate)
-      // Ajouter l'heure
-      const [hours, minutes] = selectedSlot.split(':').map(Number)
-      appointmentDate.setHours(hours, minutes, 0, 0)
+      const appointmentDate = toLibrevilleUTC(selectedDate, selectedSlot)
 
       const updatedAppt = await appointmentService.updateAppointment(selectedAppt.id, {
-        date_heure: appointmentDate.toISOString(),
+        date_heure: appointmentDate,
         duree: selectedAppt.duree,
         type_seance_id: selectedAppt.type_seance_id,
         notes: selectedAppt.notes
       })
       setAppointments(prev => prev.map(a => a.id === selectedAppt.id ? updatedAppt.data : a))
-      setPublicAppointments(prev => prev.map(a => a.id === selectedAppt.id ? { ...a, date_heure: appointmentDate.toISOString() } : a))
+      setPublicAppointments(prev => prev.map(a => a.id === selectedAppt.id ? { ...a, date_heure: appointmentDate } : a))
       setRescheduleModalOpen(false)
       setSelectedDate(null)
       setSelectedSlot(null)

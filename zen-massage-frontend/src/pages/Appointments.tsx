@@ -87,7 +87,13 @@ const BASE_SLOTS = [
 ];
 const MONTHS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre']
 
-/* ── Stepper ── */
+// Construit une date ISO en forçant le fuseau Africa/Libreville (UTC+1 fixe, pas de changement d'heure)
+function toLibrevilleUTC(date: Date, timeStr: string): string {
+  const [hours, minutes] = timeStr.split(':').map(Number)
+  // Africa/Libreville = UTC+1 toute l'année, pas de DST
+  const utcMs = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), hours - 1, minutes, 0, 0)
+  return new Date(utcMs).toISOString()
+}
 function Stepper({ step }: { step: number }) {
   const steps = [
     { n: 1, label: 'Service' },
@@ -277,21 +283,12 @@ export default function Appointments() {
     if (!canConfirm || !selectedService || !selectedDate || !selectedSlot) return
 
     try {
-      // Construire la date complète
-      const appointmentDate = new Date(selectedDate)
-      // Ajouter l'heure
-      const [hours, minutes] = selectedSlot.split(':').map(Number)
-      appointmentDate.setHours(hours, minutes, 0, 0)
-
-      // Trouver le type de séance original pour la durée
       const typeSeance = services.find(s => s.id === selectedService.id)
       if (!typeSeance) return
-
-      // Convertir la durée en minutes (enlever ' min' et parser)
       const durationMinutes = parseInt(typeSeance.duration.replace(' min', ''), 10)
 
       await appointmentService.createAppointment({
-        date_heure: appointmentDate.toISOString(),
+        date_heure: toLibrevilleUTC(selectedDate, selectedSlot),
         duree: durationMinutes,
         type_seance_id: selectedService.id,
         notes: form.notes

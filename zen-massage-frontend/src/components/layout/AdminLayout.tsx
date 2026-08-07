@@ -43,7 +43,7 @@ export default function AdminLayout({ children, title, topbarRight }: Props) {
 
       {/* ── Sidebar ── */}
       <aside
-        className={`fixed top-0 left-0 z-50 h-screen w-64 flex flex-col py-6 border-r border-outline-variant bg-surface-container-low transition-all duration-300 ease-in-out ${
+        className={`fixed top-0 left-0 z-50 h-[100dvh] w-64 flex flex-col py-6 border-r border-outline-variant bg-surface-container-low transition-all duration-300 ease-in-out ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         } lg:translate-x-0 lg:z-auto`}
       >
@@ -60,7 +60,7 @@ export default function AdminLayout({ children, title, topbarRight }: Props) {
           </button>
         </div>
 
-        <nav className="flex-1 space-y-1">
+        <nav className="flex-1 overflow-y-auto space-y-1">
           {NAV.map(n => (
             <NavLink
               key={n.to}
@@ -99,7 +99,7 @@ export default function AdminLayout({ children, title, topbarRight }: Props) {
         </nav>
 
         <div className="px-6 pt-6 border-t border-outline-variant space-y-1">
-          <a href="#" className="flex items-center gap-3 py-2 font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors">
+          <a href="/admin/support" className="flex items-center gap-3 py-2 font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors">
             <span className="material-symbols-outlined">help</span>Support
           </a>
           <button

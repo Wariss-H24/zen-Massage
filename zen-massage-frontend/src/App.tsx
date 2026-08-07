@@ -27,6 +27,8 @@ const Settings = lazy(() => import('./pages/admin/Settings'))
 const OrderHistory = lazy(() => import('./pages/admin/OrderHistory'))
 const Statistics = lazy(() => import('./pages/admin/Statistics'))
 const SuperAdminPanel = lazy(() => import('./pages/admin/SuperAdminPanel'))
+const AdminSupport = lazy(() => import('./pages/admin/Support'))
+import Support from './pages/Support'
 
 // Redirige vers la bonne page d'accueil selon le rôle
 function HomeByRole() {
@@ -115,6 +117,7 @@ export default function App() {
       <Route path="/orders"       element={<RequireUser><Orders /></RequireUser>} />
       <Route path="/orders/:id"   element={<RequireUser><OrderDetail /></RequireUser>} />
       <Route path="/profile"      element={<RequireUser><Profile /></RequireUser>} />
+      <Route path="/support"      element={<RequireUser><Support /></RequireUser>} />
 
       {/* Pages ADMIN + SUPER_ADMIN */}
       <Route path="/admin"              element={<RequireAdmin><LazyPage><Dashboard /></LazyPage></RequireAdmin>} />
@@ -128,7 +131,8 @@ export default function App() {
       <Route path="/admin/analytics"    element={<RequireAdmin><LazyPage><Statistics /></LazyPage></RequireAdmin>} />
 
       {/* Page SUPER_ADMIN uniquement */}
-      <Route path="/admin/super" element={<RequireSuperAdmin><LazyPage><SuperAdminPanel /></LazyPage></RequireSuperAdmin>} />
+      <Route path="/admin/super"    element={<RequireSuperAdmin><LazyPage><SuperAdminPanel /></LazyPage></RequireSuperAdmin>} />
+      <Route path="/admin/support"  element={<RequireAdmin><LazyPage><AdminSupport /></LazyPage></RequireAdmin>} />
 
       <Route path="*" element={<div className="flex items-center justify-center min-h-screen font-serif text-headline-sm text-sage-deep">Page introuvable</div>} />
     </Routes>

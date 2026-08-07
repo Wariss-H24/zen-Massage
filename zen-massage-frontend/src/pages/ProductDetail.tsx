@@ -67,7 +67,6 @@ export default function ProductDetail() {
   const [qty, setQty] = useState(1)
   const [liked, setLiked] = useState(false)
   const [likeCount, setLikeCount] = useState(0)
-  const [openAccordion, setOpenAccordion] = useState<string | null>(null)
 
   const [data, setData] = useState<ProduitDetail | null>(null)
   const [reviews, setReviews] = useState<Review[]>([])
@@ -164,10 +163,7 @@ export default function ProductDetail() {
     }
   }
 
-  const toggleAccordion = (key: string) =>
-    setOpenAccordion(v => (v === key ? null : key))
-
-  const handleAddToCart = () => {
+const handleAddToCart = () => {
     if (!data || !data.produit || data.produit.stock <= 0) return
     addItem({
       id: data.produit.id,
@@ -394,48 +390,30 @@ export default function ProductDetail() {
               </button>
             </div>
 
-            {/* Accordéons */}
-            <div className="mt-8 pt-8 border-t border-outline-variant space-y-0">
-              {[
-                {
-                  key: 'usage',
-                  label: "Conseils d'utilisation",
-                  content: (
-                    <p className="text-sm text-on-surface-variant leading-relaxed">
-                      Appliquer selon les besoins sur les zones concernées. Pour un massage relaxant,
-                      utiliser 3-5 gouttes en application locale ou diluée dans une huile de support.
-                    </p>
-                  ),
-                },
-                {
-                  key: 'livraison',
-                  label: 'Livraison & Retours',
-                  content: (
-                    <p className="text-sm text-on-surface-variant leading-relaxed">
-                      Livraison sous 48h à Libreville, 3-5 jours en province. Retours sous 14 jours
-                      si le produit n'a pas été utilisé.
-                    </p>
-                  ),
-                },
-              ].map(({ key, label, content }) => (
-                <div key={key} className="border-b border-outline-variant/50">
-                  <button
-                    onClick={() => toggleAccordion(key)}
-                    className="w-full flex justify-between items-center py-4 font-label-md text-label-md text-on-surface hover:text-primary transition-colors"
-                  >
-                    <span>{label}</span>
-                    <span
-                      className="material-symbols-outlined transition-transform duration-300"
-                      style={{ transform: openAccordion === key ? 'rotate(180deg)' : 'rotate(0deg)' }}
-                    >
-                      expand_more
-                    </span>
-                  </button>
-                  {openAccordion === key && (
-                    <div className="pb-4">{content}</div>
-                  )}
-                </div>
-              ))}
+            {/* Livraison */}
+            <div className="mt-8 pt-8 border-t border-outline-variant space-y-3">
+              <div className="flex items-center gap-2 text-on-surface-variant">
+                <span className="material-symbols-outlined text-[20px] text-sage-deep">local_shipping</span>
+                <span className="font-label-md text-label-md text-on-surface">Livraison</span>
+              </div>
+              <ul className="space-y-2 pl-1">
+                <li className="flex items-start gap-2 font-body-md text-body-md text-on-surface-variant">
+                  <span className="material-symbols-outlined text-[16px] text-primary mt-0.5">check</span>
+                  Libreville — livraison sous 24 à 48h, frais : 3 000 FCFA
+                </li>
+                <li className="flex items-start gap-2 font-body-md text-body-md text-on-surface-variant">
+                  <span className="material-symbols-outlined text-[16px] text-primary mt-0.5">check</span>
+                  Province (Port-Gentil, Franceville, Oyem…) — 3 à 5 jours, frais : 5 000 FCFA
+                </li>
+                <li className="flex items-start gap-2 font-body-md text-body-md text-on-surface-variant">
+                  <span className="material-symbols-outlined text-[16px] text-primary mt-0.5">check</span>
+                  Livraison offerte dès 50 000 FCFA d'achat
+                </li>
+                <li className="flex items-start gap-2 font-body-md text-body-md text-on-surface-variant">
+                  <span className="material-symbols-outlined text-[16px] text-primary mt-0.5">check</span>
+                  Paiement à la livraison uniquement
+                </li>
+              </ul>
             </div>
           </div>
         </div>

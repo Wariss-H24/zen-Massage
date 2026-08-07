@@ -8,6 +8,7 @@ const NAV = [
   { to: '/orders',   icon: 'shopping_bag',   label: 'Commandes'       },
   { to: '/products', icon: 'storefront',     label: 'Boutique'        },
   { to: '/profile',  icon: 'person',         label: 'Profil'          },
+  { to: '/support',  icon: 'help',           label: 'Aide'            },
 ]
 
 interface Props {
@@ -45,7 +46,7 @@ export default function UserLayout({ children, title, subtitle, headerRight }: P
       )}
 
       {/* ── Sidebar ── */}
-      <aside className={`flex flex-col h-screen w-64 fixed left-0 top-0 z-50 bg-surface-container-low border-r border-outline-variant/30 p-stack-md transition-transform duration-300 ${
+      <aside className={`flex flex-col h-[100dvh] w-64 fixed left-0 top-0 z-50 bg-surface-container-low border-r border-outline-variant/30 p-stack-md transition-transform duration-300 ${
         mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
       }`}>
         <div className="mb-stack-lg px-2">
@@ -55,7 +56,7 @@ export default function UserLayout({ children, title, subtitle, headerRight }: P
           </Link>
         </div>
 
-        <nav className="flex-1 space-y-2">
+        <nav className="flex-1 overflow-y-auto space-y-2">
           {NAV.map(n => {
             const active = pathname === n.to
             return (

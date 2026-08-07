@@ -3,9 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.register = register;
 exports.login = login;
 exports.getMe = getMe;
+exports.forgotPassword = forgotPassword;
+exports.resetPassword = resetPassword;
 exports.updateProfile = updateProfile;
 const prisma_1 = require("../prisma");
 const bcrypt_1 = require("../utils/bcrypt");
+const crypto_1 = require("crypto");
+const emailService_1 = require("./emailService");
 async function register(body) {
     const exists = await prisma_1.prisma.user.findUnique({ where: { email: body.email } });
     if (exists) {
@@ -64,6 +68,32 @@ async function getMe(id) {
         throw err;
     }
     return user;
+}
+async function forgotPassword(email) {
+    const user = await prisma_1.prisma.user.findUnique({ where: { email } });
+    // On ne révèle pas si l'email existe ou non
+    if (!user || user.deletedAt)
+        return;
+    const token = (0, crypto_1.randomBytes)(32).toString('hex');
+    const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 heure
+    await prisma_1.prisma.user.update({
+        where: { id: user.id },
+        data: { reset_token: token, reset_token_expires: expires },
+    });
+    await (0, emailService_1.sendResetPasswordEmail)(email, token);
+}
+async function resetPassword(token, newPassword) {
+    const user = await prisma_1.prisma.user.findUnique({ where: { reset_token: token } });
+    if (!user || !user.reset_token_expires || user.reset_token_expires < new Date()) {
+        const err = new Error('Lien invalide ou expiré');
+        err.status = 400;
+        throw err;
+    }
+    const hashed = await (0, bcrypt_1.hashPassword)(newPassword);
+    await prisma_1.prisma.user.update({
+        where: { id: user.id },
+        data: { password: hashed, reset_token: null, reset_token_expires: null },
+    });
 }
 async function updateProfile(id, data) {
     // Préparer les données à mettre à jour
