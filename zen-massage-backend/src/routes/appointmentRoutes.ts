@@ -3,6 +3,15 @@ import { Router } from 'express'
 import * as appointment from '../controllers/appointmentController'
 import { requireAuth } from '../middlewares/auth'
 import { requireRole } from '../middlewares/roleCheck'
+import { validate } from '../middlewares/validate'
+import {
+  createTypeSeanceSchema,
+  updateTypeSeanceSchema,
+  createAppointmentSchema,
+  updateAppointmentSchema,
+  updateAppointmentStatusSchema,
+  updateNotesAdminSchema,
+} from '../schemas/appointmentSchemas'
 
 const router = Router()
 
@@ -13,22 +22,22 @@ router.get('/config', appointment.getScheduleConfig)
 
 // Routes admin — gestion des types de séance
 router.get('/type-seances/all',    requireAuth, requireRole('ADMIN', 'SUPER_ADMIN'), appointment.getAllTypeSeancesAdmin)
-router.post('/type-seances',       requireAuth, requireRole('ADMIN', 'SUPER_ADMIN'), appointment.createTypeSeance)
-router.put('/type-seances/:id',    requireAuth, requireRole('ADMIN', 'SUPER_ADMIN'), appointment.updateTypeSeance)
+router.post('/type-seances',       requireAuth, requireRole('ADMIN', 'SUPER_ADMIN'), validate(createTypeSeanceSchema), appointment.createTypeSeance)
+router.put('/type-seances/:id',    requireAuth, requireRole('ADMIN', 'SUPER_ADMIN'), validate(updateTypeSeanceSchema), appointment.updateTypeSeance)
 router.delete('/type-seances/:id', requireAuth, requireRole('ADMIN', 'SUPER_ADMIN'), appointment.deleteTypeSeance)
 
 // Routes utilisateur connecté
-router.post('/', requireAuth, appointment.createAppointment)
+router.post('/', requireAuth, validate(createAppointmentSchema), appointment.createAppointment)
 router.get('/my', requireAuth, appointment.getMyAppointments)
 
 router.put('/config', requireAuth, requireRole('ADMIN', 'SUPER_ADMIN'), appointment.updateScheduleConfig)
 
-router.patch('/:id/cancel', requireAuth, appointment.cancelAppointment)
-router.put('/:id', requireAuth, appointment.updateAppointment)
-
-// Routes admin
+// Routes admin — statiques AVANT les routes dynamiques /:id
 router.get('/all', requireAuth, requireRole('ADMIN', 'SUPER_ADMIN'), appointment.getAllAppointments)
-router.put('/:id/status', requireAuth, requireRole('ADMIN', 'SUPER_ADMIN'), appointment.updateAppointmentStatus)
-router.patch('/:id/notes-admin', requireAuth, requireRole('ADMIN', 'SUPER_ADMIN'), appointment.updateNotesAdmin)
+
+router.patch('/:id/cancel', requireAuth, appointment.cancelAppointment)
+router.put('/:id/status',   requireAuth, requireRole('ADMIN', 'SUPER_ADMIN'), validate(updateAppointmentStatusSchema), appointment.updateAppointmentStatus)
+router.patch('/:id/notes-admin', requireAuth, requireRole('ADMIN', 'SUPER_ADMIN'), validate(updateNotesAdminSchema), appointment.updateNotesAdmin)
+router.put('/:id', requireAuth, validate(updateAppointmentSchema), appointment.updateAppointment)
 
 export default router

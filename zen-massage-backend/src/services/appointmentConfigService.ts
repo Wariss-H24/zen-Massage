@@ -1,4 +1,5 @@
 import { prisma } from '../prisma'
+import { AppError } from '../utils/AppError'
 
 export type DayKey = 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun'
 
@@ -42,52 +43,38 @@ function isValidRange(r: TimeRange) {
 
 function ensureValidConfig(cfg: AppointmentScheduleConfig) {
   if (!cfg || cfg.version !== 1) {
-    const err = new Error('Configuration invalide') as any
-    err.status = 400
-    throw err
+    throw new AppError('Configuration invalide', 400)
   }
   if (cfg.slotStepMinutes !== 30) {
-    const err = new Error('slotStepMinutes invalide') as any
-    err.status = 400
-    throw err
+    throw new AppError('slotStepMinutes invalide', 400)
   }
   const days = cfg.days
   const keys: DayKey[] = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
   for (const k of keys) {
     const d = days?.[k]
     if (!d || typeof d.active !== 'boolean') {
-      const err = new Error('Configuration invalide (jours)') as any
-      err.status = 400
-      throw err
+      throw new AppError('Configuration invalide (jours)', 400)
     }
     if (d.active) {
       if (!isValidRange({ start: d.start, end: d.end })) {
-        const err = new Error('Horaires invalides') as any
-        err.status = 400
-        throw err
+        throw new AppError('Horaires invalides', 400)
       }
     }
   }
   if (cfg.pause) {
     if (!isValidRange(cfg.pause)) {
-      const err = new Error('Pause invalide') as any
-      err.status = 400
-      throw err
+      throw new AppError('Pause invalide', 400)
     }
   }
   if (cfg.blocked) {
-    for (const [k, ranges] of Object.entries(cfg.blocked)) {
+    for (const [_k, ranges] of Object.entries(cfg.blocked)) {
       if (!ranges) continue
       if (!Array.isArray(ranges)) {
-        const err = new Error('Indisponibilités invalides') as any
-        err.status = 400
-        throw err
+        throw new AppError('Indisponibilités invalides', 400)
       }
       for (const r of ranges) {
         if (!isValidRange(r)) {
-          const err = new Error('Indisponibilités invalides') as any
-          err.status = 400
-          throw err
+          throw new AppError('Indisponibilités invalides', 400)
         }
       }
     }

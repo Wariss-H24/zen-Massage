@@ -8,6 +8,7 @@ exports.timeStringFromDate = timeStringFromDate;
 exports.minutesFromTimeString = minutesFromTimeString;
 exports.rangeOverlaps = rangeOverlaps;
 const prisma_1 = require("../prisma");
+const AppError_1 = require("../utils/AppError");
 const CONFIG_KEY = 'appointments_schedule';
 function parseTimeToMinutes(value) {
     const m = /^(\d{2}):(\d{2})$/.exec(value);
@@ -30,53 +31,39 @@ function isValidRange(r) {
 }
 function ensureValidConfig(cfg) {
     if (!cfg || cfg.version !== 1) {
-        const err = new Error('Configuration invalide');
-        err.status = 400;
-        throw err;
+        throw new AppError_1.AppError('Configuration invalide', 400);
     }
     if (cfg.slotStepMinutes !== 30) {
-        const err = new Error('slotStepMinutes invalide');
-        err.status = 400;
-        throw err;
+        throw new AppError_1.AppError('slotStepMinutes invalide', 400);
     }
     const days = cfg.days;
     const keys = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
     for (const k of keys) {
         const d = days?.[k];
         if (!d || typeof d.active !== 'boolean') {
-            const err = new Error('Configuration invalide (jours)');
-            err.status = 400;
-            throw err;
+            throw new AppError_1.AppError('Configuration invalide (jours)', 400);
         }
         if (d.active) {
             if (!isValidRange({ start: d.start, end: d.end })) {
-                const err = new Error('Horaires invalides');
-                err.status = 400;
-                throw err;
+                throw new AppError_1.AppError('Horaires invalides', 400);
             }
         }
     }
     if (cfg.pause) {
         if (!isValidRange(cfg.pause)) {
-            const err = new Error('Pause invalide');
-            err.status = 400;
-            throw err;
+            throw new AppError_1.AppError('Pause invalide', 400);
         }
     }
     if (cfg.blocked) {
-        for (const [k, ranges] of Object.entries(cfg.blocked)) {
+        for (const [_k, ranges] of Object.entries(cfg.blocked)) {
             if (!ranges)
                 continue;
             if (!Array.isArray(ranges)) {
-                const err = new Error('Indisponibilités invalides');
-                err.status = 400;
-                throw err;
+                throw new AppError_1.AppError('Indisponibilités invalides', 400);
             }
             for (const r of ranges) {
                 if (!isValidRange(r)) {
-                    const err = new Error('Indisponibilités invalides');
-                    err.status = 400;
-                    throw err;
+                    throw new AppError_1.AppError('Indisponibilités invalides', 400);
                 }
             }
         }

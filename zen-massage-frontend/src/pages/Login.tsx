@@ -90,10 +90,7 @@ export default function Login() {
                 <input
                   id="email" type="email" required placeholder="votre@email.com"
                   value={email} onChange={e => setEmail(e.target.value)}
-                  className="w-full bg-transparent border-0 border-b border-outline-variant py-3 px-0 font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:border-sage-deep transition-all"
-                  style={{ boxShadow: 'none' }}
-                  onFocus={e => (e.currentTarget.style.boxShadow = '0 1px 0 0 #4A594D')}
-                  onBlur={e => (e.currentTarget.style.boxShadow = 'none')}
+                  className="w-full bg-transparent border-0 border-b border-outline-variant py-3 px-0 font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:border-sage-deep focus:shadow-[0_1px_0_0_#4A594D] transition-all"
                 />
               </div>
 
@@ -108,10 +105,7 @@ export default function Login() {
                 <input
                   id="password" type={showPwd ? 'text' : 'password'} required placeholder="••••••••"
                   value={password} onChange={e => setPassword(e.target.value)}
-                  className="w-full bg-transparent border-0 border-b border-outline-variant py-3 px-0 pr-8 font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:border-sage-deep transition-all"
-                  style={{ boxShadow: 'none' }}
-                  onFocus={e => (e.currentTarget.style.boxShadow = '0 1px 0 0 #4A594D')}
-                  onBlur={e => (e.currentTarget.style.boxShadow = 'none')}
+                  className="w-full bg-transparent border-0 border-b border-outline-variant py-3 px-0 pr-8 font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:border-sage-deep focus:shadow-[0_1px_0_0_#4A594D] transition-all"
                 />
                 <button
                   type="button"

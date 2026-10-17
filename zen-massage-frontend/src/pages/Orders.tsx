@@ -111,9 +111,9 @@ function OrderCard({ order, onCancel }: { order: Commande; onCancel: (id: string
 
         {/* ── Ligne 1 : numéro + badge statut + date ── */}
         <div className="flex flex-wrap items-start justify-between gap-2">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="font-bold text-sm tracking-wide text-sage-deep">{order.numero}</span>
-            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide ${STATUS_STYLE[order.statut]}`}>
+          <div className="flex flex-wrap items-center gap-2 min-w-0">
+            <span className="font-bold text-sm tracking-wide text-sage-deep truncate max-w-[140px] sm:max-w-none">{order.numero}</span>
+            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide shrink-0 ${STATUS_STYLE[order.statut]}`}>
               <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${STATUS_DOT[order.statut]}`} />
               {STATUS_FR[order.statut]}
             </span>
@@ -122,7 +122,7 @@ function OrderCard({ order, onCancel }: { order: Commande; onCancel: (id: string
         </div>
 
         {/* ── Ligne 2 : miniatures + nom articles ── */}
-        <div className="flex items-start gap-3">
+        <div className="flex items-start gap-3 min-w-0">
           {/* Miniatures */}
           <div className="flex -space-x-2 shrink-0">
             {images.length > 0
@@ -143,7 +143,7 @@ function OrderCard({ order, onCancel }: { order: Commande; onCancel: (id: string
           </div>
 
           {/* Articles */}
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 overflow-hidden">
             <div className={`space-y-0.5 ${!expanded && order.lignes.length > 2 ? 'max-h-10 overflow-hidden' : ''}`}>
               {order.lignes.map(ligne => (
                 <div key={ligne.id} className="flex items-center gap-1 text-xs text-on-surface-variant">
@@ -162,8 +162,8 @@ function OrderCard({ order, onCancel }: { order: Commande; onCancel: (id: string
           </div>
         </div>
 
-        {/* ── Ligne 3 : total + actions (toujours en row, wrappable) ── */}
-        <div className="flex items-center justify-between gap-3 pt-3 border-t border-outline-variant/20">
+        {/* ── Ligne 3 : total + actions ── */}
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-outline-variant/20">
           {/* Total */}
           <div>
             <p className="text-[10px] text-on-surface-variant uppercase tracking-wide">Total</p>
@@ -265,7 +265,7 @@ export default function Orders() {
 
   return (
     <UserLayout title="Mes Commandes" subtitle="Suivez vos achats de produits de soin et rituels bien-être.">
-      <div className="p-4 sm:p-6 md:p-8 max-w-4xl mx-auto w-full">
+      <div className="px-4 py-4 sm:px-6 sm:py-6 md:p-8 max-w-4xl mx-auto w-full">
 
         {/* ── Statistiques rapides ── */}
         {!loading && orders.length > 0 && (
@@ -311,7 +311,7 @@ export default function Orders() {
         </div>
 
         {/* ── Filtres pills — scroll horizontal sur mobile ── */}
-        <div className="flex gap-2 overflow-x-auto pb-1 mb-5 -mx-4 sm:mx-0 px-4 sm:px-0" style={{ scrollbarWidth: 'none' }}>
+        <div className="flex gap-2 overflow-x-auto pb-1 mb-5" style={{ scrollbarWidth: 'none' }}>
           {FILTERS.map(f => (
             <button
               key={f.key}

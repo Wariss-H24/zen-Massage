@@ -1,5 +1,6 @@
 
 import { prisma } from '../prisma'
+import { AppError } from '../utils/AppError'
 import {
   dayKeyFromDate,
   getAppointmentScheduleConfig,
@@ -29,9 +30,7 @@ function assertScheduleAllows(config: AppointmentScheduleConfig, start: Date, du
   const dayKey: DayKey = dayKeyFromDate(start)
   const day = config.days[dayKey]
   if (!day.active) {
-    const err = new Error('Aucun rendez-vous possible ce jour-là') as any
-    err.status = 400
-    throw err
+    throw new AppError('Aucun rendez-vous possible ce jour-là', 400)
   }
 
   const startMin = start.getHours() * 60 + start.getMinutes()
@@ -40,15 +39,11 @@ function assertScheduleAllows(config: AppointmentScheduleConfig, start: Date, du
   const openMin = minutesFromTimeString(day.start)
   const closeMin = minutesFromTimeString(day.end)
   if (openMin === null || closeMin === null) {
-    const err = new Error('Configuration horaires invalide') as any
-    err.status = 500
-    throw err
+    throw new AppError('Configuration horaires invalide', 500)
   }
 
   if (startMin < openMin || endMin > closeMin) {
-    const err = new Error('Créneau en dehors des heures de travail') as any
-    err.status = 400
-    throw err
+    throw new AppError('Créneau en dehors des heures de travail', 400)
   }
 
   if (config.pause) {
@@ -56,9 +51,7 @@ function assertScheduleAllows(config: AppointmentScheduleConfig, start: Date, du
     const pEnd = minutesFromTimeString(config.pause.end)
     if (pStart !== null && pEnd !== null) {
       if (rangeOverlaps(startMin, endMin, pStart, pEnd)) {
-        const err = new Error('Créneau indisponible (pause)') as any
-        err.status = 400
-        throw err
+        throw new AppError('Créneau indisponible (pause)', 400)
       }
     }
   }
@@ -69,9 +62,7 @@ function assertScheduleAllows(config: AppointmentScheduleConfig, start: Date, du
     const bEnd = minutesFromTimeString(r.end)
     if (bStart === null || bEnd === null) continue
     if (rangeOverlaps(startMin, endMin, bStart, bEnd)) {
-      const err = new Error('Créneau indisponible') as any
-      err.status = 400
-      throw err
+      throw new AppError('Créneau indisponible', 400)
     }
   }
 }
@@ -95,9 +86,7 @@ async function assertNoOverlappingAppointment(start: Date, durationMinutes: numb
     const apptStart = appt.date_heure
     const apptEnd = addMinutes(apptStart, appt.duree)
     if (start < apptEnd && apptStart < end) {
-      const err = new Error('Ce créneau est déjà réservé') as any
-      err.status = 409
-      throw err
+      throw new AppError('Ce créneau est déjà réservé', 409)
     }
   }
 }
@@ -127,9 +116,7 @@ export async function createTypeSeance(data: {
 }) {
   const existing = await prisma.typeSeance.findUnique({ where: { nom: data.nom } })
   if (existing) {
-    const err = new Error('Un service avec ce nom existe déjà') as any
-    err.status = 409
-    throw err
+    throw new AppError('Un service avec ce nom existe déjà', 409)
   }
   return await prisma.typeSeance.create({ data })
 }
@@ -144,16 +131,12 @@ export async function updateTypeSeance(id: string, data: {
 }) {
   const existing = await prisma.typeSeance.findUnique({ where: { id } })
   if (!existing) {
-    const err = new Error('Service introuvable') as any
-    err.status = 404
-    throw err
+    throw new AppError('Service introuvable', 404)
   }
   if (data.nom && data.nom !== existing.nom) {
     const nameConflict = await prisma.typeSeance.findUnique({ where: { nom: data.nom } })
     if (nameConflict) {
-      const err = new Error('Un service avec ce nom existe déjà') as any
-      err.status = 409
-      throw err
+      throw new AppError('Un service avec ce nom existe déjà', 409)
     }
   }
   return await prisma.typeSeance.update({ where: { id }, data })
@@ -163,15 +146,11 @@ export async function updateTypeSeance(id: string, data: {
 export async function deleteTypeSeance(id: string) {
   const existing = await prisma.typeSeance.findUnique({ where: { id } })
   if (!existing) {
-    const err = new Error('Service introuvable') as any
-    err.status = 404
-    throw err
+    throw new AppError('Service introuvable', 404)
   }
   const rdvCount = await prisma.rendezVous.count({ where: { type_seance_id: id } })
   if (rdvCount > 0) {
-    const err = new Error(`Impossible de supprimer : ${rdvCount} rendez-vous utilisent ce service`) as any
-    err.status = 409
-    throw err
+    throw new AppError(`Impossible de supprimer : ${rdvCount} rendez-vous utilisent ce service`, 409)
   }
   return await prisma.typeSeance.delete({ where: { id } })
 }
@@ -192,13 +171,9 @@ export async function getAllAppointmentsPublic() {
 
 // Récupérer un type de séance par ID
 export async function getTypeSeanceById(id: string) {
-  const typeSeance = await prisma.typeSeance.findUnique({
-    where: { id }
-  })
+  const typeSeance = await prisma.typeSeance.findUnique({ where: { id } })
   if (!typeSeance) {
-    const err = new Error('Type de séance introuvable') as any
-    err.status = 404
-    throw err
+    throw new AppError('Type de séance introuvable', 404)
   }
   return typeSeance
 }
@@ -264,7 +239,7 @@ export async function updateAppointmentStatus(id: string, statut: string, raison
 export async function updateNotesAdmin(id: string, notes_admin: string | null) {
   const rdv = await prisma.rendezVous.findUnique({ where: { id } })
   if (!rdv) {
-    const err = new Error('Rendez-vous introuvable') as any; err.status = 404; throw err
+    throw new AppError('Rendez-vous introuvable', 404)
   }
   return prisma.rendezVous.update({
     where: { id },
@@ -280,15 +255,10 @@ export async function updateNotesAdmin(id: string, notes_admin: string | null) {
 export async function deleteAppointment(id: string, userId: string) {
   const appointment = await prisma.rendezVous.findUnique({ where: { id } })
   if (!appointment) {
-    const err = new Error('Rendez-vous introuvable') as any
-    err.status = 404
-    throw err
+    throw new AppError('Rendez-vous introuvable', 404)
   }
-  // Vérifier que l'utilisateur est le propriétaire
   if (appointment.utilisateur_id !== userId) {
-    const err = new Error('Non autorisé') as any
-    err.status = 403
-    throw err
+    throw new AppError('Non autorisé', 403)
   }
   return await prisma.rendezVous.delete({ where: { id } })
 }
@@ -302,21 +272,15 @@ export async function updateAppointment(id: string, userId: string, userRole: st
 }) {
   const appointment = await prisma.rendezVous.findUnique({ where: { id } })
   if (!appointment) {
-    const err = new Error('Rendez-vous introuvable') as any
-    err.status = 404
-    throw err
+    throw new AppError('Rendez-vous introuvable', 404)
   }
   // Vérifier que l'utilisateur est propriétaire OU admin
   if (appointment.utilisateur_id !== userId && userRole !== 'ADMIN' && userRole !== 'SUPER_ADMIN') {
-    const err = new Error('Non autorisé') as any
-    err.status = 403
-    throw err
+    throw new AppError('Non autorisé', 403)
   }
   // Seulement les clients ne peuvent pas modifier des rendez-vous non en attente
   if (userRole === 'USER' && appointment.statut !== 'PENDING') {
-    const err = new Error('Impossible de modifier un rendez-vous non en attente') as any
-    err.status = 400
-    throw err
+    throw new AppError('Impossible de modifier un rendez-vous non en attente', 400)
   }
   // Si on change la date/heure, vérifier que le créneau est disponible
   const nextDate = data.date_heure ?? appointment.date_heure
@@ -340,21 +304,15 @@ export async function updateAppointment(id: string, userId: string, userRole: st
 export async function cancelAppointment(id: string, userId: string, userRole: string) {
   const appointment = await prisma.rendezVous.findUnique({ where: { id } })
   if (!appointment) {
-    const err = new Error('Rendez-vous introuvable') as any
-    err.status = 404
-    throw err
+    throw new AppError('Rendez-vous introuvable', 404)
   }
   // Vérifier que l'utilisateur est propriétaire OU admin
   if (appointment.utilisateur_id !== userId && userRole !== 'ADMIN' && userRole !== 'SUPER_ADMIN') {
-    const err = new Error('Non autorisé') as any
-    err.status = 403
-    throw err
+    throw new AppError('Non autorisé', 403)
   }
   // Seulement les clients ne peuvent pas annuler des rendez-vous non en attente
-  if (userRole === 'CLIENT' && appointment.statut !== 'PENDING') {
-    const err = new Error('Impossible d annuler un rendez-vous non en attente') as any
-    err.status = 400
-    throw err
+  if (userRole === 'USER' && appointment.statut !== 'PENDING') {
+    throw new AppError("Impossible d'annuler un rendez-vous non en attente", 400)
   }
 
   return await prisma.rendezVous.update({

@@ -170,10 +170,7 @@ export default function AddProduct() {
                   value={form.nom}
                   onChange={e => set('nom', e.target.value)}
                   placeholder="ex. Huile Essentielle de Lavande Bio"
-                  className="w-full bg-transparent border-0 border-b border-outline-variant py-3 px-0 font-body-lg text-body-lg placeholder:opacity-30 focus:outline-none focus:border-sage-deep transition-colors"
-                  style={{ boxShadow: 'none' }}
-                  onFocus={e => (e.currentTarget.style.boxShadow = '0 1px 0 0 #4A594D')}
-                  onBlur={e => (e.currentTarget.style.boxShadow = 'none')}
+                  className="w-full bg-transparent border-0 border-b border-outline-variant py-3 px-0 font-body-lg text-body-lg placeholder:opacity-30 focus:outline-none focus:border-sage-deep focus:shadow-[0_1px_0_0_#4A594D] transition-colors"
                   required
                 />
               </div>
@@ -184,10 +181,7 @@ export default function AddProduct() {
                   value={form.description}
                   onChange={e => set('description', e.target.value)}
                   placeholder="Décrivez les bienfaits thérapeutiques et les ingrédients..."
-                  className="w-full bg-transparent border-0 border-b border-outline-variant py-3 px-0 font-body-md text-body-md resize-none placeholder:opacity-30 focus:outline-none focus:border-sage-deep transition-colors"
-                  style={{ boxShadow: 'none' }}
-                  onFocus={e => (e.currentTarget.style.boxShadow = '0 1px 0 0 #4A594D')}
-                  onBlur={e => (e.currentTarget.style.boxShadow = 'none')}
+                  className="w-full bg-transparent border-0 border-b border-outline-variant py-3 px-0 font-body-md text-body-md resize-none placeholder:opacity-30 focus:outline-none focus:border-sage-deep focus:shadow-[0_1px_0_0_#4A594D] transition-colors"
                   required
                 />
               </div>
@@ -199,7 +193,6 @@ export default function AddProduct() {
                   placeholder="Généré automatiquement (ex. ZEN-PROD-001)"
                   disabled
                   className="w-full bg-transparent border-0 border-b border-outline-variant py-3 px-0 font-body-lg text-body-lg placeholder:opacity-60 opacity-60 focus:outline-none"
-                  style={{ boxShadow: 'none' }}
                 />
               </div>
             </div>
@@ -214,8 +207,7 @@ export default function AddProduct() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pl-0 md:pl-11">
               <div>
                 <label className="block font-label-md text-label-md text-on-surface-variant mb-2">Prix (FCFA) *</label>
-                <div className="flex items-center border-b border-outline-variant focus-within:border-sage-deep transition-colors"
-                  style={{ boxShadow: 'none' }}>
+                <div className="flex items-center border-b border-outline-variant focus-within:border-sage-deep focus-within:shadow-[0_1px_0_0_#4A594D] transition-colors">
                   <input
                     type="number"
                     value={form.prix}
@@ -236,10 +228,7 @@ export default function AddProduct() {
                   onChange={e => set('stock', e.target.value)}
                   placeholder="0"
                   min="0"
-                  className="w-full bg-transparent border-0 border-b border-outline-variant py-3 px-0 font-body-lg text-body-lg placeholder:opacity-30 focus:outline-none focus:border-sage-deep transition-colors"
-                  style={{ boxShadow: 'none' }}
-                  onFocus={e => (e.currentTarget.style.boxShadow = '0 1px 0 0 #4A594D')}
-                  onBlur={e => (e.currentTarget.style.boxShadow = 'none')}
+                  className="w-full bg-transparent border-0 border-b border-outline-variant py-3 px-0 font-body-lg text-body-lg placeholder:opacity-30 focus:outline-none focus:border-sage-deep focus:shadow-[0_1px_0_0_#4A594D] transition-colors"
                   required
                 />
               </div>
