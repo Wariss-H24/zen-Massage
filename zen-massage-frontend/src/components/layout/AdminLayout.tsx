@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react'
+import { useState, useRef, type ReactNode } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 
@@ -17,6 +17,75 @@ interface Props {
   children: ReactNode
   title: string
   topbarRight?: ReactNode
+}
+
+const SEARCH_PAGES = [
+  { keywords: ['dashboard', 'accueil', 'praticien', 'espace'],  label: 'Espace Praticien', to: '/admin',              icon: 'dashboard'           },
+  { keywords: ['réservation', 'reservation', 'rdv', 'rendez'],  label: 'Réservations',      to: '/admin/bookings',      icon: 'calendar_today'      },
+  { keywords: ['catégorie', 'categorie', 'catégories'],          label: 'Catégories',        to: '/admin/categories',    icon: 'category'            },
+  { keywords: ['produit', 'produits', 'article'],                label: 'Produits',          to: '/admin/products',      icon: 'inventory_2'         },
+  { keywords: ['ajouter', 'nouveau', 'créer', 'creer'],          label: 'Ajouter un produit',to: '/admin/products/add',  icon: 'add_circle'          },
+  { keywords: ['commande', 'commandes', 'order'],                label: 'Commandes',         to: '/admin/orders',        icon: 'history_edu'         },
+  { keywords: ['analytique', 'statistique', 'stats', 'graphique'], label: 'Analytiques',    to: '/admin/analytics',     icon: 'analytics'           },
+  { keywords: ['paramètre', 'parametre', 'setting', 'config'],   label: 'Paramètres',        to: '/admin/settings',      icon: 'settings'            },
+  { keywords: ['support', 'aide', 'help'],                       label: 'Support',           to: '/admin/support',       icon: 'help'                },
+  { keywords: ['super', 'admin', 'utilisateur', 'user'],         label: 'Super Admin',       to: '/admin/super',         icon: 'admin_panel_settings'},
+]
+
+function GlobalSearch() {
+  const navigate = useNavigate()
+  const [query, setQuery] = useState('')
+  const [open, setOpen]   = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  const results = query.trim().length === 0 ? [] : SEARCH_PAGES.filter(p =>
+    p.keywords.some(k => k.includes(query.toLowerCase())) ||
+    p.label.toLowerCase().includes(query.toLowerCase())
+  )
+
+  function go(to: string) {
+    navigate(to)
+    setQuery('')
+    setOpen(false)
+  }
+
+  return (
+    <div ref={ref} className="relative hidden md:block">
+      <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
+      <input
+        type="text"
+        value={query}
+        onChange={e => { setQuery(e.target.value); setOpen(true) }}
+        onFocus={() => setOpen(true)}
+        onBlur={() => setTimeout(() => setOpen(false), 150)}
+        onKeyDown={e => {
+          if (e.key === 'Enter' && results.length > 0) go(results[0].to)
+          if (e.key === 'Escape') { setQuery(''); setOpen(false) }
+        }}
+        placeholder="Aller vers..."
+        className="pl-10 pr-4 py-2 bg-surface-container rounded-full border-none focus:outline-none focus:ring-1 focus:ring-primary w-40 xl:w-56 text-sm font-body-md transition-all"
+      />
+      {open && results.length > 0 && (
+        <div className="absolute top-full mt-2 left-0 w-64 bg-white rounded-xl shadow-xl border border-outline-variant/30 overflow-hidden z-50">
+          {results.map(r => (
+            <button
+              key={r.to}
+              onMouseDown={() => go(r.to)}
+              className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-surface-container transition-colors text-left"
+            >
+              <span className="material-symbols-outlined text-[18px] text-primary">{r.icon}</span>
+              <span className="text-sm font-medium text-on-surface">{r.label}</span>
+            </button>
+          ))}
+        </div>
+      )}
+      {open && query.trim().length > 0 && results.length === 0 && (
+        <div className="absolute top-full mt-2 left-0 w-64 bg-white rounded-xl shadow-xl border border-outline-variant/30 px-4 py-3 z-50">
+          <p className="text-sm text-on-surface-variant">Aucun résultat pour "{query}"</p>
+        </div>
+      )}
+    </div>
+  )
 }
 
 export default function AdminLayout({ children, title, topbarRight }: Props) {
@@ -128,14 +197,7 @@ export default function AdminLayout({ children, title, topbarRight }: Props) {
           <div className="flex items-center gap-3">
             {topbarRight ?? (
               <>
-                <div className="relative hidden md:block">
-                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
-                  <input
-                    type="text"
-                    placeholder="Rechercher..."
-                    className="pl-10 pr-4 py-2 bg-surface-container rounded-full border-none focus:outline-none focus:ring-1 focus:ring-primary w-40 xl:w-56 text-sm font-body-md"
-                  />
-                </div>
+                <GlobalSearch />
                 <button className="relative p-2 text-on-surface-variant hover:text-primary transition-colors">
                   <span className="material-symbols-outlined">notifications</span>
                   <span className="absolute top-2 right-2 w-2 h-2 bg-error rounded-full" />

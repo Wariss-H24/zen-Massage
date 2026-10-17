@@ -73,7 +73,7 @@ export default function Profile() {
     <UserLayout title="Profil Utilisateur" subtitle="Gérez vos informations personnelles et vos préférences.">
       {toast && <Toast type={toast.type} message={toast.msg} onClose={() => setToast(null)} />}
 
-      <div className="px-6 md:px-margin-desktop pb-section-gap pt-stack-lg max-w-4xl">
+      <div className="px-4 md:px-margin-desktop pb-8 pt-stack-lg max-w-4xl w-full">
 
             <form className="space-y-stack-lg" onSubmit={handleSubmit}>
 

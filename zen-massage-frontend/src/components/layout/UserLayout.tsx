@@ -1,6 +1,5 @@
 import { useState, type ReactNode } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import Footer from './Footer'
 import { useAuth } from '../../context/AuthContext'
 
 const NAV = [
@@ -109,7 +108,7 @@ export default function UserLayout({ children, title, subtitle, headerRight }: P
       </aside>
 
       {/* ── Main ── */}
-      <main className="flex-1 md:ml-64 min-h-screen flex flex-col">
+      <main className="flex-1 md:ml-64 flex flex-col min-h-[100dvh]">
 
         {/* Header */}
         <header
@@ -146,7 +145,6 @@ export default function UserLayout({ children, title, subtitle, headerRight }: P
           {children}
         </div>
 
-        <Footer />
       </main>
 
 

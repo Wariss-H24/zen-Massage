@@ -268,8 +268,9 @@ const handleAddToCart = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
 
           {/* Galerie bento */}
-          <div className="lg:col-span-7 grid grid-cols-4 gap-3">
-            <div className="col-span-4 aspect-[4/5] relative rounded-2xl overflow-hidden bg-sand-light group cursor-zoom-in">
+          <div className="lg:col-span-7">
+            {/* Image principale */}
+            <div className="relative rounded-2xl overflow-hidden bg-sand-light group cursor-zoom-in mb-3" style={{ aspectRatio: '4/5' }}>
               <img
                 src={images[activeImg]}
                 alt={p.nom}
@@ -282,24 +283,26 @@ const handleAddToCart = () => {
                 </div>
               )}
             </div>
-
-            {thumbnails.map((img, i) => (
-              <button
-                key={i}
-                onClick={() => setActiveImg(i)}
-                className={`col-span-1 aspect-square rounded-xl overflow-hidden bg-sand-light border-2 transition-all ${
-                  activeImg === i ? 'border-primary' : 'border-transparent opacity-60 hover:opacity-100'
-                }`}
-              >
-                {img ? (
-                  <img src={img} alt="" className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-outline font-caption">
-                    N/A
-                  </div>
-                )}
-              </button>
-            ))}
+            {/* Thumbnails */}
+            {thumbnails.length > 1 && (
+              <div className="grid grid-cols-4 gap-2">
+                {thumbnails.map((img, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setActiveImg(i)}
+                    className={`aspect-square rounded-xl overflow-hidden bg-sand-light border-2 transition-all ${
+                      activeImg === i ? 'border-primary' : 'border-transparent opacity-60 hover:opacity-100'
+                    }`}
+                  >
+                    {img ? (
+                      <img src={img} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-outline font-caption">N/A</div>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Infos produit */}
@@ -428,14 +431,14 @@ const handleAddToCart = () => {
               </p>
             </div>
 
-            <div className="flex items-center gap-8 bg-white p-6 rounded-2xl shadow-sm border border-outline-variant/30">
-              <div className="text-center">
+            <div className="flex flex-wrap items-center gap-6 bg-white p-5 rounded-2xl shadow-sm border border-outline-variant/30">
+              <div className="text-center shrink-0">
                 <span className="font-headline-md text-headline-md text-primary block">
                   {moyenne ? moyenne.toFixed(1) : '—'}
                 </span>
                 <Stars rating={moyenne} size="xs" />
               </div>
-              <div className="hidden sm:block space-y-1.5 w-44">
+              <div className="hidden sm:block space-y-1.5 w-44 flex-shrink-0">
                 {[5, 4, 3, 2, 1].map(n => {
                   const count = stats?.distribution?.[n] ?? 0
                   const total = stats?.total ?? 1
@@ -452,7 +455,7 @@ const handleAddToCart = () => {
               </div>
               <button
                 onClick={() => setShowReviewForm(v => !v)}
-                className="bg-primary-fixed text-on-primary-fixed-variant px-5 py-2.5 rounded-full font-label-md text-label-md hover:bg-primary hover:text-white transition-colors"
+                className="bg-primary-fixed text-on-primary-fixed-variant px-5 py-2.5 rounded-full font-label-md text-label-md hover:bg-primary hover:text-white transition-colors shrink-0"
               >
                 Écrire un avis
               </button>

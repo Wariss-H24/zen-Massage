@@ -330,12 +330,12 @@ export default function Account() {
     >
       {toast && <Toast type={toast.type} message={toast.msg} onClose={() => setToast(null)} />}
 
-      <div className="p-6 md:p-margin-desktop space-y-section-gap max-w-container-max mx-auto w-full">
+      <div className="p-4 sm:p-6 md:p-8 space-y-8 max-w-5xl mx-auto w-full overflow-hidden">
 
           {/* ── Hero welcome ── */}
           <section className="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
             {/* Welcome card */}
-            <div className="lg:col-span-2 p-stack-lg bg-surface-container-lowest rounded-xl border border-outline-variant/10 relative overflow-hidden"
+            <div className="lg:col-span-2 p-5 sm:p-6 bg-surface-container-lowest rounded-xl border border-outline-variant/10 relative overflow-hidden"
               style={{ boxShadow: '0 20px 40px -15px rgba(44,46,48,0.05)' }}>
               <div className="relative z-10">
                 <h3 className="font-headline-md text-headline-md text-sage-deep mb-2">Bonjour, {firstName}.</h3>
@@ -440,15 +440,15 @@ export default function Account() {
                           )}
                         </div>
 
-                        <div className="bg-surface-container-low rounded-lg p-3 mb-4 flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <span className="material-symbols-outlined text-sage-deep">calendar_month</span>
-                            <div>
-                              <p className="font-label-md text-label-md text-sage-deep">{formatDate(appt.date_heure)}</p>
+                        <div className="bg-surface-container-low rounded-lg p-3 mb-4 flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <span className="material-symbols-outlined text-sage-deep shrink-0">calendar_month</span>
+                            <div className="min-w-0">
+                              <p className="font-label-md text-label-md text-sage-deep truncate">{formatDate(appt.date_heure)}</p>
                               <p className="font-caption text-caption text-on-surface-variant">{formatTime(appt.date_heure, appt.duree)}</p>
                             </div>
                           </div>
-                          <p className="font-label-md text-label-md text-sage-deep">Libreville</p>
+                          <p className="font-label-md text-label-md text-sage-deep shrink-0">Libreville</p>
                         </div>
 
                         {appt.statut === 'PENDING' && (

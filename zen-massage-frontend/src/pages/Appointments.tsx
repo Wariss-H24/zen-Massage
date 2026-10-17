@@ -356,6 +356,21 @@ export default function Appointments() {
           <Stepper step={step} />
         </header>
 
+        {/* ── CTA sticky mobile — visible uniquement quand tout est rempli ── */}
+        {canConfirm && (
+          <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 p-4 bg-white/95 backdrop-blur-sm border-t border-outline-variant/20 shadow-lg">
+            <button
+              onClick={() => {
+                const formElement = document.querySelector('form')
+                formElement?.requestSubmit()
+              }}
+              className="w-full py-4 bg-primary text-white font-label-md text-label-md rounded-full hover:bg-sage-deep transition-colors shadow-lg"
+            >
+              Confirmer la réservation — {selectedService?.price}
+            </button>
+          </div>
+        )}
+
         {/* ── 2-col layout ── */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
 

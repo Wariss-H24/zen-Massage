@@ -24,11 +24,11 @@ export default function ServicesSection() {
         <div className="h-1 w-20 bg-primary mx-auto opacity-30" />
       </div>
 
-      {/* Bento grid — large card col-span-8, 2 small cards stacked in col-span-4 */}
+      {/* Bento grid */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-gutter">
 
         {/* Large card */}
-        <div className="md:col-span-8 group relative overflow-hidden rounded-xl bg-surface-container-low h-[500px] transition-transform duration-500 hover:-translate-y-2">
+        <div className="md:col-span-8 group relative overflow-hidden rounded-xl bg-surface-container-low aspect-[4/3] md:aspect-auto md:h-[500px] transition-transform duration-500 hover:-translate-y-2">
           <div
             className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
             style={{ backgroundImage: `url('${massageImg}')` }}
@@ -36,17 +36,16 @@ export default function ServicesSection() {
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
           <div className="absolute bottom-0 p-stack-lg text-white">
             <h3 className="font-headline-sm text-headline-sm mb-2">Massages Thérapeutiques</h3>
-            <p className="font-body-md text-body-md opacity-80 max-w-md">
+            <p className="font-body-md text-body-md opacity-80 max-w-md hidden sm:block">
               Libérez vos tensions avec nos techniques ancestrales fusionnées avec l'expertise moderne.
             </p>
           </div>
         </div>
 
-        {/* Right column — 2 small cards stacked */}
-        <div className="md:col-span-4 flex flex-col gap-gutter">
+        {/* Right column — 2 small cards */}
+        <div className="md:col-span-4 grid grid-cols-2 md:grid-cols-1 gap-gutter">
 
-          {/* Aromathérapie */}
-          <div className="group relative overflow-hidden rounded-xl bg-sand-light h-[240px] transition-transform duration-500 hover:-translate-y-2">
+          <div className="group relative overflow-hidden rounded-xl bg-sand-light aspect-square md:aspect-auto md:h-[240px] transition-transform duration-500 hover:-translate-y-2">
             <div
               className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
               style={{ backgroundImage: `url('${aromaImg}')` }}
@@ -57,8 +56,7 @@ export default function ServicesSection() {
             </div>
           </div>
 
-          {/* Réflexologie */}
-          <div className="group relative overflow-hidden rounded-xl bg-sage-deep h-[240px] transition-transform duration-500 hover:-translate-y-2">
+          <div className="group relative overflow-hidden rounded-xl bg-sage-deep aspect-square md:aspect-auto md:h-[240px] transition-transform duration-500 hover:-translate-y-2">
             <div
               className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
               style={{ backgroundImage: `url('${reflexoImg}')` }}
