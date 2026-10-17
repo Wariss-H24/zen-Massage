@@ -144,7 +144,10 @@ export async function updateAppointmentScheduleConfig(next: AppointmentScheduleC
 }
 
 export function dayKeyFromDate(d: Date): DayKey {
-  const js = d.getDay()
+  // Convertir en heure Libreville (UTC+1) avant de lire le jour
+  const librevilleMs = d.getTime() + 60 * 60 * 1000
+  const local = new Date(librevilleMs)
+  const js = local.getUTCDay()
   if (js === 0) return 'sun'
   if (js === 1) return 'mon'
   if (js === 2) return 'tue'

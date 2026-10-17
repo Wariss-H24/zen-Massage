@@ -33,7 +33,12 @@ function assertScheduleAllows(config: AppointmentScheduleConfig, start: Date, du
     throw new AppError('Aucun rendez-vous possible ce jour-là', 400)
   }
 
-  const startMin = start.getHours() * 60 + start.getMinutes()
+  // Le serveur tourne en UTC sur Render.
+  // Africa/Libreville = UTC+1 fixe, pas de DST.
+  // On convertit l'heure UTC en heure locale Libreville avant de comparer avec la config.
+  const librevilleOffsetMinutes = 60
+  const localMinutes = start.getUTCHours() * 60 + start.getUTCMinutes() + librevilleOffsetMinutes
+  const startMin = localMinutes
   const endMin = startMin + durationMinutes
 
   const openMin = minutesFromTimeString(day.start)
