@@ -9,14 +9,14 @@ const prisma = new PrismaClient({ adapter })
 const USERS = [
   {
     email: 'superadmin@ben.com',
-    password: 'SuperAdmin123!',
+    password: 'SuperAdmin@201!',
     firstName: 'Super',
     lastName: 'Admin',
     role: 'SUPER_ADMIN' as const,
   },
   {
     email: 'admin@ben.com',
-    password: 'Admin123!',
+    password: 'Admin@009!',
     firstName: 'Admin',
     lastName: 'Ben',
     role: 'ADMIN' as const,
