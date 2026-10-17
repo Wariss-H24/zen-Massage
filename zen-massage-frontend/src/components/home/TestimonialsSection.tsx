@@ -1,7 +1,7 @@
+import { useEffect, useState } from 'react'
 import { useInView } from '../../hooks/useInView'
-
-const avatarImg =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuAOG-2ftrrnl0-jC0KpbksPY3K6ODLYifNav8nGqagEUWKSIzXFyhRdp1QYijSBelvFehl9AfAJ0lhx8W8UTeH31OQSlWUefQl_k9IEUIkxYuQ91G1RvNkVZRzEwj9mw72elbB80FyBRlIStiYzErt2org47YBx4q2kHrGKS32WPxbpOILWf_8EoRzKltWxtIGjH7fWkiisco8voOnevgEirexvMyViIvb-H246kO5S72Z1_StInts0vtJ-2izLNxDCXlcnRrsl0M0D'
+import { reviewService } from '../../services/review.service'
+import type { Review } from '../../types/review'
 
 const galleryImages = [
   {
@@ -24,6 +24,20 @@ const galleryImages = [
 
 export default function TestimonialsSection() {
   const [ref, isInView] = useInView(0.1)
+  const [avis, setAvis] = useState<Review | null>(null)
+
+  useEffect(() => {
+    reviewService.listReviews({ tri: 'note_desc', limite: 10 })
+      .then(res => {
+        const list = res.data.avis ?? []
+        // Prendre le premier avis 5 étoiles non masqué avec contenu
+        const best = list.find(a => a.note === 5 && !a.masque && a.contenu)
+          ?? list.find(a => !a.masque && a.contenu)
+          ?? list[0]
+        if (best) setAvis(best)
+      })
+      .catch(() => {})
+  }, [])
 
   return (
     <section
@@ -35,44 +49,63 @@ export default function TestimonialsSection() {
       <div className="px-6 md:px-margin-desktop max-w-container-max mx-auto">
         <div className="flex flex-col lg:flex-row items-center gap-16">
 
-          {/* Testimonial */}
-          <div className="lg:w-1/2 relative">
-            {/* Decorative large quote mark */}
-            <div className="absolute -top-10 -left-10 text-sage-deep/5 select-none font-display-lg text-[200px] leading-none">
-              "
-            </div>
-            <div className="relative z-10 space-y-12">
-              <div>
-                <p className="font-headline-sm text-headline-sm italic text-sage-deep mb-6">
-                  "Une véritable évasion au cœur de Libreville. Le soin 'Signature Gabon' m'a
-                  transporté. L'accueil est digne des plus grands palaces."
-                </p>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
-                    <img
-                      src={avatarImg}
-                      alt="Marie-Thérèse O."
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div>
-                    <h5 className="font-label-md text-label-md text-sage-deep">Marie-Thérèse O.</h5>
-                    <div className="flex text-status-pending text-sm">
-                      {[...Array(5)].map((_, i) => (
-                        <span
-                          key={i}
-                          className="material-symbols-outlined text-base"
-                          style={{ fontVariationSettings: "'FILL' 1" }}
-                        >
-                          star
-                        </span>
-                      ))}
+            <div className="lg:w-1/2 relative">
+              <div className="absolute -top-10 -left-10 text-sage-deep/5 select-none font-display-lg text-[200px] leading-none">
+                "
+              </div>
+              <div className="relative z-10 space-y-12">
+                <div>
+                  {avis ? (
+                    <>
+                      <p className="font-headline-sm text-headline-sm italic text-sage-deep mb-6">
+                        "{avis.contenu}"
+                      </p>
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 bg-sage-deep/10 flex items-center justify-center">
+                          {avis.utilisateur?.avatar ? (
+                            <img src={avis.utilisateur.avatar} alt="" className="w-full h-full object-cover" />
+                          ) : (
+                            <span className="font-bold text-sage-deep text-sm">
+                              {avis.utilisateur?.firstName?.[0]}{avis.utilisateur?.lastName?.[0]}
+                            </span>
+                          )}
+                        </div>
+                        <div>
+                          <h5 className="font-label-md text-label-md text-sage-deep">
+                            {avis.utilisateur?.firstName} {avis.utilisateur?.lastName?.[0]}.
+                          </h5>
+                          <div className="flex text-status-pending text-sm">
+                            {[...Array(5)].map((_, i) => (
+                              <span
+                                key={i}
+                                className="material-symbols-outlined text-base"
+                                style={{ fontVariationSettings: `'FILL' ${i < avis.note ? 1 : 0}` }}
+                              >
+                                star
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    /* Skeleton pendant le chargement */
+                    <div className="animate-pulse space-y-4">
+                      <div className="h-4 bg-outline-variant/20 rounded w-full" />
+                      <div className="h-4 bg-outline-variant/20 rounded w-5/6" />
+                      <div className="h-4 bg-outline-variant/20 rounded w-4/6" />
+                      <div className="flex items-center gap-3 mt-6">
+                        <div className="w-12 h-12 rounded-full bg-outline-variant/20" />
+                        <div className="space-y-2">
+                          <div className="h-3 bg-outline-variant/20 rounded w-24" />
+                          <div className="h-3 bg-outline-variant/10 rounded w-16" />
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
             </div>
-          </div>
 
           {/* Gallery grid */}
           <div className="lg:w-1/2 grid grid-cols-2 gap-4">
