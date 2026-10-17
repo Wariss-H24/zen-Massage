@@ -29,6 +29,7 @@ const Statistics = lazy(() => import('./pages/admin/Statistics'))
 const SuperAdminPanel = lazy(() => import('./pages/admin/SuperAdminPanel'))
 const AdminSupport = lazy(() => import('./pages/admin/Support'))
 import Support from './pages/Support'
+import NotFound from './pages/NotFound'
 
 // Redirige vers la bonne page d'accueil selon le rôle
 function HomeByRole() {
@@ -134,7 +135,7 @@ export default function App() {
       <Route path="/admin/super"    element={<RequireSuperAdmin><LazyPage><SuperAdminPanel /></LazyPage></RequireSuperAdmin>} />
       <Route path="/admin/support"  element={<RequireAdmin><LazyPage><AdminSupport /></LazyPage></RequireAdmin>} />
 
-      <Route path="*" element={<div className="flex items-center justify-center min-h-screen font-serif text-headline-sm text-sage-deep">Page introuvable</div>} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   )
 }

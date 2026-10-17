@@ -52,6 +52,35 @@ function commandesByMonth(commandes: Commande[]) {
   })
 }
 
+/* ── Donut SVG ── */
+function Donut({ segments }: { segments: { color: string; pct: number }[] }) {
+  const r = 40
+  const cx = 50
+  const cy = 50
+  const circ = 2 * Math.PI * r
+  let offset = 0
+  const arcs = segments.map(s => {
+    const dash = (s.pct / 100) * circ
+    const arc = { color: s.color, dash, offset }
+    offset += dash
+    return arc
+  })
+  return (
+    <svg viewBox="0 0 100 100" className="w-28 h-28 -rotate-90">
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke="#f1f5f4" strokeWidth="18" />
+      {arcs.map((a, i) => (
+        <circle
+          key={i} cx={cx} cy={cy} r={r} fill="none"
+          stroke={a.color} strokeWidth="18"
+          strokeDasharray={`${a.dash} ${circ - a.dash}`}
+          strokeDashoffset={-a.offset}
+          className="transition-all duration-700"
+        />
+      ))}
+    </svg>
+  )
+}
+
 /* ── Bar animée ── */
 function Bar({ pct, color, delay }: { pct: number; color: string; delay: number }) {
   const ref = useRef<HTMLDivElement>(null)
@@ -441,25 +470,37 @@ export default function Statistics() {
             ) : filteredCommandes.length === 0 ? (
               <p className="text-xs text-on-surface-variant text-center py-6">Aucune commande</p>
             ) : (
-              <div className="space-y-3">
-                {(['PENDING', 'CONFIRMED', 'SHIPPED', 'DELIVERED', 'CANCELLED'] as const).map(s => {
-                  const count = filteredCommandes.filter(c => c.statut === s).length
-                  const pct   = filteredCommandes.length ? Math.round((count / filteredCommandes.length) * 100) : 0
-                  const colors: Record<string, string> = {
-                    PENDING: 'bg-amber-400', CONFIRMED: 'bg-sage-deep', SHIPPED: 'bg-purple-400', DELIVERED: 'bg-green-500', CANCELLED: 'bg-red-400',
-                  }
-                  return (
-                    <div key={s}>
-                      <div className="flex justify-between text-xs mb-1">
-                        <span className="font-medium text-on-surface">{STATUS_FR[s]}</span>
-                        <span className="text-on-surface-variant">{count} · {pct}%</span>
+              <div className="flex items-center gap-5">
+                {/* Donut */}
+                <div className="relative shrink-0">
+                  <Donut segments={(
+                    ['PENDING','CONFIRMED','SHIPPED','DELIVERED','CANCELLED'] as const
+                  ).map(s => ({
+                    color: { PENDING:'#F59E0B', CONFIRMED:'#4A7C6F', SHIPPED:'#A78BFA', DELIVERED:'#22C55E', CANCELLED:'#F87171' }[s],
+                    pct: filteredCommandes.length ? (filteredCommandes.filter(c => c.statut === s).length / filteredCommandes.length) * 100 : 0,
+                  }))} />
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="font-bold text-lg text-sage-deep leading-none">{filteredCommandes.length}</span>
+                    <span className="text-[9px] text-on-surface-variant">total</span>
+                  </div>
+                </div>
+                {/* Légende */}
+                <div className="space-y-2 flex-1">
+                  {(['PENDING','CONFIRMED','SHIPPED','DELIVERED','CANCELLED'] as const).map(s => {
+                    const count = filteredCommandes.filter(c => c.statut === s).length
+                    const pct   = filteredCommandes.length ? Math.round((count / filteredCommandes.length) * 100) : 0
+                    const colors: Record<string, string> = {
+                      PENDING:'bg-amber-400', CONFIRMED:'bg-sage-deep', SHIPPED:'bg-purple-400', DELIVERED:'bg-green-500', CANCELLED:'bg-red-400',
+                    }
+                    return (
+                      <div key={s} className="flex items-center gap-2">
+                        <span className={`w-2 h-2 rounded-full shrink-0 ${colors[s]}`} />
+                        <span className="text-xs text-on-surface flex-1">{STATUS_FR[s]}</span>
+                        <span className="text-xs font-semibold text-on-surface-variant">{count} <span className="text-[10px] font-normal">({pct}%)</span></span>
                       </div>
-                      <div className="h-2 bg-surface-container rounded-full overflow-hidden">
-                        <div className={`h-full ${colors[s]} rounded-full transition-all duration-700`} style={{ width: `${pct}%` }} />
-                      </div>
-                    </div>
-                  )
-                })}
+                    )
+                  })}
+                </div>
               </div>
             )}
           </div>

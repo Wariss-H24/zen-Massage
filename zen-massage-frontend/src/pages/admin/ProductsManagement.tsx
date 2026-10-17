@@ -8,11 +8,96 @@ import Spinner from '../../components/ui/Spinner'
 import Toast from '../../components/ui/Toast'
 import { productService } from '../../services/product.service'
 import type { Categorie, Produit } from '../../types/product'
+import { resolveImageUrl } from '../../utils/mediaUrl'
 
 type PublieFilter = 'all' | 'published' | 'disabled'
 
 function formatPriceFCFA(value: number) {
   return `${Math.round(value).toLocaleString('fr-FR')} FCFA`
+}
+
+/* ── Drawer aperçu rapide ── */
+function ProductDrawer({ produit, onClose }: { produit: Produit; onClose: () => void }) {
+  const image = resolveImageUrl(produit.images?.[0])
+  return (
+    <>
+      <div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div className="fixed inset-y-0 right-0 z-50 w-full sm:w-[420px] bg-white shadow-2xl flex flex-col">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/20">
+          <h3 className="font-semibold text-sage-deep truncate pr-4">{produit.nom}</h3>
+          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-surface-container transition-colors shrink-0">
+            <span className="material-symbols-outlined text-[20px]">close</span>
+          </button>
+        </div>
+        <div className="flex-1 overflow-y-auto p-5 space-y-5">
+          <div className="w-full aspect-video rounded-2xl overflow-hidden bg-surface-container-low">
+            {image
+              ? <img src={image} alt={produit.nom} className="w-full h-full object-cover" />
+              : <div className="w-full h-full flex items-center justify-center"><span className="material-symbols-outlined text-5xl text-outline-variant">inventory_2</span></div>
+            }
+          </div>
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-tight ${
+              produit.publie ? 'bg-green-100 text-green-700' : 'bg-outline-variant/40 text-on-surface-variant'
+            }`}>
+              {produit.publie ? 'Publié' : 'Désactivé'}
+            </span>
+            {produit.stock < 5 && (
+              <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-red-100 text-red-600">Stock faible</span>
+            )}
+            {produit.categorie && (
+              <span className="px-2.5 py-1 rounded-full text-[11px] bg-surface-container text-on-surface-variant">{produit.categorie.nom}</span>
+            )}
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            {([
+              { label: 'Prix',  value: formatPriceFCFA(produit.prix) },
+              { label: 'Stock', value: String(produit.stock) },
+              { label: 'SKU',   value: produit.sku || '—' },
+              { label: 'Avis',  value: String(produit._count?.avis ?? 0) },
+            ]).map(({ label, value }) => (
+              <div key={label} className="bg-surface-container-low rounded-xl p-3 border border-outline-variant/20">
+                <p className="text-[10px] text-on-surface-variant uppercase tracking-wide mb-1">{label}</p>
+                <p className="font-semibold text-sm text-on-surface">{value}</p>
+              </div>
+            ))}
+          </div>
+          {produit.description && (
+            <div>
+              <p className="text-[10px] text-on-surface-variant uppercase tracking-wide mb-2">Description</p>
+              <p className="text-sm text-on-surface-variant leading-relaxed">{produit.description}</p>
+            </div>
+          )}
+          {produit.images.length > 1 && (
+            <div>
+              <p className="text-[10px] text-on-surface-variant uppercase tracking-wide mb-2">Photos</p>
+              <div className="flex gap-2 overflow-x-auto pb-1">
+                {produit.images.map((img, i) => (
+                  <img key={i} src={resolveImageUrl(img)} alt="" className="w-16 h-16 rounded-xl object-cover shrink-0 border border-outline-variant/20" />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="px-5 py-4 border-t border-outline-variant/20 flex gap-3">
+          <Link
+            to={`/admin/products/${produit.id}/edit`}
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-primary text-white rounded-xl font-label-md text-sm hover:opacity-90 transition-opacity"
+          >
+            <span className="material-symbols-outlined text-[18px]">edit</span>
+            Modifier
+          </Link>
+          <Link
+            to={`/products/${produit.id}`}
+            target="_blank"
+            className="flex items-center justify-center gap-2 px-4 py-2.5 border border-outline-variant/40 rounded-xl font-label-md text-sm hover:bg-surface-container transition-colors"
+          >
+            <span className="material-symbols-outlined text-[18px]">open_in_new</span>
+          </Link>
+        </div>
+      </div>
+    </>
+  )
 }
 
 export default function ProductsManagement() {
@@ -36,6 +121,7 @@ export default function ProductsManagement() {
     | null
   >(null)
   const [stockAction, setStockAction] = useState<Produit | null>(null)
+  const [drawerProduit, setDrawerProduit] = useState<Produit | null>(null)
   const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info'; msg: string } | null>(null)
 
   const publie = useMemo(() => {
@@ -156,6 +242,7 @@ export default function ProductsManagement() {
       }
     >
       {toast && <Toast type={toast.type} message={toast.msg} onClose={() => setToast(null)} />}
+      {drawerProduit && <ProductDrawer produit={drawerProduit} onClose={() => setDrawerProduit(null)} />}
       <ConfirmDialog
         open={Boolean(confirmAction)}
         title={
@@ -295,15 +382,18 @@ export default function ProductsManagement() {
               return (
                 <div key={p.id} className="bg-white rounded-xl border border-outline-variant/30 p-4 space-y-4">
                   <div className="flex items-start gap-3">
-                    <div className="w-14 h-14 rounded-xl overflow-hidden bg-surface-variant border border-outline-variant/30 flex-shrink-0">
+                    <button
+                      onClick={() => setDrawerProduit(p)}
+                      className="w-14 h-14 rounded-xl overflow-hidden bg-surface-variant border border-outline-variant/30 flex-shrink-0 hover:opacity-80 transition-opacity"
+                    >
                       {p.images?.[0] ? (
                         <img src={p.images[0]} alt={p.nom} className="w-full h-full object-cover" />
-                      ) : null}
-                    </div>
+                      ) : <span className="material-symbols-outlined text-outline-variant text-2xl">inventory_2</span>}
+                    </button>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
-                          <div className="font-label-md text-label-md text-primary truncate">{p.nom}</div>
+                          <button onClick={() => setDrawerProduit(p)} className="font-label-md text-label-md text-primary truncate hover:underline text-left">{p.nom}</button>
                           <div className="font-caption text-caption text-on-surface-variant">
                             {p.description?.slice(0, 80) || ''}
                             {p.description && p.description.length > 80 ? '…' : ''}
@@ -333,10 +423,19 @@ export default function ProductsManagement() {
                       <div className="font-caption text-caption opacity-70">Prix</div>
                       <div className="font-label-md text-label-md">{formatPriceFCFA(p.prix)}</div>
                     </div>
-                    <div className="bg-surface-container-low rounded-xl p-3 border border-outline-variant/30">
+                    <div className={`rounded-xl p-3 border ${
+                      p.stock < 5 ? 'bg-red-50 border-red-200' : 'bg-surface-container-low border-outline-variant/30'
+                    }`}>
                       <div className="font-caption text-caption opacity-70">Stock</div>
                       <div className="flex items-center justify-between gap-3">
-                        <div className="font-label-md text-label-md">{p.stock}</div>
+                        <div className={`font-label-md text-label-md flex items-center gap-1.5 ${
+                          p.stock < 5 ? 'text-red-600 font-bold' : ''
+                        }`}>
+                          {p.stock < 5 && (
+                            <span className="material-symbols-outlined text-[14px] text-red-500" style={{ fontVariationSettings: "'FILL' 1" }}>warning</span>
+                          )}
+                          {p.stock}
+                        </div>
                         <button
                           disabled={disabled}
                           onClick={() => setStockAction(p)}
@@ -420,13 +519,16 @@ export default function ProductsManagement() {
                     <tr key={p.id} className="border-b border-outline-variant/30 last:border-b-0">
                       <td className="py-4 px-4 whitespace-nowrap">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg overflow-hidden bg-surface-variant border border-outline-variant/30 flex-shrink-0">
+                          <button
+                            onClick={() => setDrawerProduit(p)}
+                            className="w-10 h-10 rounded-lg overflow-hidden bg-surface-variant border border-outline-variant/30 flex-shrink-0 hover:opacity-80 transition-opacity"
+                          >
                             {p.images?.[0] ? (
                               <img src={p.images[0]} alt={p.nom} className="w-full h-full object-cover" />
-                            ) : null}
-                          </div>
+                            ) : <span className="material-symbols-outlined text-outline-variant text-lg">inventory_2</span>}
+                          </button>
                           <div className="min-w-[220px]">
-                            <div className="font-label-md text-label-md text-primary">{p.nom}</div>
+                            <button onClick={() => setDrawerProduit(p)} className="font-label-md text-label-md text-primary hover:underline text-left">{p.nom}</button>
                             <div className="font-caption text-caption text-on-surface-variant">
                               {p.description?.slice(0, 48) || ''}
                               {p.description && p.description.length > 48 ? '…' : ''}
@@ -437,9 +539,16 @@ export default function ProductsManagement() {
                       <td className="py-4 px-4 whitespace-nowrap text-on-surface-variant">{p.sku || '—'}</td>
                       <td className="py-4 px-4 whitespace-nowrap text-on-surface-variant">{p.categorie?.nom || '—'}</td>
                       <td className="py-4 px-4 whitespace-nowrap text-on-surface-variant">{formatPriceFCFA(p.prix)}</td>
-                      <td className="py-4 px-4 whitespace-nowrap text-on-surface-variant">
+                      <td className="py-4 px-4 whitespace-nowrap">
                         <div className="flex items-center gap-2">
-                          <span>{p.stock}</span>
+                          <span className={`font-label-md flex items-center gap-1 ${
+                            p.stock < 5 ? 'text-red-600 font-bold' : 'text-on-surface-variant'
+                          }`}>
+                            {p.stock < 5 && (
+                              <span className="material-symbols-outlined text-[14px] text-red-500" style={{ fontVariationSettings: "'FILL' 1" }}>warning</span>
+                            )}
+                            {p.stock}
+                          </span>
                           <button
                             disabled={disabled}
                             onClick={() => setStockAction(p)}
