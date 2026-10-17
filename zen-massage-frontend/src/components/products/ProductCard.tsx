@@ -2,8 +2,6 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useInView } from '../../hooks/useInView'
 import { useCart } from '../../context/CartContext'
-import { useAuth } from '../../context/AuthContext'
-import { productService } from '../../services/product.service'
 import type { Produit } from '../../types/product'
 import { resolveImageUrl } from '../../utils/mediaUrl'
 
@@ -37,10 +35,7 @@ interface ProduitCardProps {
 export default function ProductCard({ produit, delay = 0, moyenne }: ProduitCardProps) {
   const [ref, isInView] = useInView(0.08)
   const { addItem, items } = useCart()
-  const { user } = useAuth()
-  const [added, setAdded]   = useState(false)
-  const [liked, setLiked]   = useState(false)
-  const [liking, setLiking] = useState(false)
+  const [added, setAdded] = useState(false)
 
   const image      = resolveImageUrl(produit.images?.[0])
   const rating     = moyenne ?? 0
@@ -50,18 +45,6 @@ export default function ProductCard({ produit, delay = 0, moyenne }: ProduitCard
 
   // Quantité déjà dans le panier
   const inCart = items.find(i => i.id === produit.id)?.qty ?? 0
-
-  async function handleLike(e: React.MouseEvent) {
-    e.preventDefault()
-    if (!user || user.role !== 'USER' || liking) return
-    setLiking(true)
-    try {
-      const res = await productService.toggleLike(produit.id)
-      setLiked(res.data.liked)
-    } catch { /* silent */ } finally {
-      setLiking(false)
-    }
-  }
 
   function handleAddToCart(e: React.MouseEvent) {
     e.preventDefault() // ne pas naviguer vers le détail
@@ -108,29 +91,12 @@ export default function ProductCard({ produit, delay = 0, moyenne }: ProduitCard
           </span>
         )}
 
-        {/* Bouton like + badge panier */}
-        <div className="absolute top-3 right-3 flex flex-col items-end gap-1.5">
-          {user?.role === 'USER' && (
-            <button
-              onClick={handleLike}
-              disabled={liking}
-              title={liked ? 'Retirer des favoris' : 'Ajouter aux favoris'}
-              className={`w-8 h-8 rounded-full flex items-center justify-center shadow transition-all ${
-                liked ? 'bg-red-500 text-white' : 'bg-white/90 text-on-surface-variant hover:text-red-500'
-              }`}
-            >
-              <span
-                className="material-symbols-outlined text-[16px]"
-                style={{ fontVariationSettings: liked ? "'FILL' 1" : "'FILL' 0" }}
-              >favorite</span>
-            </button>
-          )}
-          {inCart > 0 && (
-            <span className="bg-primary text-white text-[10px] font-bold w-6 h-6 rounded-full flex items-center justify-center shadow">
-              {inCart}
-            </span>
-          )}
-        </div>
+        {/* Badge compteur panier */}
+        {inCart > 0 && (
+          <span className="absolute top-3 right-3 bg-primary text-white text-[10px] font-bold w-6 h-6 rounded-full flex items-center justify-center shadow">
+            {inCart}
+          </span>
+        )}
 
         {/* Overlay bouton "Voir détails" au hover — desktop */}
         <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden sm:flex items-end justify-center pb-4">

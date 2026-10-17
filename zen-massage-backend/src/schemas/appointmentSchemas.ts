@@ -17,7 +17,7 @@ export const updateTypeSeanceSchema = createTypeSeanceSchema.partial()
 export const createAppointmentSchema = z.object({
   date_heure:     z.string({ required_error: 'La date est requise' }).datetime({ message: 'Format de date invalide (ISO 8601 attendu)' }),
   duree:          z.number({ invalid_type_error: 'La durée doit être un nombre' }).int().min(15).max(480),
-  type_seance_id: z.string({ required_error: 'Le type de séance est requis' }).uuid('ID de séance invalide'),
+  type_seance_id: z.string({ required_error: 'Le type de séance est requis' }).min(1, 'ID de séance invalide'),
   notes:          z.string().max(500).optional(),
 })
 
